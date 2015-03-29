@@ -50,16 +50,16 @@ The after-`º`-block will only be called once everything else in the enclosing b
 all views assigned at the same level of the hierarchy can reference one another. For example:
 ```obj-c
 [self buildSubviews:º() {
-UIView *two;
-     UIView *one = add(º(UIView) {
-         // Even though two is assigned below, it will not be nil here!
-         _.make.left.equalTo(two);
-     });
-     two = add(º(UIView) {
-         // one won't be nil here either.
-         _.make.top.equalTo(one);
-     });
- }];
+    UIView *one, *two;
+    one = add(º(UIView) {
+        // Even though two is assigned below, it will not be nil here!
+        _.make.left.equalTo(two);
+    });
+    two = add(º(UIView) {
+        // one won't be nil here either.
+        _.make.top.equalTo(one);
+    });
+}];
 ```
 
 
