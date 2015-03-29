@@ -1,0 +1,38 @@
+{
+  "name": "Fahrenheit",
+  "version": "0.1.0",
+  "summary": "A short description of Fahrenheit.",
+  "description": "\n      An optional longer description of Fahrenheit\n\n      * Markdown format.\n      * Don't worry about the indent, we strip it!\n  ",
+  "homepage": "https://github.com/GriffinSchneider/Fahrenheit",
+  "license": "MIT",
+  "authors": {
+    "Griffin Schneider": "griffinschneider@gmail.com"
+  },
+  "source": {
+    "git": "https://github.com/GriffinSchneider/Fahrenheit.git",
+    "tag": "0.1.0"
+  },
+  "source_files": "Fahrenheit/**",
+  "ios": {
+    "frameworks": [
+      "Foundation",
+      "UIKit"
+    ]
+  },
+  "osx": {
+    "frameworks": [
+      "Foundation",
+      "AppKit"
+    ]
+  },
+  "platforms": {
+    "ios": "6.0",
+    "osx": "10.7"
+  },
+  "requires_arc": true,
+  "dependencies": {
+    "Masonry": [
+
+    ]
+  }
+}

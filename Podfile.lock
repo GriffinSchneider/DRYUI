@@ -1,0 +1,17 @@
+PODS:
+  - Fahrenheit (0.1.0):
+    - Masonry
+  - Masonry (0.6.1)
+
+DEPENDENCIES:
+  - Fahrenheit (from `./`)
+
+EXTERNAL SOURCES:
+  Fahrenheit:
+    :path: ./
+
+SPEC CHECKSUMS:
+  Fahrenheit: 62b269234182630b20d6eae25e99a40a308c5404
+  Masonry: 4972309f2f134de9dd312f4dc4a21359b50e6caa
+
+COCOAPODS: 0.36.0

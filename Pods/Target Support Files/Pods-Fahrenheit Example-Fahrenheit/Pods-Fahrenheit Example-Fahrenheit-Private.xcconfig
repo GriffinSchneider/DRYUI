@@ -1,0 +1,6 @@
+#include "Pods-Fahrenheit Example-Fahrenheit.xcconfig"
+GCC_PREPROCESSOR_DEFINITIONS = $(inherited) COCOAPODS=1
+HEADER_SEARCH_PATHS = "${PODS_ROOT}/Headers/Private" "${PODS_ROOT}/Headers/Private/Fahrenheit" "${PODS_ROOT}/Headers/Public" "${PODS_ROOT}/Headers/Public/Fahrenheit" "${PODS_ROOT}/Headers/Public/Masonry"
+OTHER_LDFLAGS = ${PODS_FAHRENHEIT_EXAMPLE_FAHRENHEIT_OTHER_LDFLAGS} -ObjC
+PODS_ROOT = ${SRCROOT}
+SKIP_INSTALL = YES

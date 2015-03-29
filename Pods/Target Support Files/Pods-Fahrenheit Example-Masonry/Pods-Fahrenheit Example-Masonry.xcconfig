@@ -1,0 +1,1 @@
+PODS_FAHRENHEIT_EXAMPLE_MASONRY_OTHER_LDFLAGS = -framework "Foundation" -framework "UIKit"
