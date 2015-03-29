@@ -7,14 +7,16 @@ To demonstrate, let's construct a simple view hierarchy, with 2 views nested ins
 #### Building hierarchies normally
 ```obj-c
 UIView *view1 = [UIView new];
+view1.backgroundColor = [UIColor redColor];
 [self.view addSubview:view1]
 [view1 mas_makeConstraints:^(MASConstraintMaker *make) {
     make.edges.equalTo(view1.superview);
 }];
 
 UIView *view2 = [UIView new];
+view2.backgroundColor = [UIColor blueColor];
 [view1 addSubview:view2];
-[view1 mas_makeConstraints:^(MASConstraintMaker *make) {
+[view2 mas_makeConstraints:^(MASConstraintMaker *make) {
     make.edges.equalTo(view1);
 }];
 ```
@@ -23,8 +25,10 @@ UIView *view2 = [UIView new];
 UIView *view1, *view2;
 [self.view buildSubviews:º() {
     view1 = add(º(UIView) {
+        _.backgroundColor = [UIColor redColor];
         _.make.edges.equalTo(superview);
         view2 = add(º(UIView) {
+            _.backgroundColor = [UIColor blueColor];
             _.make.edges.equalTo(superview);
         });
     });
