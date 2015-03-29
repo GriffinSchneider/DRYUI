@@ -30,6 +30,7 @@ UIView *view1, *view2;
     });
 }];
 ```
+_(You can type `º` on OSX by pressing `⌥-0`)_
 ####Advantages:
 - The hierarchy of the code mirrors the hierarchy of the views it creates - nested blocks correspond directly to nested subviews.
 - Less repetitive boilerplate - no more forgetting to add your view as a subview.
