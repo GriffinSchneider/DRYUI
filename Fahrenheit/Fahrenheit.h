@@ -7,11 +7,11 @@
 
 
 #if TARGET_OS_IPHONE
-#import <UIKit/UIKit.h>
-#define FAHRENHEIT_VIEW UIView
+  #import <UIKit/UIKit.h>
+  #define FAHRENHEIT_VIEW UIView
 #elif TARGET_OS_MAC
-#import <AppKit/AppKit.h>
-#define FAHRENHEIT_VIEW_NAME NSView
+  #import <AppKit/AppKit.h>
+  #define FAHRENHEIT_VIEW NSView
 #endif
 
 
