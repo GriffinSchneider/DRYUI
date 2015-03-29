@@ -50,7 +50,7 @@
                     XCTAssertNotNil(g, @"g should already be assigned when this block is run");
                 });
                 f = add(º([UIView new]){});
-                g = add(º([UIButton buttonWithType:UIButtonTypeCustom], UIButton*) {
+                g = add(º((UIButton *)[UIButton buttonWithType:UIButtonTypeCustom]) {
                     _.tag = 3;
                 });
             });

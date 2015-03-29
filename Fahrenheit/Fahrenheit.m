@@ -2,6 +2,7 @@
 //  Fahrenheit.m
 //
 //  Created by Griffin Schneider on 3/3/15.
+//  Copyright (c) 2015 Griffin Schneider. All rights reserved.
 //
 
 #import "Fahrenheit.h"

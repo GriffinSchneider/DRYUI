@@ -10,12 +10,10 @@
 Pod::Spec.new do |s|
   s.name             = "Fahrenheit"
   s.version          = "0.1.0"
-  s.summary          = "A short description of Fahrenheit."
+  s.summary          = "A tiny library that provides a better API for building view hierarchies in code."
   s.description      = %{
-      An optional longer description of Fahrenheit
-
-      * Markdown format.
-      * Don't worry about the indent, we strip it!
+    Fahrenheit is a tiny library that provides a better API for building view hierarchies in code.
+    Fahrenheit uses [Masonry](https://github.com/Masonry/Masonry) for Autolayout, and works on both iOS and OSX.
   }
   s.homepage         = "https://github.com/GriffinSchneider/Fahrenheit"
   s.license          = 'MIT'
