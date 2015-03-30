@@ -10,3 +10,4 @@ end
 target 'Tests', :exclusive => true do
   pod 'Fahrenheit', :path => './'
 end
+
