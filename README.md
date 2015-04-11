@@ -1,4 +1,4 @@
-# Fahrenheit [![Version](https://img.shields.io/cocoapods/v/Fahrenheit.svg?style=flat)](http://cocoapods.org/pods/Fahrenheit)[![Build Status](https://travis-ci.org/GriffinSchneider/Fahrenheit.svg?branch=fix-travis)](https://travis-ci.org/GriffinSchneider/Fahrenheit)
+# Fahrenheit [![Version](https://img.shields.io/cocoapods/v/Fahrenheit.svg?style=flat)](http://cocoapods.org/pods/Fahrenheit) [![Build Status](https://travis-ci.org/GriffinSchneider/Fahrenheit.svg?branch=fix-travis)](https://travis-ci.org/GriffinSchneider/Fahrenheit)
 
 Fahrenheit is a tiny library that provides a better API for building view hierarchies in code. Fahrenheit uses [Masonry](https://github.com/Masonry/Masonry) for Autolayout, and works on both iOS and OSX.
 
@@ -45,7 +45,7 @@ Each call to `add` will add the given view  as a subview to the view passed to t
 recent nested call of `buildSubviews` or `add`. The order of views will be determined by
 the order of their `add` calls.
 
-Within the block after the `º` macro, `_`refers to the given view, and `superview`
+Within the block after the `º` macro, `_` refers to the given view, and `superview`
 refers to that view's superview. `add` is a block that will add another subview to
 the given view. `_.make` is set to a `MASConstraintMaker` for the given view, similar
 to the block passed to [Masonry](https://github.com/Masonry/Masonry)'s `mas_makeConstraints:` method.
