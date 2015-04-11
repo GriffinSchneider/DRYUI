@@ -1,4 +1,4 @@
-# Fahrenheit [![Version](https://img.shields.io/cocoapods/v/Fahrenheit.svg?style=flat)](http://cocoapods.org/pods/Fahrenheit)
+# Fahrenheit [![Version](https://img.shields.io/cocoapods/v/Fahrenheit.svg?style=flat)](http://cocoapods.org/pods/Fahrenheit)[![Build Status](https://travis-ci.org/GriffinSchneider/Fahrenheit.svg?branch=fix-travis)](https://travis-ci.org/GriffinSchneider/Fahrenheit)
 
 Fahrenheit is a tiny library that provides a better API for building view hierarchies in code. Fahrenheit uses [Masonry](https://github.com/Masonry/Masonry) for Autolayout, and works on both iOS and OSX.
 
