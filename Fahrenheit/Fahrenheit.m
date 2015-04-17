@@ -42,16 +42,26 @@ static const char fahrenheit_addBlocksId = 0;
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 @implementation FAHRENHEIT_VIEW (Fahrenheit)
 
-- (void)buildSubviews:(FahrenheitBuildSubviewsBlock)block {
+- (void)setupForFahrenheitAddBlock {
+    self.constraintMaker = [[MASConstraintMaker alloc] initWithView:self];
     self.addBlocks = [NSMutableArray array];
-    block(self, ^(FAHRENHEIT_VIEW *view, FAHRENHEIT_VIEW *superview, FahrenheitAddArgumentBlock block) {
-        return [self addViewFromBuildSubviews:view withSuperview:superview andBlock:block];
-    });
+}
+
+- (void)tearDownAfterFahrenheitAddBlock {
+    [self.constraintMaker install];
+    self.constraintMaker = nil;
     [self runAllAddBlocks];
 }
 
+- (void)buildSubviews:(FahrenheitBuildSubviewsBlock)block {
+    [self setupForFahrenheitAddBlock];
+    block(self, ^(FAHRENHEIT_VIEW *view, FAHRENHEIT_VIEW *superview, FahrenheitAddArgumentBlock block) {
+        return [self addViewFromBuildSubviews:view withSuperview:superview andBlock:block];
+    });
+    [self tearDownAfterFahrenheitAddBlock];
+}
+
 - (id)addViewFromBuildSubviews:(FAHRENHEIT_VIEW *)view withSuperview:(FAHRENHEIT_VIEW *)superview andBlock:(FahrenheitAddArgumentBlock)block {
-    [view setTranslatesAutoresizingMaskIntoConstraints:NO];
     [superview addSubview:view];
     
     // Don't actually need to weakify these references since the block will get released
@@ -66,12 +76,9 @@ static const char fahrenheit_addBlocksId = 0;
     // recursed into this one.
     if (block) {
         [superview.addBlocks addObject:^{
-            weakView.constraintMaker = [[MASConstraintMaker alloc] initWithView:weakView];
-            weakView.addBlocks = [NSMutableArray array];
+            [weakView setupForFahrenheitAddBlock];
             block(weakView, weakSuperview);
-            [weakView.constraintMaker install];
-            weakView.constraintMaker = nil;
-            [weakView runAllAddBlocks];
+            [weakView tearDownAfterFahrenheitAddBlock];
         }];
     }
     return view;
@@ -88,6 +95,7 @@ static const char fahrenheit_addBlocksId = 0;
 #define __FAHRENHEIT_VIEW_STRING_HELPER(x) @#x
 - (MASConstraintMaker *)make {
     NSAssert(self.constraintMaker != nil, @"%@.make should only be used inside a call to buildSubviews.", __FAHRENHEIT_VIEW_STRING);
+    [self setTranslatesAutoresizingMaskIntoConstraints:NO];
     return self.constraintMaker;
 }
 
