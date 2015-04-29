@@ -53,13 +53,13 @@ static const char fahrenheit_addBlocksId = 0;
     [self runAllAddBlocks];
 }
 
-- (void)fahrenheit_buildSubviews:(FahrenheitViewAndSuperviewBlock)block {
+- (void)_fahrenheit_buildSubviews:(FahrenheitViewAndSuperviewBlock)block {
     [self setupForFahrenheitAddBlock];
     block(self, self.superview);
     [self tearDownAfterFahrenheitAddBlock];
 }
 
-- (id)fahrenheit_addViewFromBuildSubviews:(FAHRENHEIT_VIEW *)view withSuperview:(FAHRENHEIT_VIEW *)superview andBlock:(FahrenheitViewAndSuperviewBlock)block {
+- (id)_fahrenheit_addViewFromBuildSubviews:(FAHRENHEIT_VIEW *)view withSuperview:(FAHRENHEIT_VIEW *)superview andBlock:(FahrenheitViewAndSuperviewBlock)block {
     [superview addSubview:view];
     
     // Don't actually need to weakify these references since the block will get released
@@ -104,10 +104,10 @@ static const char fahrenheit_addBlocksId = 0;
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 @implementation NSObject (Fahrenheit)
 
-+ (instancetype)fahrenheit_selfOrInstanceOfSelf {
++ (instancetype)_fahrenheit_selfOrInstanceOfSelf {
     return [self new];
 }
-- (instancetype)fahrenheit_selfOrInstanceOfSelf {
+- (instancetype)_fahrenheit_selfOrInstanceOfSelf {
     return self;
 }
 

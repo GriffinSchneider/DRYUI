@@ -36,16 +36,16 @@ typedef void (^FahrenheitViewAndSuperviewBlock)(id FAHRENHEIT_VIEW_NAME, FAHRENH
 
 @property (nonatomic, strong, readonly) MASConstraintMaker *make;
 
-- (void)fahrenheit_buildSubviews:(FahrenheitViewAndSuperviewBlock)block;
-- (id)fahrenheit_addViewFromBuildSubviews:(FAHRENHEIT_VIEW *)view withSuperview:(FAHRENHEIT_VIEW *)superview andBlock:(FahrenheitViewAndSuperviewBlock)block;
+- (void)_fahrenheit_buildSubviews:(FahrenheitViewAndSuperviewBlock)block;
+- (id)_fahrenheit_addViewFromBuildSubviews:(FAHRENHEIT_VIEW *)view withSuperview:(FAHRENHEIT_VIEW *)superview andBlock:(FahrenheitViewAndSuperviewBlock)block;
 
 @end
 
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 @interface NSObject (Fahrenheit)
-+ (instancetype)fahrenheit_selfOrInstanceOfSelf;
-- (instancetype)fahrenheit_selfOrInstanceOfSelf;
++ (instancetype)_fahrenheit_selfOrInstanceOfSelf;
+- (instancetype)_fahrenheit_selfOrInstanceOfSelf;
 @end
 
 
@@ -60,7 +60,7 @@ static FAHRENHEIT_VIEW *_fahrenheit_current_toplevel_view = nil;
 #define _FAHRENHEIT_CONCATENATE(x, y) _FAHRENHEIT_CONCATENATE_DETAIL(x, y)
 #define _FAHRENHEIT_UNIQUE _FAHRENHEIT_CONCATENATE(_FAHRENHEIT, __LINE__)
 
-#define _FAHRENHEIT_VIEW_TYPE(viewArg) typeof([viewArg fahrenheit_selfOrInstanceOfSelf])
+#define _FAHRENHEIT_VIEW_TYPE(viewArg) typeof([viewArg _fahrenheit_selfOrInstanceOfSelf])
 
 // body_after_statement_after_macro will get run *after* the statement formed by the end of this macro and whatever
 // the user puts after the macro within {}.
@@ -89,11 +89,11 @@ _Pragma("clang diagnostic ignored \"-Wunused-value\"") \
 ({ \
 _Pragma("clang diagnostic pop") \
     NSAssert(_fahrenheit_current_toplevel_view == nil, @"Calls to FAHRENHEIT_TOPLEVEL should not be nested."); \
-    _fahrenheit_current_toplevel_view = [viewArg fahrenheit_selfOrInstanceOfSelf]; \
+    _fahrenheit_current_toplevel_view = [viewArg _fahrenheit_selfOrInstanceOfSelf]; \
     (_FAHRENHEIT_VIEW_TYPE(viewArg))_fahrenheit_current_toplevel_view; \
 }); \
 _FAHRENHEIT_GOTO_HELPER(viewArg, \
-    [_fahrenheit_current_toplevel_view fahrenheit_buildSubviews:_FAHRENHEIT_UNIQUE]; \
+    [_fahrenheit_current_toplevel_view _fahrenheit_buildSubviews:_FAHRENHEIT_UNIQUE]; \
     _fahrenheit_current_toplevel_view = nil; \
 )
 
@@ -103,10 +103,10 @@ _Pragma("clang diagnostic ignored \"-Wunused-value\"") \
 ({ \
 _Pragma("clang diagnostic pop") \
     NSAssert(_fahrenheit_current_toplevel_view, @"Calls to FAHRENHEIT must be inside a call to FAHRENHEIT_TOPLEVEL."); \
-    _fahrenheit_current_view = [viewArg fahrenheit_selfOrInstanceOfSelf]; \
+    _fahrenheit_current_view = [viewArg _fahrenheit_selfOrInstanceOfSelf]; \
     (_FAHRENHEIT_VIEW_TYPE(viewArg))_fahrenheit_current_view; \
 }); \
 _FAHRENHEIT_GOTO_HELPER(viewArg, \
-    [_fahrenheit_current_toplevel_view fahrenheit_addViewFromBuildSubviews:_fahrenheit_current_view withSuperview:FAHRENHEIT_VIEW_NAME andBlock:_FAHRENHEIT_UNIQUE]; \
+    [_fahrenheit_current_toplevel_view _fahrenheit_addViewFromBuildSubviews:_fahrenheit_current_view withSuperview:FAHRENHEIT_VIEW_NAME andBlock:_FAHRENHEIT_UNIQUE]; \
     _fahrenheit_current_view = nil; \
 )
