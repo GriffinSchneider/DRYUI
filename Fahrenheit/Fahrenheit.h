@@ -50,8 +50,8 @@ typedef void (^FahrenheitViewAndSuperviewBlock)(id FAHRENHEIT_VIEW_NAME, FAHRENH
 
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-static UIView *_fahrenheit_current_view = nil;
-static UIView *_fahrenheit_current_toplevel_view = nil;
+static FAHRENHEIT_VIEW *_fahrenheit_current_view = nil;
+static FAHRENHEIT_VIEW *_fahrenheit_current_toplevel_view = nil;
 
 // The _FAHRENHEIT_UNIQUE macro expands to the string "_FAHRENHEIT" with the current line number appended.
 // Used to generate identifiers that are "unique" to a given Fahrenheit macro invocation (assuming
