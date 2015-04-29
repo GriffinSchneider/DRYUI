@@ -53,15 +53,13 @@ static const char fahrenheit_addBlocksId = 0;
     [self runAllAddBlocks];
 }
 
-- (void)buildSubviews:(FahrenheitBuildSubviewsBlock)block {
+- (void)fahrenheit_buildSubviews:(FahrenheitViewAndSuperviewBlock)block {
     [self setupForFahrenheitAddBlock];
-    block(self, ^(FAHRENHEIT_VIEW *view, FAHRENHEIT_VIEW *superview, FahrenheitAddArgumentBlock block) {
-        return [self addViewFromBuildSubviews:view withSuperview:superview andBlock:block];
-    });
+    block(self, self.superview);
     [self tearDownAfterFahrenheitAddBlock];
 }
 
-- (id)addViewFromBuildSubviews:(FAHRENHEIT_VIEW *)view withSuperview:(FAHRENHEIT_VIEW *)superview andBlock:(FahrenheitAddArgumentBlock)block {
+- (id)fahrenheit_addViewFromBuildSubviews:(FAHRENHEIT_VIEW *)view withSuperview:(FAHRENHEIT_VIEW *)superview andBlock:(FahrenheitViewAndSuperviewBlock)block {
     [superview addSubview:view];
     
     // Don't actually need to weakify these references since the block will get released
@@ -91,10 +89,10 @@ static const char fahrenheit_addBlocksId = 0;
     self.addBlocks = nil;
 }
 
-#define __FAHRENHEIT_VIEW_STRING __FAHRENHEIT_VIEW_STRING_HELPER(FAHRENHEIT_VIEW)
-#define __FAHRENHEIT_VIEW_STRING_HELPER(x) @#x
+#define _FAHRENHEIT_VIEW_STRING _FAHRENHEIT_VIEW_STRING_HELPER(FAHRENHEIT_VIEW)
+#define _FAHRENHEIT_VIEW_STRING_HELPER(x) @#x
 - (MASConstraintMaker *)make {
-    NSAssert(self.constraintMaker != nil, @"%@.make should only be used inside a call to buildSubviews.", __FAHRENHEIT_VIEW_STRING);
+    NSAssert(self.constraintMaker != nil, @"%@.make should only be used inside a call to buildSubviews.", _FAHRENHEIT_VIEW_STRING);
     [self setTranslatesAutoresizingMaskIntoConstraints:NO];
     return self.constraintMaker;
 }
