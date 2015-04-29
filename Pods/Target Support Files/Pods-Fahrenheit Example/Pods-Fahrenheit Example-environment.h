@@ -9,8 +9,8 @@
 // Fahrenheit
 #define COCOAPODS_POD_AVAILABLE_Fahrenheit
 #define COCOAPODS_VERSION_MAJOR_Fahrenheit 0
-#define COCOAPODS_VERSION_MINOR_Fahrenheit 1
-#define COCOAPODS_VERSION_PATCH_Fahrenheit 1
+#define COCOAPODS_VERSION_MINOR_Fahrenheit 2
+#define COCOAPODS_VERSION_PATCH_Fahrenheit 0
 
 // Masonry
 #define COCOAPODS_POD_AVAILABLE_Masonry
