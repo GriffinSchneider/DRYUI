@@ -1,6 +1,6 @@
 Pod::Spec.new do |s|
   s.name             = "Fahrenheit"
-  s.version          = "0.2.0"
+  s.version          = "0.2.1"
   s.summary          = "A tiny library that provides a better API for building view hierarchies in code."
   s.description      = %{
     Fahrenheit is a tiny library that provides a better API for building view hierarchies in code.
