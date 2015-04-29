@@ -60,7 +60,11 @@ static UIView *_fahrenheit_current_toplevel_view = nil;
 #define _FAHRENHEIT_CONCATENATE(x, y) _FAHRENHEIT_CONCATENATE_DETAIL(x, y)
 #define _FAHRENHEIT_UNIQUE _FAHRENHEIT_CONCATENATE(_FAHRENHEIT, __LINE__)
 
-// First, the statement formed at the end of this macro expansion will run, and *then* body_after_statement_after_macro will run.
+// body_after_statement_after_macro will get run *after* the statement formed by the end of this macro and whatever
+// the user puts after the macro within {}.
+// When body_after_statement_after_macro runs, this macro will have definied a variable with a name created by
+// _FAHRENHEIT_UNIQUE, to which will be assigned a block of type FahrenheitViewAndSuperviewBlock containing the code
+// that came after the macro.
 #define _FAHRENHEIT_GOTO_HELPER(viewArg, body_after_statement_after_macro) \
 FahrenheitViewAndSuperviewBlock _FAHRENHEIT_UNIQUE; \
 if (1) { \
