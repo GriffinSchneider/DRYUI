@@ -29,39 +29,39 @@
     UIView *topLevel = [UIView new];
     __block UIView *a, *b, *c, *d, *e, *f, *g;
     
-    [topLevel buildSubviews:º() {
+    ºº(topLevel) {
         _.make.edges.equalTo(_);
-        a = add(º(UIView) {
+        a = º(UIView) {
             XCTAssertNotNil(b, @"b should already be assigned when this block is run");
             XCTAssertNotNil(c, @"c should already be assigned when this block is run");
-        });
-        b = add(º(UIView) {
+        };
+        b = º(UIView) {
             [_ make];
             XCTAssertEqual(_.superview, superview, @"superview should be bound to view.superview");
-            add(º(UIView) {
+            º(UIView) {
                 _.tag = 2;
-            });
-        });
-        c = add(º([UIView new]) {
+            };
+        };
+        c = º([UIView new]) {
             [_ make];
-            d = add(º(UIView) {
+            d = º(UIView) {
                 [_ make];
                 XCTAssertEqual(_.superview, superview, @"superview should be bound to view.superview");
-                e = add(º(UIView){
+                e = º(UIView){
                     [_ make];
                     XCTAssertNotNil(b, @"b should already be assigned when this block is run");
                     XCTAssertNotNil(c, @"c should already be assigned when this block is run");
                     XCTAssertNotNil(f, @"f should already be assigned when this block is run");
                     XCTAssertNotNil(g, @"g should already be assigned when this block is run");
-                });
-                f = add(º([UIView new]){});
-                g = add(º((UIButton *)[UIButton buttonWithType:UIButtonTypeCustom]) {
+                };
+                f = º([UIView new]){};
+                g = º((UIButton *)[UIButton buttonWithType:UIButtonTypeCustom]) {
                     [_ make];
                     _.tag = 3;
-                });
-            });
-        });
-    }];
+                };
+            };
+        };
+    };
     
     
     XCTAssertEqual(a.superview, topLevel, @"a's superview should be the top view");

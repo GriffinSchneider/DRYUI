@@ -23,25 +23,21 @@
 #define FAHRENHEIT_VIEW_NAME _
 #endif
 
-#ifndef FAHRENHEIT_CUSTOM_ARGS_MACRO
+#ifndef FAHRENHEIT_CUSTOM_MACRO_NAMES
+#define ºº(args...) FAHRENHEIT_TOPLEVEL(args)
 #define º(args...) FAHRENHEIT(args)
 #endif
 
 
-/*! Type of the block that gets passed as an argument to add */
-typedef void (^FahrenheitAddArgumentBlock)(id FAHRENHEIT_VIEW_NAME, FAHRENHEIT_VIEW *superview);
-/*! Type of the block that's bound to 'add' inside the block passed to buildSubviews */
-typedef id (^FahrenheitAddBlock)(FAHRENHEIT_VIEW *view, FAHRENHEIT_VIEW *superview, FahrenheitAddArgumentBlock block);
-/*! Type of the block that's passed to buildSubviews */
-typedef void (^FahrenheitBuildSubviewsBlock)(FAHRENHEIT_VIEW *FAHRENHEIT_VIEW_NAME, FahrenheitAddBlock add);
-
+typedef void (^FahrenheitViewAndSuperviewBlock)(id FAHRENHEIT_VIEW_NAME, FAHRENHEIT_VIEW *superview);
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 @interface FAHRENHEIT_VIEW (Fahrenheit)
 
 @property (nonatomic, strong, readonly) MASConstraintMaker *make;
 
-- (void)buildSubviews:(FahrenheitBuildSubviewsBlock)block;
+- (void)fahrenheit_buildSubviews:(FahrenheitViewAndSuperviewBlock)block;
+- (id)fahrenheit_addViewFromBuildSubviews:(FAHRENHEIT_VIEW *)view withSuperview:(FAHRENHEIT_VIEW *)superview andBlock:(FahrenheitViewAndSuperviewBlock)block;
 
 @end
 
@@ -53,9 +49,54 @@ typedef void (^FahrenheitBuildSubviewsBlock)(FAHRENHEIT_VIEW *FAHRENHEIT_VIEW_NA
 @end
 
 
-#define FAHRENHEIT(args...) __FAHRENHEIT_HELPER(BOGUS, ## args)
-#define __FAHRENHEIT_OVERLOADED_MACRO(_1,_2,_3,NAME,...) NAME
-#define __FAHRENHEIT_HELPER(args...) __FAHRENHEIT_OVERLOADED_MACRO(args, __FAHRENHEIT_HELPER_3, __FAHRENHEIT_HELPER_2, __FAHRENHEIT_HELPER_1)(args)
-#define __FAHRENHEIT_HELPER_1(BOGUS) ^(FAHRENHEIT_VIEW *FAHRENHEIT_VIEW_NAME, FahrenheitAddBlock add)
-#define __FAHRENHEIT_HELPER_2(BOGUS, viewArg) __FAHRENHEIT_HELPER_3(BOGUS, viewArg, typeof([viewArg fahrenheit_selfOrInstanceOfSelf]))
-#define __FAHRENHEIT_HELPER_3(BOGUS, viewArg, viewArgType) [viewArg fahrenheit_selfOrInstanceOfSelf], FAHRENHEIT_VIEW_NAME, ^(viewArgType FAHRENHEIT_VIEW_NAME, FAHRENHEIT_VIEW *superview)
+////////////////////////////////////////////////////////////////////////////////////////////////////
+static UIView *_fahrenheit_current_view = nil;
+static UIView *_fahrenheit_current_toplevel_view = nil;
+
+// The _FAHRENHEIT_UNIQUE macro expands to the string "_FAHRENHEIT" with the current line number appended.
+// Used to generate identifiers that are "unique" to a given Fahrenheit macro invocation (assuming
+// you don't invoke the macro multiple times on the same line).
+#define _FAHRENHEIT_CONCATENATE_DETAIL(x, y) x##y
+#define _FAHRENHEIT_CONCATENATE(x, y) _FAHRENHEIT_CONCATENATE_DETAIL(x, y)
+#define _FAHRENHEIT_UNIQUE _FAHRENHEIT_CONCATENATE(_FAHRENHEIT, __LINE__)
+
+// First, the statement formed at the end of this macro expansion will run, and *then* body_after_statement_after_macro will run.
+#define _FAHRENHEIT_GOTO_HELPER(viewArg, body_after_statement_after_macro) \
+FahrenheitViewAndSuperviewBlock _FAHRENHEIT_UNIQUE; \
+if (1) { \
+    NSAssert([NSThread isMainThread], @"Fahrenheit should only be used from the main thread!"); \
+    goto _FAHRENHEIT_UNIQUE; \
+} else \
+    while (1) \
+        if (1) { \
+            body_after_statement_after_macro \
+            _FAHRENHEIT_UNIQUE = nil; \
+            break; \
+        } else \
+            _FAHRENHEIT_UNIQUE: _FAHRENHEIT_UNIQUE = ^(typeof([viewArg fahrenheit_selfOrInstanceOfSelf]) FAHRENHEIT_VIEW_NAME, FAHRENHEIT_VIEW *superview) \
+            // We couldn't get execution here without GOTOing here, but once we do and this statement finishes,
+            // execution will jump back up to the while(1) and then into body_after_statement_after_macro.
+
+
+#define FAHRENHEIT_TOPLEVEL(viewArg) \
+(^() { \
+    NSAssert(_fahrenheit_current_toplevel_view == nil, @"Calls to FAHRENHEIT_TOPLEVEL should not be nested."); \
+    _fahrenheit_current_toplevel_view = [viewArg fahrenheit_selfOrInstanceOfSelf]; \
+    return _fahrenheit_current_toplevel_view; \
+})(); \
+_FAHRENHEIT_GOTO_HELPER(viewArg, \
+    [_fahrenheit_current_toplevel_view fahrenheit_buildSubviews:_FAHRENHEIT_UNIQUE]; \
+    _fahrenheit_current_toplevel_view = nil; \
+)
+
+
+#define FAHRENHEIT(viewArg) \
+(^() { \
+    NSAssert(_fahrenheit_current_toplevel_view, @"Calls to FAHRENHEIT must be inside a call to FAHRENHEIT_TOPLEVEL."); \
+    _fahrenheit_current_view = [viewArg fahrenheit_selfOrInstanceOfSelf]; \
+    return _fahrenheit_current_view; \
+})(); \
+_FAHRENHEIT_GOTO_HELPER(viewArg, \
+    [_fahrenheit_current_toplevel_view fahrenheit_addViewFromBuildSubviews:_fahrenheit_current_view withSuperview:FAHRENHEIT_VIEW_NAME andBlock:_FAHRENHEIT_UNIQUE]; \
+    _fahrenheit_current_view = nil; \
+)
