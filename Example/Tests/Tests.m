@@ -27,7 +27,8 @@
 - (void)testFahrenheit {
 
     UIView *topLevel = [UIView new];
-    __block UIView *a, *b, *c, *d, *e, *f, *g;
+    __block UIView *a, *b, *c, *d, *e, *f;
+    __block UIButton *g;
     
     ºº(topLevel) {
         _.make.edges.equalTo(_);

@@ -1,5 +1,5 @@
 PODS:
-  - Fahrenheit (0.2.0):
+  - Fahrenheit (0.2.1):
     - Masonry
   - Masonry (0.6.1)
 
@@ -11,7 +11,7 @@ EXTERNAL SOURCES:
     :path: ./
 
 SPEC CHECKSUMS:
-  Fahrenheit: 0620151829f327717728f681e16de36f9b95c390
+  Fahrenheit: 0480ea58007dfd893874fdb4685a55652870439a
   Masonry: 4972309f2f134de9dd312f4dc4a21359b50e6caa
 
-COCOAPODS: 0.36.1
+COCOAPODS: 0.36.4
