@@ -9,6 +9,25 @@
 #import <objc/runtime.h>
 
 
+id _fahrenheit_instantiate_from_encoding(char *encoding) {
+    
+    NSString *encodingString = [NSString stringWithUTF8String:encoding];
+    
+    NSLog(@"encoding: %@", encodingString);
+    
+    NSRange braceRange = [encodingString rangeOfString:@"{"];
+    NSRange equalsRange = [encodingString rangeOfString:@"="];
+    NSString *className = [encodingString substringWithRange:NSMakeRange(braceRange.location+braceRange.length, equalsRange.location-1)];
+    
+    NSLog(@"class: %@", className);
+    
+    id instance = [NSClassFromString(className) new];
+    
+    NSLog(@"instance: %@", instance);
+    
+    return instance;
+}
+
 static const char fahrenheit_constraintMakerId = 0;
 static const char fahrenheit_addBlocksId = 0;
 

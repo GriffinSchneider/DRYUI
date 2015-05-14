@@ -53,6 +53,8 @@ typedef void (^FahrenheitViewAndSuperviewBlock)(id FAHRENHEIT_VIEW_NAME, FAHRENH
 static FAHRENHEIT_VIEW *_fahrenheit_current_view = nil;
 static FAHRENHEIT_VIEW *_fahrenheit_current_toplevel_view = nil;
 
+id _fahrenheit_instantiate_from_encoding(char *);
+
 // The _FAHRENHEIT_UNIQUE macro expands to the string "_FAHRENHEIT" with the current line number appended.
 // Used to generate identifiers that are "unique" to a given Fahrenheit macro invocation (assuming
 // you don't invoke the macro multiple times on the same line).
@@ -97,16 +99,16 @@ _FAHRENHEIT_GOTO_HELPER(viewArg, \
     _fahrenheit_current_toplevel_view = nil; \
 )
 
-#define FAHRENHEIT(viewArg) \
+#define FAHRENHEIT(variableNameArg) \
 _Pragma("clang diagnostic push") \
 _Pragma("clang diagnostic ignored \"-Wunused-value\"") \
-({ \
+variableNameArg = ({ \
 _Pragma("clang diagnostic pop") \
     NSAssert(_fahrenheit_current_toplevel_view, @"Calls to FAHRENHEIT must be inside a call to FAHRENHEIT_TOPLEVEL."); \
-    _fahrenheit_current_view = [viewArg _fahrenheit_selfOrInstanceOfSelf]; \
-    (_FAHRENHEIT_VIEW_TYPE(viewArg))_fahrenheit_current_view; \
+    _fahrenheit_current_view = _fahrenheit_instantiate_from_encoding(@encode(typeof(*(variableNameArg)))); \
+    (typeof(variableNameArg))_fahrenheit_current_view; \
 }); \
-_FAHRENHEIT_GOTO_HELPER(viewArg, \
+_FAHRENHEIT_GOTO_HELPER(variableNameArg, \
     [_fahrenheit_current_toplevel_view _fahrenheit_addViewFromBuildSubviews:_fahrenheit_current_view withSuperview:FAHRENHEIT_VIEW_NAME andBlock:_FAHRENHEIT_UNIQUE]; \
     _fahrenheit_current_view = nil; \
 )

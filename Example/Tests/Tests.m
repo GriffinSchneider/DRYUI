@@ -32,31 +32,31 @@
     
     ºº(topLevel) {
         _.make.edges.equalTo(_);
-        a = º(UIView) {
+        º(a) {
             XCTAssertNotNil(b, @"b should already be assigned when this block is run");
             XCTAssertNotNil(c, @"c should already be assigned when this block is run");
         };
-        b = º(UIView) {
+        º(b) {
             [_ make];
             XCTAssertEqual(_.superview, superview, @"superview should be bound to view.superview");
-            º(UIView) {
+            UIView* º(x) {
                 _.tag = 2;
             };
         };
-        c = º([UIView new]) {
+        º(c) {
             [_ make];
-            d = º(UIView) {
+            º(d) {
                 [_ make];
                 XCTAssertEqual(_.superview, superview, @"superview should be bound to view.superview");
-                e = º(UIView){
+                º(e){
                     [_ make];
                     XCTAssertNotNil(b, @"b should already be assigned when this block is run");
                     XCTAssertNotNil(c, @"c should already be assigned when this block is run");
                     XCTAssertNotNil(f, @"f should already be assigned when this block is run");
                     XCTAssertNotNil(g, @"g should already be assigned when this block is run");
                 };
-                f = º([UIView new]){};
-                g = º((UIButton *)[UIButton buttonWithType:UIButtonTypeCustom]) {
+                º(f){};
+                º(g) {
                     [_ make];
                     _.tag = 3;
                 };

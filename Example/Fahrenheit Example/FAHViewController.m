@@ -18,18 +18,19 @@
 - (void)loadView {
     [super loadView];
     UIEdgeInsets insets = UIEdgeInsetsMake(30, 30, 30, 30);
+    
     ºº(self.view) {
         _.backgroundColor = [UIColor whiteColor];
-        º(UIView) {
+        UIView* º(view1) {
             _.backgroundColor = [UIColor redColor];
             _.make.edges.equalTo(_.superview).with.insets(insets);
-            º(UIView) {
+            UIView* º(view2) {
                 _.backgroundColor = [UIColor greenColor];
                 _.make.edges.equalTo(_.superview).with.insets(insets);
-                º(UIView) {
+                UIView* º(view3) {
                     _.backgroundColor = [UIColor blueColor];
                     _.make.edges.equalTo(_.superview).with.insets(insets);
-                    º(UIView) {
+                    UIView* º(view4) {
                         _.backgroundColor = [UIColor orangeColor];
                         _.make.edges.equalTo(_.superview).with.insets(insets);
                     };
