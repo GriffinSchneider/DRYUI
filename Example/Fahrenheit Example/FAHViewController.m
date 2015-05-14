@@ -13,17 +13,6 @@
 
 @end
 
-
-
-//void takesInt(NSUInteger i) {
-//    NSLog(@"one int");
-//}
-//void takesView(UIView *i) {
-//    NSLog(@"one view");
-//}
-//#define TEST(x) _Generic((x), NSUInteger: takesInt, default: takesView)(x)
-
-
 @implementation FAHViewController
 
 - (void)loadView {
