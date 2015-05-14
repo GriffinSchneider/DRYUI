@@ -13,20 +13,30 @@ id _fahrenheit_instantiate_from_encoding(char *encoding) {
     
     NSString *encodingString = [NSString stringWithUTF8String:encoding];
     
-    NSLog(@"encoding: %@", encodingString);
+//    NSLog(@"encoding: %@", encodingString);
     
     NSRange braceRange = [encodingString rangeOfString:@"{"];
     NSRange equalsRange = [encodingString rangeOfString:@"="];
     NSString *className = [encodingString substringWithRange:NSMakeRange(braceRange.location+braceRange.length, equalsRange.location-1)];
     
-    NSLog(@"class: %@", className);
+//    NSLog(@"class: %@", className);
     
     id instance = [NSClassFromString(className) new];
     
-    NSLog(@"instance: %@", instance);
+//    NSLog(@"instance: %@", instance);
     
     return instance;
 }
+
+id _fahrenheit_thingThatTakesView(UIView *view) {
+    NSLog(@"thing taking view!");
+    return view;
+}
+id _fahrenheit_thingThatTakesInt(NSUInteger notView) {
+    NSLog(@"thing taking int?");
+    return nil;
+}
+
 
 static const char fahrenheit_constraintMakerId = 0;
 static const char fahrenheit_addBlocksId = 0;

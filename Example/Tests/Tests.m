@@ -10,6 +10,14 @@
 #import <XCTest/XCTest.h>
 #import <Fahrenheit/Fahrenheit.h>
 
+
+NS_ENUM(NSUInteger, ExampleStyleEnum) {
+    Style0,
+    Style1,
+    Style2,
+    Style3,
+};
+
 @interface FahrenheitTests : XCTestCase
 
 @end
@@ -28,15 +36,15 @@
 
     UIView *topLevel = [UIView new];
     __block UIView *a, *b, *c, *d, *e, *f;
-    __block UIButton *g;
+    __block UIButton *g, *gg;
     
     ºº(topLevel) {
         _.make.edges.equalTo(_);
-        º(a) {
+        º(a, Style0, Style1, Style2, Style3) {
             XCTAssertNotNil(b, @"b should already be assigned when this block is run");
             XCTAssertNotNil(c, @"c should already be assigned when this block is run");
         };
-        º(b) {
+        º(b, Style3) {
             [_ make];
             XCTAssertEqual(_.superview, superview, @"superview should be bound to view.superview");
             UIView* º(x) {
@@ -56,7 +64,8 @@
                     XCTAssertNotNil(g, @"g should already be assigned when this block is run");
                 };
                 º(f){};
-                º(g) {
+                º(g, ({gg = [UIButton buttonWithType:UIButtonTypeCustom];}), Style0, Style1) {
+                    XCTAssertEqual(_, gg);
                     [_ make];
                     _.tag = 3;
                 };
