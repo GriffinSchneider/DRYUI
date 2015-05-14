@@ -10,46 +10,38 @@
 
 
 id _fahrenheit_instantiate_from_encoding(char *encoding) {
-    
     NSString *encodingString = [NSString stringWithUTF8String:encoding];
-    
-//    NSLog(@"encoding: %@", encodingString);
     
     NSRange braceRange = [encodingString rangeOfString:@"{"];
     NSRange equalsRange = [encodingString rangeOfString:@"="];
     NSString *className = [encodingString substringWithRange:NSMakeRange(braceRange.location+braceRange.length, equalsRange.location-1)];
     
-//    NSLog(@"class: %@", className);
-    
     id instance = [NSClassFromString(className) new];
-    
-//    NSLog(@"instance: %@", instance);
     
     return instance;
 }
 
-id _fahrenheit_thingThatTakesView(UIView *view) {
-    NSLog(@"thing taking view!");
+id _fahrenheit_returnGivenView(UIView *view) {
     return view;
 }
-id _fahrenheit_thingThatTakesInt(NSUInteger notView) {
-    NSLog(@"thing taking int?");
+
+id _fahrenheit_takeIntAndReturnNil(NSUInteger notView) {
     return nil;
 }
 
 
-static const char fahrenheit_constraintMakerId = 0;
-static const char fahrenheit_addBlocksId = 0;
-
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-@interface FAHRENHEIT_VIEW (Fahrenheit_Private)
+@interface _FAHRENHEIT_VIEW (Fahrenheit_Private)
 
 @property (nonatomic, strong) MASConstraintMaker *constraintMaker;
 @property (nonatomic, strong) NSMutableArray *addBlocks;
 
 @end
 
-@implementation FAHRENHEIT_VIEW (Fahrenheit_Private)
+@implementation _FAHRENHEIT_VIEW (Fahrenheit_Private)
+
+static const char fahrenheit_constraintMakerId = 0;
+static const char fahrenheit_addBlocksId = 0;
 
 - (MASConstraintMaker *)constraintMaker {
     return objc_getAssociatedObject(self, &fahrenheit_constraintMakerId);
@@ -69,7 +61,7 @@ static const char fahrenheit_addBlocksId = 0;
 
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-@implementation FAHRENHEIT_VIEW (Fahrenheit)
+@implementation _FAHRENHEIT_VIEW (Fahrenheit)
 
 - (void)setupForFahrenheitAddBlock {
     self.constraintMaker = [[MASConstraintMaker alloc] initWithView:self];
@@ -88,13 +80,13 @@ static const char fahrenheit_addBlocksId = 0;
     [self tearDownAfterFahrenheitAddBlock];
 }
 
-- (id)_fahrenheit_addViewFromBuildSubviews:(FAHRENHEIT_VIEW *)view withSuperview:(FAHRENHEIT_VIEW *)superview andBlock:(FahrenheitViewAndSuperviewBlock)block {
+- (id)_fahrenheit_addViewFromBuildSubviews:(_FAHRENHEIT_VIEW *)view withSuperview:(_FAHRENHEIT_VIEW *)superview andBlock:(FahrenheitViewAndSuperviewBlock)block {
     [superview addSubview:view];
     
     // Don't actually need to weakify these references since the block will get released
     // after it's run, but we get a block-retain-cycle warning without weakification.
-    __weak FAHRENHEIT_VIEW *weakSuperview = superview;
-    __weak FAHRENHEIT_VIEW *weakView = view;
+    __weak _FAHRENHEIT_VIEW *weakSuperview = superview;
+    __weak _FAHRENHEIT_VIEW *weakView = view;
     
     // Add a block to view's superview's block list that does some setup, calls the given block, and then runs
     // all the blocks in view's block list (in order to run any blocks put there by calls to this method
@@ -118,7 +110,7 @@ static const char fahrenheit_addBlocksId = 0;
     self.addBlocks = nil;
 }
 
-#define _FAHRENHEIT_VIEW_STRING _FAHRENHEIT_VIEW_STRING_HELPER(FAHRENHEIT_VIEW)
+#define _FAHRENHEIT_VIEW_STRING _FAHRENHEIT_VIEW_STRING_HELPER(_FAHRENHEIT_VIEW)
 #define _FAHRENHEIT_VIEW_STRING_HELPER(x) @#x
 - (MASConstraintMaker *)make {
     NSAssert(self.constraintMaker != nil, @"%@.make should only be used inside a call to buildSubviews.", _FAHRENHEIT_VIEW_STRING);

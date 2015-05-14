@@ -8,10 +8,10 @@
 
 #if TARGET_OS_IPHONE
   #import <UIKit/UIKit.h>
-  #define FAHRENHEIT_VIEW UIView
+  #define _FAHRENHEIT_VIEW UIView
 #elif TARGET_OS_MAC
   #import <AppKit/AppKit.h>
-  #define FAHRENHEIT_VIEW NSView
+  #define _FAHRENHEIT_VIEW NSView
 #endif
 
 
@@ -29,15 +29,15 @@
 #endif
 
 
-typedef void (^FahrenheitViewAndSuperviewBlock)(id FAHRENHEIT_VIEW_NAME, FAHRENHEIT_VIEW *superview);
+typedef void (^FahrenheitViewAndSuperviewBlock)(id FAHRENHEIT_VIEW_NAME, _FAHRENHEIT_VIEW *superview);
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-@interface FAHRENHEIT_VIEW (Fahrenheit)
+@interface _FAHRENHEIT_VIEW (Fahrenheit)
 
 @property (nonatomic, strong, readonly) MASConstraintMaker *make;
 
 - (void)_fahrenheit_buildSubviews:(FahrenheitViewAndSuperviewBlock)block;
-- (id)_fahrenheit_addViewFromBuildSubviews:(FAHRENHEIT_VIEW *)view withSuperview:(FAHRENHEIT_VIEW *)superview andBlock:(FahrenheitViewAndSuperviewBlock)block;
+- (id)_fahrenheit_addViewFromBuildSubviews:(_FAHRENHEIT_VIEW *)view withSuperview:(_FAHRENHEIT_VIEW *)superview andBlock:(FahrenheitViewAndSuperviewBlock)block;
 
 @end
 
@@ -50,8 +50,8 @@ typedef void (^FahrenheitViewAndSuperviewBlock)(id FAHRENHEIT_VIEW_NAME, FAHRENH
 
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-static FAHRENHEIT_VIEW *_fahrenheit_current_view = nil;
-static FAHRENHEIT_VIEW *_fahrenheit_current_toplevel_view = nil;
+static _FAHRENHEIT_VIEW *_fahrenheit_current_view = nil;
+static _FAHRENHEIT_VIEW *_fahrenheit_current_toplevel_view = nil;
 
 id _fahrenheit_instantiate_from_encoding(char *);
 
@@ -83,7 +83,7 @@ if (1) { \
             _FAHRENHEIT_VIEW_AND_SUPERVIEW_BLOCK = nil; \
             break; \
         } else \
-            _FAHRENHEIT_GOTO_LABEL: _FAHRENHEIT_VIEW_AND_SUPERVIEW_BLOCK = ^(_FAHRENHEIT_VIEW_TYPE(viewArg) FAHRENHEIT_VIEW_NAME, FAHRENHEIT_VIEW *superview) \
+            _FAHRENHEIT_GOTO_LABEL: _FAHRENHEIT_VIEW_AND_SUPERVIEW_BLOCK = ^(_FAHRENHEIT_VIEW_TYPE(viewArg) FAHRENHEIT_VIEW_NAME, _FAHRENHEIT_VIEW *superview) \
             // We couldn't get execution here without GOTOing here, but once we do and this statement finishes,
             // execution will jump back up to the while(1) and then into body_after_statement_after_macro.
 
@@ -102,7 +102,8 @@ _FAHRENHEIT_GOTO_HELPER(viewArg, \
 )
 
 #define __FAHRENHEIT_OVERLOADED_MACRO(_1,_2,_3,_4,_5,_6,_7,_8,_9,_10,_11,_12,_13,_14,_15,_16,NAME,...) NAME
-#define FAHRENHEIT(args...) __FAHRENHEIT_OVERLOADED_MACRO( \
+#define FAHRENHEIT(args...) \
+__FAHRENHEIT_OVERLOADED_MACRO( \
 args, \
 __FAHRENHEIT_HELPER_16, \
 __FAHRENHEIT_HELPER_15, \
@@ -136,40 +137,34 @@ __FAHRENHEIT_HELPER_1)(args)
 #define __FAHRENHEIT_HELPER_4(x, y, ...) __FAHRENHEIT_HELPER_2(x, y)
 #define __FAHRENHEIT_HELPER_3(x, y, ...) __FAHRENHEIT_HELPER_2(x, y)
 
-id _fahrenheit_thingThatTakesView(UIView *view);
-id _fahrenheit_thingThatTakesInt(NSUInteger notView);
+id _fahrenheit_returnGivenView(UIView *view);
+id _fahrenheit_takeIntAndReturnNil(NSUInteger notAView);
 
 #define __FAHRENHEIT_HELPER_2(x, y) \
 __FAHRENHEIT_HELPER(x, \
     _FAHRENHEIT_PASSED_INSTANCE_OR_NIL = _Generic(y, \
-        NSUInteger: _fahrenheit_thingThatTakesInt, \
-        default: _fahrenheit_thingThatTakesView \
+        NSUInteger: _fahrenheit_takeIntAndReturnNil, \
+        default: _fahrenheit_returnGivenView \
     )(y); \
 )
 
 #define __FAHRENHEIT_HELPER_1(x) __FAHRENHEIT_HELPER(x, ;)
 
-#define __FAHRENHEIT_HELPER(variableNameArg, stuff) \
+#define __FAHRENHEIT_HELPER(variableName, codeAfterVariableDeclarations) \
 _Pragma("clang diagnostic push") \
 _Pragma("clang diagnostic ignored \"-Wunused-value\"") \
-variableNameArg; \
-_Pragma("clang diagnostic push") \
-_Pragma("clang diagnostic ignored \"-Wunused-variable\"") \
-typeof(variableNameArg) _FAHRENHEIT_PASSED_INSTANCE_OR_NIL = nil; \
+variableName; \
 _Pragma("clang diagnostic pop") \
-stuff \
-if (!variableNameArg) { \
-    variableNameArg = ({ \
-_Pragma("clang diagnostic pop") \
+typeof(variableName) _FAHRENHEIT_PASSED_INSTANCE_OR_NIL = nil; \
+codeAfterVariableDeclarations \
+if (!variableName) { \
+    variableName = ({ \
         NSAssert(_fahrenheit_current_toplevel_view, @"Calls to FAHRENHEIT must be inside a call to FAHRENHEIT_TOPLEVEL."); \
-        if (_FAHRENHEIT_PASSED_INSTANCE_OR_NIL != nil) { \
-          NSLog(@"%@", _FAHRENHEIT_PASSED_INSTANCE_OR_NIL); \
-        } else { NSLog(@"NOPEEEEEEEEEEEEEEEEEEEE"); } \
-        _fahrenheit_current_view = _FAHRENHEIT_PASSED_INSTANCE_OR_NIL ?: _fahrenheit_instantiate_from_encoding(@encode(typeof(*(variableNameArg)))); \
-        (typeof(variableNameArg))_fahrenheit_current_view; \
+        _fahrenheit_current_view = _FAHRENHEIT_PASSED_INSTANCE_OR_NIL ?: _fahrenheit_instantiate_from_encoding(@encode(typeof(*(variableName)))); \
+        (typeof(variableName))_fahrenheit_current_view; \
     }); \
 } \
-_FAHRENHEIT_GOTO_HELPER(variableNameArg, \
+_FAHRENHEIT_GOTO_HELPER(variableName, \
     [_fahrenheit_current_toplevel_view _fahrenheit_addViewFromBuildSubviews:_fahrenheit_current_view withSuperview:FAHRENHEIT_VIEW_NAME andBlock:_FAHRENHEIT_VIEW_AND_SUPERVIEW_BLOCK]; \
     _fahrenheit_current_view = nil; \
 )
