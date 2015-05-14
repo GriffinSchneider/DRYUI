@@ -73,7 +73,6 @@ NS_ENUM(NSUInteger, ExampleStyleEnum) {
         };
     };
     
-    
     XCTAssertEqual(a.superview, topLevel, @"a's superview should be the top view");
     XCTAssertEqual(b.superview, topLevel, @"b's superview should be the top view");
     XCTAssertEqual(c.superview, topLevel, @"c's superview should be the top view");

@@ -55,24 +55,22 @@ static FAHRENHEIT_VIEW *_fahrenheit_current_toplevel_view = nil;
 
 id _fahrenheit_instantiate_from_encoding(char *);
 
-// The _FAHRENHEIT_UNIQUE macro expands to the string "_FAHRENHEIT" with the current line number appended.
-// Used to generate identifiers that are "unique" to a given Fahrenheit macro invocation (assuming
-// you don't invoke the macro multiple times on the same line).
 #define _FAHRENHEIT_CONCATENATE_DETAIL(x, y) x##y
 #define _FAHRENHEIT_CONCATENATE(x, y) _FAHRENHEIT_CONCATENATE_DETAIL(x, y)
-#define _FAHRENHEIT_UNIQUE _FAHRENHEIT_CONCATENATE(_FAHRENHEIT, __LINE__)
 
-#define _FAHRENHEIT_VIEW_TYPE(viewArg) typeof([viewArg _fahrenheit_selfOrInstanceOfSelf])
-
+// Define some macros that will generate 'unique' variable names using __LINE__.
+// The names will be unique as long as the FAHRENHEIT macros aren't used twice on the same line.
 #define _FAHRENHEIT_PASSED_INSTANCE_OR_NIL _FAHRENHEIT_CONCATENATE(_fahrenheit_passedInstanceOrNil, __LINE__)
 #define _FAHRENHEIT_VIEW_AND_SUPERVIEW_BLOCK _FAHRENHEIT_CONCATENATE(_fahrenheit_viewAndSuperviewBlockk, __LINE__)
 #define _FAHRENHEIT_GOTO_LABEL _FAHRENHEIT_CONCATENATE(_fahrenheit_gotoLabel, __LINE__)
 
+#define _FAHRENHEIT_VIEW_TYPE(viewArg) typeof([viewArg _fahrenheit_selfOrInstanceOfSelf])
+
 // body_after_statement_after_macro will get run *after* the statement formed by the end of this macro and whatever
 // the user puts after the macro within {}.
 // When body_after_statement_after_macro runs, this macro will have definied a variable with a name created by
-// _FAHRENHEIT_UNIQUE, to which will be assigned a block of type FahrenheitViewAndSuperviewBlock containing the code
-// that came after the macro.
+// _FAHRENHEIT_VIEW_AND_SUPERVIEW_BLOCK, to which will be assigned a block of type FahrenheitViewAndSuperviewBlock
+// containing the code that came after the macro.
 #define _FAHRENHEIT_GOTO_HELPER(viewArg, body_after_statement_after_macro) \
 FahrenheitViewAndSuperviewBlock _FAHRENHEIT_VIEW_AND_SUPERVIEW_BLOCK; \
 if (1) { \
@@ -149,7 +147,7 @@ __FAHRENHEIT_HELPER(x, \
     )(y); \
 )
 
-#define __FAHRENHEIT_HELPER_1(x)         __FAHRENHEIT_HELPER(x, ;)
+#define __FAHRENHEIT_HELPER_1(x) __FAHRENHEIT_HELPER(x, ;)
 
 #define __FAHRENHEIT_HELPER(variableNameArg, stuff) \
 _Pragma("clang diagnostic push") \
