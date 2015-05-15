@@ -9,28 +9,6 @@
 #import <objc/runtime.h>
 
 
-id _fahrenheit_instantiate_from_encoding(char *encoding) {
-    NSString *encodingString = [NSString stringWithUTF8String:encoding];
-    
-    NSRange braceRange = [encodingString rangeOfString:@"{"];
-    NSRange equalsRange = [encodingString rangeOfString:@"="];
-    NSString *className = [encodingString substringWithRange:NSMakeRange(braceRange.location+braceRange.length, equalsRange.location-1)];
-    
-    id instance = [NSClassFromString(className) new];
-    
-    return instance;
-}
-
-id _fahrenheit_takeStyleAndReturnNil(DRYUIStyle notView) {
-    return nil;
-}
-
-id _fahrenheit_returnGivenView(UIView *view) {
-    return view;
-}
-
-
-
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 @interface _FAHRENHEIT_VIEW (Fahrenheit_Private)
 
@@ -59,6 +37,43 @@ static const char fahrenheit_addBlocksId = 0;
 }
 
 @end
+
+
+id _fahrenheit_instantiate_from_encoding(char *encoding) {
+    NSString *encodingString = [NSString stringWithUTF8String:encoding];
+    
+    NSRange braceRange = [encodingString rangeOfString:@"{"];
+    NSRange equalsRange = [encodingString rangeOfString:@"="];
+    NSString *className = [encodingString substringWithRange:NSMakeRange(braceRange.location+braceRange.length, equalsRange.location-1)];
+    
+    id instance = [NSClassFromString(className) new];
+    
+    return instance;
+}
+
+id _fahrenheit_takeStyleAndReturnNil(DRYUIStyle notView) {
+    NSLog(@"NO");
+    return nil;
+}
+
+id _fahrenheit_returnGivenView(UIView *view) {
+    NSLog(@"RETURN GIV V %@", view);
+    return view;
+}
+
+DRYUIStyle _fahrenheit_returnGivenStyle(DRYUIStyle style) {
+    return style;
+}
+
+DRYUIStyle _fahrenheit_takeViewAndReturnEmptyStyle(UIView *notAStyle) {
+    return _DRYUI_EmptyStyle;
+}
+
+void _fahrenheit_applyStyleToView(UIView *view, DRYUIStyle style) {
+    if (style.name == _DRYUI_EmptyStyle.name) {
+        return;
+    }
+}
 
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////

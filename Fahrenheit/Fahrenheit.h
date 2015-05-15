@@ -61,6 +61,7 @@ id _fahrenheit_instantiate_from_encoding(char *);
 // Define some macros that will generate 'unique' variable names using __LINE__.
 // The names will be unique as long as the FAHRENHEIT macros aren't used twice on the same line.
 #define _FAHRENHEIT_PASSED_INSTANCE_OR_NIL _FAHRENHEIT_CONCATENATE(_fahrenheit_passedInstanceOrNil, __LINE__)
+#define _FAHRENHEIT_FIRST_STYLE_OR_NONE _FAHRENHEIT_CONCATENATE(_fahrenheit_firstStyleOrNone, __LINE__)
 #define _FAHRENHEIT_VIEW_AND_SUPERVIEW_BLOCK _FAHRENHEIT_CONCATENATE(_fahrenheit_viewAndSuperviewBlockk, __LINE__)
 #define _FAHRENHEIT_GOTO_LABEL _FAHRENHEIT_CONCATENATE(_fahrenheit_gotoLabel, __LINE__)
 
@@ -122,47 +123,79 @@ __FAHRENHEIT_HELPER_3,  \
 __FAHRENHEIT_HELPER_2,  \
 __FAHRENHEIT_HELPER_1)(args)
 
-#define __FAHRENHEIT_HELPER_16(x, y, ...) __FAHRENHEIT_HELPER_2(x, y)
-#define __FAHRENHEIT_HELPER_15(x, y, ...) __FAHRENHEIT_HELPER_2(x, y)
-#define __FAHRENHEIT_HELPER_14(x, y, ...) __FAHRENHEIT_HELPER_2(x, y)
-#define __FAHRENHEIT_HELPER_13(x, y, ...) __FAHRENHEIT_HELPER_2(x, y)
-#define __FAHRENHEIT_HELPER_12(x, y, ...) __FAHRENHEIT_HELPER_2(x, y)
-#define __FAHRENHEIT_HELPER_11(x, y, ...) __FAHRENHEIT_HELPER_2(x, y)
-#define __FAHRENHEIT_HELPER_10(x, y, ...) __FAHRENHEIT_HELPER_2(x, y)
-#define __FAHRENHEIT_HELPER_9(x, y, ...) __FAHRENHEIT_HELPER_2(x, y)
-#define __FAHRENHEIT_HELPER_8(x, y, ...) __FAHRENHEIT_HELPER_2(x, y)
-#define __FAHRENHEIT_HELPER_7(x, y, ...) __FAHRENHEIT_HELPER_2(x, y)
-#define __FAHRENHEIT_HELPER_6(x, y, ...) __FAHRENHEIT_HELPER_2(x, y)
-#define __FAHRENHEIT_HELPER_5(x, y, ...) __FAHRENHEIT_HELPER_2(x, y)
-#define __FAHRENHEIT_HELPER_4(x, y, ...) __FAHRENHEIT_HELPER_2(x, y)
-#define __FAHRENHEIT_HELPER_3(x, y, ...) __FAHRENHEIT_HELPER_2(x, y)
+#define __FAHRENHEIT_PRE(x)
 
 typedef struct {
     char *name;
 } DRYUIStyle;
 
 #define DRYUI_STYLE(styleName) static const DRYUIStyle styleName = {#styleName};
+DRYUIStyle(_DRYUI_EmptyStyle);
 
-id _fahrenheit_returnGivenView(UIView *view);
 id _fahrenheit_takeStyleAndReturnNil(DRYUIStyle notAView);
+id _fahrenheit_returnGivenView(UIView *view);
 
-#define __FAHRENHEIT_HELPER_2(x, y) \
-__FAHRENHEIT_HELPER(x, \
-    _FAHRENHEIT_PASSED_INSTANCE_OR_NIL = _Generic(y, \
+DRYUIStyle _fahrenheit_returnGivenStyle(DRYUIStyle style);
+DRYUIStyle _fahrenheit_takeViewAndReturnEmptyStyle(UIView *notAStyle);
+
+void _fahrenheit_applyStyleToView(UIView *view, DRYUIStyle style);
+
+#define __FAHRENHEIT_HELPER_16(x, y, z, ...) ___FAHRENHEIT_HELPER_16(x, y, ;, z , ## __VA_ARGS__)
+#define __FAHRENHEIT_HELPER_15(x, y, z, ...) ___FAHRENHEIT_HELPER_15(x, y, ;, z , ## __VA_ARGS__)
+#define __FAHRENHEIT_HELPER_14(x, y, z, ...) ___FAHRENHEIT_HELPER_14(x, y, ;, z , ## __VA_ARGS__)
+#define __FAHRENHEIT_HELPER_13(x, y, z, ...) ___FAHRENHEIT_HELPER_13(x, y, ;, z , ## __VA_ARGS__)
+#define __FAHRENHEIT_HELPER_12(x, y, z, ...) ___FAHRENHEIT_HELPER_12(x, y, ;, z , ## __VA_ARGS__)
+#define __FAHRENHEIT_HELPER_11(x, y, z, ...) ___FAHRENHEIT_HELPER_11(x, y, ;, z , ## __VA_ARGS__)
+#define __FAHRENHEIT_HELPER_10(x, y, z, ...) ___FAHRENHEIT_HELPER_10(x, y, ;, z , ## __VA_ARGS__)
+#define __FAHRENHEIT_HELPER_9( x, y, z, ...) ___FAHRENHEIT_HELPER_9 (x, y, ;, z , ## __VA_ARGS__)
+#define __FAHRENHEIT_HELPER_8( x, y, z, ...) ___FAHRENHEIT_HELPER_8 (x, y, ;, z , ## __VA_ARGS__)
+#define __FAHRENHEIT_HELPER_7( x, y, z, ...) ___FAHRENHEIT_HELPER_7 (x, y, ;, z , ## __VA_ARGS__)
+#define __FAHRENHEIT_HELPER_6( x, y, z, ...) ___FAHRENHEIT_HELPER_6 (x, y, ;, z , ## __VA_ARGS__)
+#define __FAHRENHEIT_HELPER_5( x, y, z, ...) ___FAHRENHEIT_HELPER_5 (x, y, ;, z , ## __VA_ARGS__)
+#define __FAHRENHEIT_HELPER_4( x, y, z, ...) ___FAHRENHEIT_HELPER_4 (x, y, ;, z , ## __VA_ARGS__)
+#define __FAHRENHEIT_HELPER_3( x, y, z)      ___FAHRENHEIT_HELPER_3 (x, y, ;, z )
+#define __FAHRENHEIT_HELPER_2( x, y)         ___FAHRENHEIT_HELPER_2 (x, y, ;)
+#define __FAHRENHEIT_HELPER_1( x)            ___FAHRENHEIT_HELPER   (x, ;)
+
+#define ___FAHRENHEIT_HELPER_16(x, y, codeAfterVariableDeclarations, z, ...) ___FAHRENHEIT_HELPER_15(x, y, codeAfterVariableDeclarations; _fahrenheit_applyStyleToView(x, z); , ## __VA_ARGS__)
+#define ___FAHRENHEIT_HELPER_15(x, y, codeAfterVariableDeclarations, z, ...) ___FAHRENHEIT_HELPER_14(x, y, codeAfterVariableDeclarations; _fahrenheit_applyStyleToView(x, z); , ## __VA_ARGS__)
+#define ___FAHRENHEIT_HELPER_14(x, y, codeAfterVariableDeclarations, z, ...) ___FAHRENHEIT_HELPER_13(x, y, codeAfterVariableDeclarations; _fahrenheit_applyStyleToView(x, z); , ## __VA_ARGS__)
+#define ___FAHRENHEIT_HELPER_13(x, y, codeAfterVariableDeclarations, z, ...) ___FAHRENHEIT_HELPER_12(x, y, codeAfterVariableDeclarations; _fahrenheit_applyStyleToView(x, z); , ## __VA_ARGS__)
+#define ___FAHRENHEIT_HELPER_12(x, y, codeAfterVariableDeclarations, z, ...) ___FAHRENHEIT_HELPER_11(x, y, codeAfterVariableDeclarations; _fahrenheit_applyStyleToView(x, z); , ## __VA_ARGS__)
+#define ___FAHRENHEIT_HELPER_11(x, y, codeAfterVariableDeclarations, z, ...) ___FAHRENHEIT_HELPER_10(x, y, codeAfterVariableDeclarations; _fahrenheit_applyStyleToView(x, z); , ## __VA_ARGS__)
+#define ___FAHRENHEIT_HELPER_10(x, y, codeAfterVariableDeclarations, z, ...) ___FAHRENHEIT_HELPER_9 (x, y, codeAfterVariableDeclarations; _fahrenheit_applyStyleToView(x, z); , ## __VA_ARGS__)
+#define ___FAHRENHEIT_HELPER_9( x, y, codeAfterVariableDeclarations, z, ...) ___FAHRENHEIT_HELPER_8 (x, y, codeAfterVariableDeclarations; _fahrenheit_applyStyleToView(x, z); , ## __VA_ARGS__)
+#define ___FAHRENHEIT_HELPER_8( x, y, codeAfterVariableDeclarations, z, ...) ___FAHRENHEIT_HELPER_7 (x, y, codeAfterVariableDeclarations; _fahrenheit_applyStyleToView(x, z); , ## __VA_ARGS__)
+#define ___FAHRENHEIT_HELPER_7( x, y, codeAfterVariableDeclarations, z, ...) ___FAHRENHEIT_HELPER_6 (x, y, codeAfterVariableDeclarations; _fahrenheit_applyStyleToView(x, z); , ## __VA_ARGS__)
+#define ___FAHRENHEIT_HELPER_6( x, y, codeAfterVariableDeclarations, z, ...) ___FAHRENHEIT_HELPER_5 (x, y, codeAfterVariableDeclarations; _fahrenheit_applyStyleToView(x, z); , ## __VA_ARGS__)
+#define ___FAHRENHEIT_HELPER_5( x, y, codeAfterVariableDeclarations, z, ...) ___FAHRENHEIT_HELPER_4 (x, y, codeAfterVariableDeclarations; _fahrenheit_applyStyleToView(x, z); , ## __VA_ARGS__)
+#define ___FAHRENHEIT_HELPER_4( x, y, codeAfterVariableDeclarations, z, ...) ___FAHRENHEIT_HELPER_3 (x, y, codeAfterVariableDeclarations; _fahrenheit_applyStyleToView(x, z); , ## __VA_ARGS__)
+#define ___FAHRENHEIT_HELPER_3( x, y, codeAfterVariableDeclarations, z)      ___FAHRENHEIT_HELPER_2 (x, y, codeAfterVariableDeclarations; _fahrenheit_applyStyleToView(x, z); )
+
+#define ___FAHRENHEIT_HELPER_2( x, y, codeAfterVariableDeclarations) \
+___FAHRENHEIT_HELPER(x, \
+    typeof(y) _fahrenheit_y = y;\
+    _FAHRENHEIT_PASSED_INSTANCE_OR_NIL = _Generic(_fahrenheit_y, \
         DRYUIStyle: _fahrenheit_takeStyleAndReturnNil, \
         default: _fahrenheit_returnGivenView \
-    )(y); \
+    )(_fahrenheit_y); \
+    _FAHRENHEIT_FIRST_STYLE_OR_NONE = _Generic(_fahrenheit_y, \
+        DRYUIStyle: _fahrenheit_returnGivenStyle, \
+        default: _fahrenheit_takeViewAndReturnEmptyStyle \
+    )(_fahrenheit_y); \
+    codeAfterVariableDeclarations \
 )
 
-#define __FAHRENHEIT_HELPER_1(x) __FAHRENHEIT_HELPER(x, ;)
-
-#define __FAHRENHEIT_HELPER(variableName, codeAfterVariableDeclarations) \
+#define ___FAHRENHEIT_HELPER(variableName, codeAfterVariableDeclarations) \
 _Pragma("clang diagnostic push") \
 _Pragma("clang diagnostic ignored \"-Wunused-value\"") \
 variableName; \
 _Pragma("clang diagnostic pop") \
 typeof(variableName) _FAHRENHEIT_PASSED_INSTANCE_OR_NIL = nil; \
+DRYUIStyle _FAHRENHEIT_FIRST_STYLE_OR_NONE; \
+({ \
 codeAfterVariableDeclarations \
+}); \
 if (!variableName) { \
     variableName = ({ \
         NSAssert(_fahrenheit_current_toplevel_view, @"Calls to FAHRENHEIT must be inside a call to FAHRENHEIT_TOPLEVEL."); \
@@ -170,6 +203,7 @@ if (!variableName) { \
         (typeof(variableName))_fahrenheit_current_view; \
     }); \
 } \
+_fahrenheit_applyStyleToView(variableName, _FAHRENHEIT_FIRST_STYLE_OR_NONE); \
 _FAHRENHEIT_GOTO_HELPER(variableName, \
     [_fahrenheit_current_toplevel_view _fahrenheit_addViewFromBuildSubviews:_fahrenheit_current_view withSuperview:FAHRENHEIT_VIEW_NAME andBlock:_FAHRENHEIT_VIEW_AND_SUPERVIEW_BLOCK]; \
     _fahrenheit_current_view = nil; \
