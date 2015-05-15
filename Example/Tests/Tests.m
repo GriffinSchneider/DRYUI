@@ -37,7 +37,10 @@ DRYUI_STYLE(Style3);
     
     ºº(topLevel) {
         _.make.edges.equalTo(_);
-        º(a, Style0, Style1, Style2, Style3) {
+        º(a, Style0, Style1, Style2, Style3, Style3, Style3, Style3, Style3, Style3,
+          Style3, Style3, Style3, Style3, Style3, Style3, Style3, Style3, Style3,
+          Style3, Style3, Style3, Style3, Style3, Style3, Style3, Style3, Style3,
+          Style3, Style3, Style3, Style3) {
             XCTAssertNotNil(b, @"b should already be assigned when this block is run");
             XCTAssertNotNil(c, @"c should already be assigned when this block is run");
         };
