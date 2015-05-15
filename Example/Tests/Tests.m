@@ -10,13 +10,10 @@
 #import <XCTest/XCTest.h>
 #import <Fahrenheit/Fahrenheit.h>
 
-
-NS_ENUM(NSUInteger, ExampleStyleEnum) {
-    Style0,
-    Style1,
-    Style2,
-    Style3,
-};
+DRYUIStyle(Style0);
+DRYUIStyle(Style1);
+DRYUIStyle(Style2);
+DRYUIStyle(Style3);
 
 @interface FahrenheitTests : XCTestCase
 

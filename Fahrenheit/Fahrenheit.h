@@ -137,13 +137,19 @@ __FAHRENHEIT_HELPER_1)(args)
 #define __FAHRENHEIT_HELPER_4(x, y, ...) __FAHRENHEIT_HELPER_2(x, y)
 #define __FAHRENHEIT_HELPER_3(x, y, ...) __FAHRENHEIT_HELPER_2(x, y)
 
+typedef struct {
+    char *name;
+} DRYUIStyle;
+
+#define DRYUI_STYLE(styleName) static const DRYUIStyle styleName = {#styleName};
+
 id _fahrenheit_returnGivenView(UIView *view);
-id _fahrenheit_takeIntAndReturnNil(NSUInteger notAView);
+id _fahrenheit_takeStyleAndReturnNil(DRYUIStyle notAView);
 
 #define __FAHRENHEIT_HELPER_2(x, y) \
 __FAHRENHEIT_HELPER(x, \
     _FAHRENHEIT_PASSED_INSTANCE_OR_NIL = _Generic(y, \
-        NSUInteger: _fahrenheit_takeIntAndReturnNil, \
+        DRYUIStyle: _fahrenheit_takeStyleAndReturnNil, \
         default: _fahrenheit_returnGivenView \
     )(y); \
 )

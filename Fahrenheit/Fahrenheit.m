@@ -21,13 +21,14 @@ id _fahrenheit_instantiate_from_encoding(char *encoding) {
     return instance;
 }
 
+id _fahrenheit_takeStyleAndReturnNil(DRYUIStyle notView) {
+    return nil;
+}
+
 id _fahrenheit_returnGivenView(UIView *view) {
     return view;
 }
 
-id _fahrenheit_takeIntAndReturnNil(NSUInteger notView) {
-    return nil;
-}
 
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
