@@ -50,10 +50,22 @@ typedef void (^FahrenheitViewAndSuperviewBlock)(id FAHRENHEIT_VIEW_NAME, _FAHREN
 
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-static _FAHRENHEIT_VIEW *_fahrenheit_current_view = nil;
-static _FAHRENHEIT_VIEW *_fahrenheit_current_toplevel_view = nil;
+typedef struct {
+    char *name;
+} DRYUIStyle;
+
+#define DRYUI_STYLE(styleName) static const DRYUIStyle styleName = {#styleName};
+DRYUIStyle(DRYUIEmptyStyle);
 
 id _fahrenheit_instantiate_from_encoding(char *);
+
+id _fahrenheit_takeStyleAndReturnNil(DRYUIStyle notAView);
+id _fahrenheit_returnGivenView(UIView *view);
+
+DRYUIStyle _fahrenheit_returnGivenStyle(DRYUIStyle style);
+DRYUIStyle _fahrenheit_takeViewAndReturnEmptyStyle(UIView *notAStyle);
+
+void _fahrenheit_applyStyleToView(UIView *view, DRYUIStyle style);
 
 #define _FAHRENHEIT_CONCATENATE_DETAIL(x, y) x##y
 #define _FAHRENHEIT_CONCATENATE(x, y) _FAHRENHEIT_CONCATENATE_DETAIL(x, y)
@@ -102,6 +114,8 @@ _FAHRENHEIT_GOTO_HELPER(viewArg, \
     _fahrenheit_current_toplevel_view = nil; \
 )
 
+// FAHRENHEIT expands to one of the two-underscore macros below, depending on how many arguments it's called with.
+// Passing more than 16 arguments will not work.
 #define __FAHRENHEIT_OVERLOADED_MACRO(_1,_2,_3,_4,_5,_6,_7,_8,_9,_10,_11,_12,_13,_14,_15,_16,NAME,...) NAME
 #define FAHRENHEIT(args...) \
 __FAHRENHEIT_OVERLOADED_MACRO( \
@@ -123,23 +137,8 @@ __FAHRENHEIT_HELPER_3,  \
 __FAHRENHEIT_HELPER_2,  \
 __FAHRENHEIT_HELPER_1)(args)
 
-#define __FAHRENHEIT_PRE(x)
-
-typedef struct {
-    char *name;
-} DRYUIStyle;
-
-#define DRYUI_STYLE(styleName) static const DRYUIStyle styleName = {#styleName};
-DRYUIStyle(_DRYUI_EmptyStyle);
-
-id _fahrenheit_takeStyleAndReturnNil(DRYUIStyle notAView);
-id _fahrenheit_returnGivenView(UIView *view);
-
-DRYUIStyle _fahrenheit_returnGivenStyle(DRYUIStyle style);
-DRYUIStyle _fahrenheit_takeViewAndReturnEmptyStyle(UIView *notAStyle);
-
-void _fahrenheit_applyStyleToView(UIView *view, DRYUIStyle style);
-
+// These macros just pass through to the three-underscore macros while setting the initial
+// value for the 'codeAfterVariableDeclarations' accumulator.
 #define __FAHRENHEIT_HELPER_16(x, y, z, ...) ___FAHRENHEIT_HELPER_16(x, y, ;, z , ## __VA_ARGS__)
 #define __FAHRENHEIT_HELPER_15(x, y, z, ...) ___FAHRENHEIT_HELPER_15(x, y, ;, z , ## __VA_ARGS__)
 #define __FAHRENHEIT_HELPER_14(x, y, z, ...) ___FAHRENHEIT_HELPER_14(x, y, ;, z , ## __VA_ARGS__)
@@ -155,8 +154,13 @@ void _fahrenheit_applyStyleToView(UIView *view, DRYUIStyle style);
 #define __FAHRENHEIT_HELPER_4( x, y, z, ...) ___FAHRENHEIT_HELPER_4 (x, y, ;, z , ## __VA_ARGS__)
 #define __FAHRENHEIT_HELPER_3( x, y, z)      ___FAHRENHEIT_HELPER_3 (x, y, ;, z )
 #define __FAHRENHEIT_HELPER_2( x, y)         ___FAHRENHEIT_HELPER_2 (x, y, ;)
-#define __FAHRENHEIT_HELPER_1( x)            ___FAHRENHEIT_HELPER   (x, ;)
+#define __FAHRENHEIT_HELPER_1( x)            ___FAHRENHEIT_HELPER_1 (x, ;)
 
+// These macros add a statement like this:
+//    _fahrenheit_applyStyleToView(view, style)
+// to the 'codeAfterVariableDeclarations' parameter for each style in the arguments list.
+// The second style could actually be a pre-made UIView instance getting passed to FAHRENHEIT, so
+// it gets handled specially by ___FAHRENHEIT_HELPER_2.
 #define ___FAHRENHEIT_HELPER_16(x, y, codeAfterVariableDeclarations, z, ...) ___FAHRENHEIT_HELPER_15(x, y, codeAfterVariableDeclarations; _fahrenheit_applyStyleToView(x, z); , ## __VA_ARGS__)
 #define ___FAHRENHEIT_HELPER_15(x, y, codeAfterVariableDeclarations, z, ...) ___FAHRENHEIT_HELPER_14(x, y, codeAfterVariableDeclarations; _fahrenheit_applyStyleToView(x, z); , ## __VA_ARGS__)
 #define ___FAHRENHEIT_HELPER_14(x, y, codeAfterVariableDeclarations, z, ...) ___FAHRENHEIT_HELPER_13(x, y, codeAfterVariableDeclarations; _fahrenheit_applyStyleToView(x, z); , ## __VA_ARGS__)
@@ -172,9 +176,15 @@ void _fahrenheit_applyStyleToView(UIView *view, DRYUIStyle style);
 #define ___FAHRENHEIT_HELPER_4( x, y, codeAfterVariableDeclarations, z, ...) ___FAHRENHEIT_HELPER_3 (x, y, codeAfterVariableDeclarations; _fahrenheit_applyStyleToView(x, z); , ## __VA_ARGS__)
 #define ___FAHRENHEIT_HELPER_3( x, y, codeAfterVariableDeclarations, z)      ___FAHRENHEIT_HELPER_2 (x, y, codeAfterVariableDeclarations; _fahrenheit_applyStyleToView(x, z); )
 
+// This macro passes through the first argument and codeAfterVariableDeclarations to ___FAHRENHEIT_HELPER_1,
+// while determining whether the second argument is a pre-made UIView instance or the first style.
+// The variable whose name comes from _FAHRENHEIT_PASSED_INSTANCE_OR_NIL will be set to the given UIView instance
+// if the second argument is a UIView instance, or nil if it isn't. The variable whose name comes from
+// _FAHRENHEIT_FIRST_STYLE_OR_NONE will be set to the given style if the second argument is a style, or the
+// empty style if it isn't.
 #define ___FAHRENHEIT_HELPER_2( x, y, codeAfterVariableDeclarations) \
-___FAHRENHEIT_HELPER(x, \
-    typeof(y) _fahrenheit_y = y;\
+___FAHRENHEIT_HELPER_1(x, \
+    typeof(y) _fahrenheit_y = y; \
     _FAHRENHEIT_PASSED_INSTANCE_OR_NIL = _Generic(_fahrenheit_y, \
         DRYUIStyle: _fahrenheit_takeStyleAndReturnNil, \
         default: _fahrenheit_returnGivenView \
@@ -186,7 +196,10 @@ ___FAHRENHEIT_HELPER(x, \
     codeAfterVariableDeclarations \
 )
 
-#define ___FAHRENHEIT_HELPER(variableName, codeAfterVariableDeclarations) \
+static _FAHRENHEIT_VIEW *_fahrenheit_current_view = nil;
+static _FAHRENHEIT_VIEW *_fahrenheit_current_toplevel_view = nil;
+
+#define ___FAHRENHEIT_HELPER_1(variableName, codeAfterVariableDeclarations) \
 _Pragma("clang diagnostic push") \
 _Pragma("clang diagnostic ignored \"-Wunused-value\"") \
 variableName; \

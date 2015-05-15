@@ -66,11 +66,11 @@ DRYUIStyle _fahrenheit_returnGivenStyle(DRYUIStyle style) {
 }
 
 DRYUIStyle _fahrenheit_takeViewAndReturnEmptyStyle(UIView *notAStyle) {
-    return _DRYUI_EmptyStyle;
+    return DRYUIEmptyStyle;
 }
 
 void _fahrenheit_applyStyleToView(UIView *view, DRYUIStyle style) {
-    if (style.name == _DRYUI_EmptyStyle.name) {
+    if (style.name == DRYUIEmptyStyle.name) {
         return;
     }
 }
