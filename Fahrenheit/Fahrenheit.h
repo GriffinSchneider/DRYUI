@@ -159,8 +159,8 @@ __FAHRENHEIT_HELPER_1)(args)
 // These macros add a statement like this:
 //    _fahrenheit_applyStyleToView(view, style);
 // to the 'codeAfterVariableAssignment' parameter for each style in the arguments list.
-// The second style could actually be a pre-made UIView instance getting passed to FAHRENHEIT, so
-// it gets handled specially by ___FAHRENHEIT_HELPER_2.
+// The second argument, y, could be wither a pre-made UIView instance getting passed to FAHRENHEIT or a style,
+// so it gets handled specially by ___FAHRENHEIT_HELPER_2.
 #define ___FAHRENHEIT_HELPER_16(x, y, codeAfterVariableAssignment, z, ...) ___FAHRENHEIT_HELPER_15(x, y, codeAfterVariableAssignment; _fahrenheit_applyStyleToView(x, z); , ## __VA_ARGS__)
 #define ___FAHRENHEIT_HELPER_15(x, y, codeAfterVariableAssignment, z, ...) ___FAHRENHEIT_HELPER_14(x, y, codeAfterVariableAssignment; _fahrenheit_applyStyleToView(x, z); , ## __VA_ARGS__)
 #define ___FAHRENHEIT_HELPER_14(x, y, codeAfterVariableAssignment, z, ...) ___FAHRENHEIT_HELPER_13(x, y, codeAfterVariableAssignment; _fahrenheit_applyStyleToView(x, z); , ## __VA_ARGS__)
@@ -177,7 +177,7 @@ __FAHRENHEIT_HELPER_1)(args)
 #define ___FAHRENHEIT_HELPER_3( x, y, codeAfterVariableAssignment, z)      ___FAHRENHEIT_HELPER_2 (x, y, codeAfterVariableAssignment; _fahrenheit_applyStyleToView(x, z); )
 
 // This macro passes through the first argument and codeAfterVariableAssignment to ___FAHRENHEIT_HELPER_1,
-// while determining whether the second argument is a pre-made UIView instance or the first style.
+// while determining whether the second argument is a pre-made UIView instance or the first style to apply.
 // The variable whose name comes from _FAHRENHEIT_PASSED_INSTANCE_OR_NIL will be set to the given UIView instance
 // if the second argument is a UIView instance, or nil if it isn't. The variable whose name comes from
 // _FAHRENHEIT_FIRST_STYLE_OR_NONE will be set to the given style if the second argument is a style, or the
