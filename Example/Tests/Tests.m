@@ -10,10 +10,10 @@
 #import <XCTest/XCTest.h>
 #import <Fahrenheit/Fahrenheit.h>
 
-DRYUIStyle(Style0);
-DRYUIStyle(Style1);
-DRYUIStyle(Style2);
-DRYUIStyle(Style3);
+DRYUI_STYLE(Style0);
+DRYUI_STYLE(Style1);
+DRYUI_STYLE(Style2);
+DRYUI_STYLE(Style3);
 
 @interface FahrenheitTests : XCTestCase
 

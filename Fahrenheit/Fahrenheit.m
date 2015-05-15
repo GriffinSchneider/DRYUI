@@ -52,20 +52,18 @@ id _fahrenheit_instantiate_from_encoding(char *encoding) {
 }
 
 id _fahrenheit_takeStyleAndReturnNil(DRYUIStyle notView) {
-    NSLog(@"NO");
     return nil;
 }
 
 id _fahrenheit_returnGivenView(UIView *view) {
-    NSLog(@"RETURN GIV V %@", view);
     return view;
 }
 
-DRYUIStyle _fahrenheit_returnGivenStyle(DRYUIStyle style) {
+const DRYUIStyle _fahrenheit_returnGivenStyle(const DRYUIStyle style) {
     return style;
 }
 
-DRYUIStyle _fahrenheit_takeViewAndReturnEmptyStyle(UIView *notAStyle) {
+const DRYUIStyle _fahrenheit_takeViewAndReturnEmptyStyle(UIView *notAStyle) {
     return DRYUIEmptyStyle;
 }
 
