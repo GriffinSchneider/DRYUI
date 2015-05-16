@@ -13,14 +13,15 @@
 @interface _FAHRENHEIT_VIEW (Fahrenheit_Private)
 
 @property (nonatomic, strong) MASConstraintMaker *constraintMaker;
-@property (nonatomic, strong) NSMutableArray *addBlocks;
+@property (nonatomic, strong) NSMutableArray *wrappedAddBlocks;
 
 @end
 
 @implementation _FAHRENHEIT_VIEW (Fahrenheit_Private)
 
 static const char fahrenheit_constraintMakerId = 0;
-static const char fahrenheit_addBlocksId = 0;
+static const char fahrenheit_wrappedAddBlocksId = 0;
+static const char fahrenheit_styleNamesBlocksId = 0;
 
 - (MASConstraintMaker *)constraintMaker {
     return objc_getAssociatedObject(self, &fahrenheit_constraintMakerId);
@@ -29,16 +30,24 @@ static const char fahrenheit_addBlocksId = 0;
     objc_setAssociatedObject(self, &fahrenheit_constraintMakerId, constraintMaker, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
 }
 
-- (NSMutableArray *)addBlocks {
-    return objc_getAssociatedObject(self, &fahrenheit_addBlocksId);
+- (NSMutableArray *)wrappedAddBlocks {
+    return objc_getAssociatedObject(self, &fahrenheit_wrappedAddBlocksId);
 }
-- (void)setAddBlocks:(NSMutableArray *)addBlocks {
-    objc_setAssociatedObject(self, &fahrenheit_addBlocksId, addBlocks, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+- (void)setWrappedAddBlocks:(NSMutableArray *)wrappedAddBlocks {
+    objc_setAssociatedObject(self, &fahrenheit_wrappedAddBlocksId, wrappedAddBlocks, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+}
+
+- (NSMutableArray *)styleNames {
+    return objc_getAssociatedObject(self, &fahrenheit_styleNamesBlocksId);
+}
+- (void)setStyleNames:(NSMutableArray *)styleNames {
+    objc_setAssociatedObject(self, &fahrenheit_styleNamesBlocksId, styleNames, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
 }
 
 @end
 
 
+////////////////////////////////////////////////////////////////////////////////////////////////////
 id _fahrenheit_instantiate_from_encoding(char *encoding) {
     NSString *encodingString = [NSString stringWithUTF8String:encoding];
     
@@ -51,7 +60,7 @@ id _fahrenheit_instantiate_from_encoding(char *encoding) {
     return instance;
 }
 
-id _fahrenheit_takeStyleAndReturnNil(DRYUIStyle notView) {
+id _fahrenheit_takeStyleAndReturnNil(_DRYUIStyle notView) {
     return nil;
 }
 
@@ -59,47 +68,47 @@ id _fahrenheit_returnGivenView(UIView *view) {
     return view;
 }
 
-const DRYUIStyle _fahrenheit_returnGivenStyle(const DRYUIStyle style) {
+const _DRYUIStyle _fahrenheit_returnGivenStyle(const _DRYUIStyle style) {
     return style;
 }
 
-const DRYUIStyle _fahrenheit_takeViewAndReturnEmptyStyle(UIView *notAStyle) {
+const _DRYUIStyle _fahrenheit_takeViewAndReturnEmptyStyle(UIView *notAStyle) {
     return DRYUIEmptyStyle;
 }
 
-void _fahrenheit_applyStyleToView(UIView *view, DRYUIStyle style) {
+void _fahrenheit_applyStyleToView(UIView *view, _DRYUIStyle style) {
     if (style.name == DRYUIEmptyStyle.name) {
         return;
     }
+    [view _fahrenheit_applyStyle:style];
 }
 
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 @implementation _FAHRENHEIT_VIEW (Fahrenheit)
 
-- (void)setupForFahrenheitAddBlock {
-    self.constraintMaker = [[MASConstraintMaker alloc] initWithView:self];
-    self.addBlocks = [NSMutableArray array];
-}
+@dynamic styleNames;
 
-- (void)tearDownAfterFahrenheitAddBlock {
+- (void)runAddBlock:(FahrenheitViewAndSuperviewBlock)block {
+    self.constraintMaker = [[MASConstraintMaker alloc] initWithView:self];
+    self.wrappedAddBlocks = [NSMutableArray array];
+    
+    block(self, self.superview);
+    
     [self.constraintMaker install];
     self.constraintMaker = nil;
-    [self runAllAddBlocks];
+    [self runAllWrappedAddBlocks];
 }
 
 - (void)_fahrenheit_buildSubviews:(FahrenheitViewAndSuperviewBlock)block {
-    [self setupForFahrenheitAddBlock];
-    block(self, self.superview);
-    [self tearDownAfterFahrenheitAddBlock];
+    [self runAddBlock:block];
 }
 
 - (id)_fahrenheit_addViewFromBuildSubviews:(_FAHRENHEIT_VIEW *)view withSuperview:(_FAHRENHEIT_VIEW *)superview andBlock:(FahrenheitViewAndSuperviewBlock)block {
     [superview addSubview:view];
     
-    // Don't actually need to weakify these references since the block will get released
+    // Don't actually need to weakify this reference since the block will get released
     // after it's run, but we get a block-retain-cycle warning without weakification.
-    __weak _FAHRENHEIT_VIEW *weakSuperview = superview;
     __weak _FAHRENHEIT_VIEW *weakView = view;
     
     // Add a block to view's superview's block list that does some setup, calls the given block, and then runs
@@ -108,20 +117,18 @@ void _fahrenheit_applyStyleToView(UIView *view, DRYUIStyle style) {
     // view's superview's block list will eventually get run by the call to this method (or buildSubviews) that
     // recursed into this one.
     if (block) {
-        [superview.addBlocks addObject:^{
-            [weakView setupForFahrenheitAddBlock];
-            block(weakView, weakSuperview);
-            [weakView tearDownAfterFahrenheitAddBlock];
+        [superview.wrappedAddBlocks addObject:^{
+            [weakView runAddBlock:block];
         }];
     }
     return view;
 }
 
-- (void)runAllAddBlocks {
-    for (void(^block)() in self.addBlocks) {
+- (void)runAllWrappedAddBlocks {
+    for (void(^block)() in self.wrappedAddBlocks) {
         block();
     }
-    self.addBlocks = nil;
+    self.wrappedAddBlocks = nil;
 }
 
 #define _FAHRENHEIT_VIEW_STRING _FAHRENHEIT_VIEW_STRING_HELPER(_FAHRENHEIT_VIEW)
@@ -132,6 +139,12 @@ void _fahrenheit_applyStyleToView(UIView *view, DRYUIStyle style) {
     return self.constraintMaker;
 }
 
+- (void)_fahrenheit_applyStyle:(const _DRYUIStyle)style {
+    if (!self.styleNames) {
+        self.styleNames = [NSMutableArray new];
+    }
+    [((NSMutableArray *)self.styleNames) addObject:[NSString stringWithUTF8String:style.name]];
+}
 
 @end
 

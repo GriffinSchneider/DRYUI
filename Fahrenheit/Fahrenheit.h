@@ -30,9 +30,9 @@
 
 typedef struct {
     const char *name;
-} DRYUIStyle;
+} _DRYUIStyle;
 
-#define DRYUI_STYLE(styleName) static const DRYUIStyle styleName = { #styleName };
+#define DRYUI_STYLE(styleName) static const _DRYUIStyle styleName = { #styleName };
 DRYUI_STYLE(DRYUIEmptyStyle);
 
 
@@ -42,9 +42,11 @@ typedef void (^FahrenheitViewAndSuperviewBlock)(id FAHRENHEIT_VIEW_NAME, _FAHREN
 @interface _FAHRENHEIT_VIEW (Fahrenheit)
 
 @property (nonatomic, strong, readonly) MASConstraintMaker *make;
+@property (nonatomic, strong, readonly) NSArray *styleNames;
 
 - (void)_fahrenheit_buildSubviews:(FahrenheitViewAndSuperviewBlock)block;
 - (id)_fahrenheit_addViewFromBuildSubviews:(_FAHRENHEIT_VIEW *)view withSuperview:(_FAHRENHEIT_VIEW *)superview andBlock:(FahrenheitViewAndSuperviewBlock)block;
+- (void)_fahrenheit_applyStyle:(const _DRYUIStyle)style;
 
 @end
 
@@ -59,13 +61,13 @@ typedef void (^FahrenheitViewAndSuperviewBlock)(id FAHRENHEIT_VIEW_NAME, _FAHREN
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 id _fahrenheit_instantiate_from_encoding(char *);
 
-id _fahrenheit_takeStyleAndReturnNil(const DRYUIStyle notAView);
+id _fahrenheit_takeStyleAndReturnNil(const _DRYUIStyle notAView);
 id _fahrenheit_returnGivenView(UIView *view);
 
-const DRYUIStyle _fahrenheit_returnGivenStyle(const DRYUIStyle style);
-const DRYUIStyle _fahrenheit_takeViewAndReturnEmptyStyle(UIView *notAStyle);
+const _DRYUIStyle _fahrenheit_returnGivenStyle(const _DRYUIStyle style);
+const _DRYUIStyle _fahrenheit_takeViewAndReturnEmptyStyle(UIView *notAStyle);
 
-void _fahrenheit_applyStyleToView(UIView *view, const DRYUIStyle style);
+void _fahrenheit_applyStyleToView(UIView *view, const _DRYUIStyle style);
 
 #define _FAHRENHEIT_CONCATENATE_DETAIL(x, y) x##y
 #define _FAHRENHEIT_CONCATENATE(x, y) _FAHRENHEIT_CONCATENATE_DETAIL(x, y)
@@ -234,11 +236,11 @@ __FAHRENHEIT_HELPER_1)(args)
 ___FAHRENHEIT_HELPER_1(x, \
     typeof(y) _fahrenheit_y = y; \
     _FAHRENHEIT_PASSED_INSTANCE_OR_NIL = _Generic(_fahrenheit_y, \
-        const DRYUIStyle: _fahrenheit_takeStyleAndReturnNil, \
+        const _DRYUIStyle: _fahrenheit_takeStyleAndReturnNil, \
         default: _fahrenheit_returnGivenView \
     )(_fahrenheit_y); \
     _FAHRENHEIT_FIRST_STYLE_OR_NONE = _Generic(_fahrenheit_y, \
-        const DRYUIStyle: _fahrenheit_returnGivenStyle, \
+        const _DRYUIStyle: _fahrenheit_returnGivenStyle, \
         default: _fahrenheit_takeViewAndReturnEmptyStyle \
     )(_fahrenheit_y);, \
     codeAfterVariableAssignment \
@@ -253,7 +255,7 @@ _Pragma("clang diagnostic ignored \"-Wunused-value\"") \
 variableName; \
 _Pragma("clang diagnostic pop") \
 typeof(variableName) _FAHRENHEIT_PASSED_INSTANCE_OR_NIL = nil; \
-DRYUIStyle _FAHRENHEIT_FIRST_STYLE_OR_NONE = DRYUIEmptyStyle; \
+_DRYUIStyle _FAHRENHEIT_FIRST_STYLE_OR_NONE = DRYUIEmptyStyle; \
 ({ codeAfterVariableDeclarations }); \
 if (!variableName) { \
     variableName = ({ \

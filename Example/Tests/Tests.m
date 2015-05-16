@@ -15,6 +15,14 @@ DRYUI_STYLE(Style1);
 DRYUI_STYLE(Style2);
 DRYUI_STYLE(Style3);
 
+#define BIG_STYLE_LIST \
+Style0, Style1, Style2, Style3, Style3, Style3, \
+Style3, Style3, Style3, Style3, Style3, Style3, \
+Style3, Style3, Style3, Style3, Style3, Style3, \
+Style3, Style3, Style3, Style3, Style3, Style3, \
+Style3, Style3, Style3, Style3, Style3, Style3, \
+Style3 \
+
 @interface FahrenheitTests : XCTestCase
 
 @end
@@ -37,10 +45,7 @@ DRYUI_STYLE(Style3);
     
     ºº(topLevel) {
         _.make.edges.equalTo(_);
-        º(a, Style0, Style1, Style2, Style3, Style3, Style3, Style3, Style3, Style3,
-          Style3, Style3, Style3, Style3, Style3, Style3, Style3, Style3, Style3,
-          Style3, Style3, Style3, Style3, Style3, Style3, Style3, Style3, Style3,
-          Style3, Style3, Style3, Style3) {
+        º(a, BIG_STYLE_LIST) {
             XCTAssertNotNil(b, @"b should already be assigned when this block is run");
             XCTAssertNotNil(c, @"c should already be assigned when this block is run");
         };
@@ -51,7 +56,7 @@ DRYUI_STYLE(Style3);
                 _.tag = 2;
             };
         };
-        º(c) {
+        º(c, Style0, Style1) {
             [_ make];
             º(d) {
                 [_ make];
@@ -72,6 +77,21 @@ DRYUI_STYLE(Style3);
             };
         };
     };
+    
+    NSMutableArray *styles = [NSMutableArray new];
+    _DRYUIStyle _styles[] = {BIG_STYLE_LIST};
+    for (int i = 0; i < sizeof(_styles)/sizeof(_DRYUIStyle); i++) {
+        [styles addObject:[NSString stringWithUTF8String:_styles[i].name]];
+    }
+    XCTAssertEqualObjects(a.styleNames, styles, @"a's styles should equal the BIG_STYLE_LIST");
+    
+    XCTAssertEqualObjects(b.styleNames, @[[NSString stringWithUTF8String:Style3.name]], @"b's styles should equal [Style3]");
+    XCTAssertEqualObjects(c.styleNames, (@[[NSString stringWithUTF8String:Style0.name], [NSString stringWithUTF8String:Style1.name]]), @"c's styles should equal [Style0, Style1]");
+    XCTAssertEqualObjects(g.styleNames, (@[[NSString stringWithUTF8String:Style0.name], [NSString stringWithUTF8String:Style1.name]]), @"g's styles should equal [Style0, Style1]");
+    
+    XCTAssertNil(d.styleNames, @"d shouldn't have any styles");
+    XCTAssertNil(e.styleNames, @"d shouldn't have any styles");
+    XCTAssertNil(f.styleNames, @"d shouldn't have any styles");
     
     XCTAssertEqual(a.superview, topLevel, @"a's superview should be the top view");
     XCTAssertEqual(b.superview, topLevel, @"b's superview should be the top view");
