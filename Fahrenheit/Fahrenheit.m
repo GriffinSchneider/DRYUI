@@ -15,6 +15,9 @@
 @property (nonatomic, strong) MASConstraintMaker *constraintMaker;
 @property (nonatomic, strong) NSMutableArray *wrappedAddBlocks;
 
+- (void)_fahrenheit_addStyle:(const _DRYUIStyle *)style;
+- (void)_fahrenheit_applyStyles;
+
 @end
 
 @implementation _FAHRENHEIT_VIEW (Fahrenheit_Private)
@@ -44,6 +47,17 @@ static const char fahrenheit_styleNamesBlocksId = 0;
     objc_setAssociatedObject(self, &fahrenheit_styleNamesBlocksId, styleNames, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
 }
 
+- (void)_fahrenheit_addStyle:(const _DRYUIStyle *)style {
+    if (!self.styleNames) {
+        self.styleNames = [NSMutableArray new];
+    }
+    [((NSMutableArray *)self.styleNames) addObject:[NSString stringWithUTF8String:style->name]];
+}
+
+- (void)_fahrenheit_applyStyles {
+    
+}
+
 @end
 
 
@@ -60,7 +74,7 @@ id _fahrenheit_instantiate_from_encoding(char *encoding) {
     return instance;
 }
 
-id _fahrenheit_takeStyleAndReturnNil(_DRYUIStyle notView) {
+id _fahrenheit_takeStyleAndReturnNil(const _DRYUIStyle *notView) {
     return nil;
 }
 
@@ -68,19 +82,23 @@ id _fahrenheit_returnGivenView(UIView *view) {
     return view;
 }
 
-const _DRYUIStyle _fahrenheit_returnGivenStyle(const _DRYUIStyle style) {
+const _DRYUIStyle * _fahrenheit_returnGivenStyle(const _DRYUIStyle *style) {
     return style;
 }
 
-const _DRYUIStyle _fahrenheit_takeViewAndReturnEmptyStyle(UIView *notAStyle) {
+const _DRYUIStyle * _fahrenheit_takeViewAndReturnEmptyStyle(UIView *notAStyle) {
     return DRYUIEmptyStyle;
 }
 
-void _fahrenheit_applyStyleToView(UIView *view, _DRYUIStyle style) {
-    if (style.name == DRYUIEmptyStyle.name) {
+void _fahrenheit_addStyleToView(UIView *view, const _DRYUIStyle *style) {
+    if (style->name == DRYUIEmptyStyle->name) {
         return;
     }
-    [view _fahrenheit_applyStyle:style];
+    [view _fahrenheit_addStyle:style];
+}
+
+void _fahrenheit_applyStyles(UIView *view) {
+    [view _fahrenheit_applyStyles];
 }
 
 
@@ -139,12 +157,6 @@ void _fahrenheit_applyStyleToView(UIView *view, _DRYUIStyle style) {
     return self.constraintMaker;
 }
 
-- (void)_fahrenheit_applyStyle:(const _DRYUIStyle)style {
-    if (!self.styleNames) {
-        self.styleNames = [NSMutableArray new];
-    }
-    [((NSMutableArray *)self.styleNames) addObject:[NSString stringWithUTF8String:style.name]];
-}
 
 @end
 

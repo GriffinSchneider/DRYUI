@@ -79,15 +79,15 @@ Style3 \
     };
     
     NSMutableArray *styles = [NSMutableArray new];
-    _DRYUIStyle _styles[] = {BIG_STYLE_LIST};
-    for (int i = 0; i < sizeof(_styles)/sizeof(_DRYUIStyle); i++) {
-        [styles addObject:[NSString stringWithUTF8String:_styles[i].name]];
+    const _DRYUIStyle *_styles[] = {BIG_STYLE_LIST};
+    for (int i = 0; i < sizeof(_styles)/sizeof(_DRYUIStyle*); i++) {
+        [styles addObject:[NSString stringWithUTF8String:_styles[i]->name]];
     }
     XCTAssertEqualObjects(a.styleNames, styles, @"a's styles should equal the BIG_STYLE_LIST");
     
-    XCTAssertEqualObjects(b.styleNames, @[[NSString stringWithUTF8String:Style3.name]], @"b's styles should equal [Style3]");
-    XCTAssertEqualObjects(c.styleNames, (@[[NSString stringWithUTF8String:Style0.name], [NSString stringWithUTF8String:Style1.name]]), @"c's styles should equal [Style0, Style1]");
-    XCTAssertEqualObjects(g.styleNames, (@[[NSString stringWithUTF8String:Style0.name], [NSString stringWithUTF8String:Style1.name]]), @"g's styles should equal [Style0, Style1]");
+    XCTAssertEqualObjects(b.styleNames, @[[NSString stringWithUTF8String:Style3->name]], @"b's styles should equal [Style3]");
+    XCTAssertEqualObjects(c.styleNames, (@[[NSString stringWithUTF8String:Style0->name], [NSString stringWithUTF8String:Style1->name]]), @"c's styles should equal [Style0, Style1]");
+    XCTAssertEqualObjects(g.styleNames, (@[[NSString stringWithUTF8String:Style0->name], [NSString stringWithUTF8String:Style1->name]]), @"g's styles should equal [Style0, Style1]");
     
     XCTAssertNil(d.styleNames, @"d shouldn't have any styles");
     XCTAssertNil(e.styleNames, @"d shouldn't have any styles");
