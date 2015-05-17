@@ -25,15 +25,15 @@ DRYUI_IMPLEMENT_STYLE(Orange) { _.backgroundColor = [UIColor orangeColor]; };
     [super loadView];
     UIEdgeInsets insets = UIEdgeInsetsMake(30, 30, 30, 30);
     
-    ºº(self.view) {
+    build_subviews(self.view) {
         _.backgroundColor = [UIColor whiteColor];
-        UIView* º(view1, Red) {
+        UIView* add_subview(view1, Red) {
             _.make.edges.equalTo(_.superview).with.insets(insets);
-            UIView* º(view2, Green) {
+            UIView* add_subview(view2, Green) {
                 _.make.edges.equalTo(_.superview).with.insets(insets);
-                UIView* º(view3, Blue) {
+                UIView* add_subview(view3, Blue) {
                     _.make.edges.equalTo(_.superview).with.insets(insets);
-                    UIView* º(view4, Orange) {
+                    UIView* add_subview(view4, Orange) {
                         _.make.edges.equalTo(_.superview).with.insets(insets);
                     };
                 };

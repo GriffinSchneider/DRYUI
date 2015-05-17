@@ -24,8 +24,8 @@
 #endif
 
 #ifndef DRYUI_CUSTOM_MACRO_NAMES
-#define ºº(args...) DRYUI_TOPLEVEL(args)
-#define º(args...) DRYUI(args)
+#define build_subviews(args...) DRYUI_TOPLEVEL(args)
+#define add_subview(args...) DRYUI(args)
 #endif
 
 typedef void (^DRYUIViewAndSuperviewBlock)(id DRYUI_VIEW_NAME, _DRYUI_VIEW *superview);

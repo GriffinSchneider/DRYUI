@@ -66,34 +66,34 @@ DRYUI_IMPLEMENT_STYLE(StyleButton, UIButton) {
     __block UIView *a, *b, *c, *d, *e, *f;
     __block UIButton *g, *gg;
     
-    ºº(topLevel) {
+    build_subviews(topLevel) {
         _.make.edges.equalTo(_);
-        º(a, BIG_STYLE_LIST) {
+        add_subview(a, BIG_STYLE_LIST) {
             XCTAssertNotNil(b, @"b should already be assigned when this block is run");
             XCTAssertNotNil(c, @"c should already be assigned when this block is run");
         };
-        º(b, Style3) {
+        add_subview(b, Style3) {
             [_ make];
             XCTAssertEqual(_.superview, superview, @"superview should be bound to view.superview");
             _.backgroundColor = [UIColor purpleColor];
-            UIView* º(x) {
+            UIView* add_subview(x) {
                 _.tag = 2;
             };
         };
-        º(c, Style0, Style1) {
+        add_subview(c, Style0, Style1) {
             [_ make];
-            º(d) {
+            add_subview(d) {
                 [_ make];
                 XCTAssertEqual(_.superview, superview, @"superview should be bound to view.superview");
-                º(e) {
+                add_subview(e) {
                     [_ make];
                     XCTAssertNotNil(b, @"b should already be assigned when this block is run");
                     XCTAssertNotNil(c, @"c should already be assigned when this block is run");
                     XCTAssertNotNil(f, @"f should already be assigned when this block is run");
                     XCTAssertNotNil(g, @"g should already be assigned when this block is run");
                 };
-                º(f){};
-                º(g, ({gg = [UIButton buttonWithType:UIButtonTypeCustom];}), StyleButton, Style1) {
+                add_subview(f){};
+                add_subview(g, ({gg = [UIButton buttonWithType:UIButtonTypeCustom];}), StyleButton, Style1) {
                     XCTAssertEqual(_, gg);
                     [_ make];
                     _.tag = 3;
