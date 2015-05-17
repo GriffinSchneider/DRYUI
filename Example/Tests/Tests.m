@@ -38,34 +38,34 @@ Style3 \
 // these blocks and assert later instead of asserting in the blocks themselves
 static BOOL wasSuperviewEverNil = NO;
 
-DRYUI_IMPLEMENT_STYLE(Style0) {
+dryui_style(Style0) {
     if (!superview) wasSuperviewEverNil = YES;
     _.backgroundColor = [UIColor redColor];
 };
 
-DRYUI_IMPLEMENT_STYLE(Style1) {
-    parentStyle(Style0);
+dryui_style(Style1) {
+    parent_style(Style0);
     if (!superview) wasSuperviewEverNil = YES;
     _.backgroundColor = [UIColor blueColor];
 };
 
-DRYUI_IMPLEMENT_STYLE(Style2) {
-    parentStyle(Style1);
+dryui_style(Style2) {
+    parent_style(Style1);
     if (!superview) wasSuperviewEverNil = YES;
     _.backgroundColor = [UIColor greenColor];
 };
 
-DRYUI_IMPLEMENT_STYLE(Style3) {
-    parentStyle(Style2);
+dryui_style(Style3) {
+    parent_style(Style2);
     if (!superview) wasSuperviewEverNil = YES;
     _.backgroundColor = [UIColor orangeColor];
 };
 
-DRYUI_IMPLEMENT_STYLE(StyleButton, UIButton) {
-    parentStyle(Style0);
+dryui_style(StyleButton, UIButton) {
+    parent_style(Style0);
     [_ setTitle:@"button title" forState:UIControlStateNormal];
-    parentStyle(Style1);
-    parentStyle(Style3);
+    parent_style(Style1);
+    parent_style(Style3);
 };
 
 - (void)testFahrenheit {
@@ -73,6 +73,9 @@ DRYUI_IMPLEMENT_STYLE(StyleButton, UIButton) {
     UIView *topLevel = [UIView new];
     __block UIView *a, *b, *c, *d, *e;
     __block UIButton *g, *gg;
+    
+    __block UIButton *h = [UIButton new];
+    UIButton *hh = h;
     
     build_subviews(topLevel) {
         _.make.edges.equalTo(_);
@@ -101,12 +104,15 @@ DRYUI_IMPLEMENT_STYLE(StyleButton, UIButton) {
                     XCTAssertNotNil(g, @"g should already be assigned when this block is run");
                 };
                 add_subview(self.f){};
-                add_subview(g, ({gg = [UIButton buttonWithType:UIButtonTypeCustom];}), Style1, StyleButton) {
+                add_subview(g, ({gg = [UIButton buttonWithType:UIButtonTypeSystem];}), Style1, StyleButton) {
                     XCTAssertEqual(_, gg);
                     [_ make];
                     _.tag = 3;
                 };
             };
+        };
+        add_subview(h) {
+            XCTAssertEqual(h, hh, @"Using add_subview with a variable that's already assigned shouldn't re-assign the variable");
         };
     };
     
@@ -114,7 +120,8 @@ DRYUI_IMPLEMENT_STYLE(StyleButton, UIButton) {
     XCTAssertEqual(a.superview, topLevel, @"a's superview should be the top view");
     XCTAssertEqual(b.superview, topLevel, @"b's superview should be the top view");
     XCTAssertEqual(c.superview, topLevel, @"c's superview should be the top view");
-    XCTAssertEqualObjects(topLevel.subviews, (@[a, b, c]), @"a, b, and c should be the only subviews of the top view");
+    XCTAssertEqual(h.superview, topLevel, @"h's superview should be the top view");
+    XCTAssertEqualObjects(topLevel.subviews, (@[a, b, c, h]), @"a, b, c, and h should be the only subviews of the top view");
     
     XCTAssertEqual(c.subviews.count, 1, @"c should have 1 subview");
     XCTAssertEqual(c.subviews[0], d, @"c's subview should be d");

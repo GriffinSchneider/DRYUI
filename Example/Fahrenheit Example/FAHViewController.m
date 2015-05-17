@@ -9,16 +9,16 @@
 #import "FAHViewController.h"
 #import <Fahrenheit/DRYUI.h>
 
-DRYUI_IMPLEMENT_STYLE(Red) {
+dryui_style(Red) {
     _.backgroundColor = [UIColor redColor];
 };
-DRYUI_IMPLEMENT_STYLE(Green) {
+dryui_style(Green) {
     _.backgroundColor = [UIColor greenColor];
 };
-DRYUI_IMPLEMENT_STYLE(Blue) {
+dryui_style(Blue) {
     _.backgroundColor = [UIColor blueColor];
 };
-DRYUI_IMPLEMENT_STYLE(Orange) {
+dryui_style(Orange) {
     _.backgroundColor = [UIColor orangeColor];
 };
 

@@ -8,7 +8,7 @@
 #import "DRYUI.h"
 #import <objc/runtime.h>
 
-DRYUI_IMPLEMENT_STYLE(DRYUIEmptyStyle) {
+dryui_style(DRYUIEmptyStyle) {
 };
 
 _DRYUI_VIEW *_dryui_current_view = nil;
@@ -77,8 +77,8 @@ static const char dryui_styleNamesBlocksId = 0;
              NSStringFromClass([self class]),
              [NSString stringWithUTF8String:style->viewClassName]);
     
-    style->applicationBlock(self, self.superview, ^(DRYUIStyle parentStyle) {
-        [self _dryui_applyStyle:parentStyle];
+    style->applicationBlock(self, self.superview, ^(DRYUIStyle parent_style) {
+        [self _dryui_applyStyle:parent_style];
     });
 }
 

@@ -18,57 +18,21 @@
 #import <Foundation/Foundation.h>
 #import <Masonry/Masonry.h>
 
-
-#ifndef DRYUI_VIEW_NAME
-#define DRYUI_VIEW_NAME _
-#endif
-
-#ifndef DRYUI_CUSTOM_MACRO_NAMES
-#define build_subviews(args...) DRYUI_TOPLEVEL(args)
-#define add_subview(args...) DRYUI(args)
-#endif
-
+////////////////////////////////////////////////////////////////////////////////////////////////////
+#pragma mark -
+#pragma mark Typedefs
 typedef struct _DRYUIStyle _DRYUIStyle;
 typedef const _DRYUIStyle * DRYUIStyle;
 
-typedef void (^DRYUIViewAndSuperviewBlock)(id DRYUI_VIEW_NAME, _DRYUI_VIEW *superview);
-typedef void (^DRYUIParentStyleBlock)(DRYUIStyle parentStyle);
-typedef void (^DRYUIStyleBlock)(id DRYUI_VIEW_NAME, _DRYUI_VIEW *superview, DRYUIParentStyleBlock parentStyle);
+typedef void (^DRYUIViewAndSuperviewBlock)(id _, _DRYUI_VIEW *superview);
+typedef void (^DRYUIParentStyleBlock)(DRYUIStyle parent_style);
+typedef void (^DRYUIStyleBlock)(id _, _DRYUI_VIEW *superview, DRYUIParentStyleBlock parent_style);
 
 struct _DRYUIStyle {
     const char *name;
     const char *viewClassName;
     __unsafe_unretained DRYUIStyleBlock applicationBlock;
 };
-
-
-#define _DRYUI_APPLICATION_BLOCK_NAME_FOR_STYLE(styleName) _DRYUI_applyStyle_##styleName
-
-#define DRYUI_DECLARE_STYLE(styleName) \
-extern DRYUIStyle styleName; \
-
-#define _DRYUI_IMPLEMENT_STYLE_OVERLOADED_MACRO(_1,_2,NAME,...) NAME
-#define DRYUI_IMPLEMENT_STYLE(args...) _DRYUI_IMPLEMENT_STYLE_OVERLOADED_MACRO(args, _DRYUI_IMPLEMENT_STYLE_2, _DRYUI_IMPLEMENT_STYLE_1)(args)
-
-#define _DRYUI_IMPLEMENT_STYLE_1(styleName) \
-_DRYUI_IMPLEMENT_STYLE_2(styleName, _DRYUI_VIEW)
-
-// We're going to stringify the className, so add another macro expansion pass
-// to let className expand (i.e. if it's _DRYUI_VIEW).
-#define _DRYUI_IMPLEMENT_STYLE_2(styleName, className) __DRYUI_IMPLEMENT_STYLE_2(styleName, className)
-#define __DRYUI_IMPLEMENT_STYLE_2(styleName, className) \
-static DRYUIStyleBlock _DRYUI_APPLICATION_BLOCK_NAME_FOR_STYLE(styleName); \
-static const _DRYUIStyle _DRYUIStyle_##styleName = { \
-    .name = #styleName, \
-    .viewClassName = #className, \
-    .applicationBlock = ^void(_DRYUI_VIEW *_, _DRYUI_VIEW *superview, DRYUIParentStyleBlock parentStyle) { \
-        _DRYUI_APPLICATION_BLOCK_NAME_FOR_STYLE(styleName)(_, superview, parentStyle); \
-    } \
-}; \
-DRYUIStyle styleName = &_DRYUIStyle_##styleName; \
-static DRYUIStyleBlock _DRYUI_APPLICATION_BLOCK_NAME_FOR_STYLE(styleName) = ^(className *_, _DRYUI_VIEW *superview, DRYUIParentStyleBlock parentStyle)
-
-DRYUI_DECLARE_STYLE(DRYUIEmptyStyle);
 
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -91,6 +55,9 @@ DRYUI_DECLARE_STYLE(DRYUIEmptyStyle);
 
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
+#pragma mark -
+#pragma mark Hierarchy Building Macros
+
 FOUNDATION_EXTERN id _dryui_instantiate_from_encoding(char *);
 
 FOUNDATION_EXTERN id _dryui_takeStyleAndReturnNil(DRYUIStyle notAView);
@@ -100,6 +67,14 @@ FOUNDATION_EXTERN DRYUIStyle _dryui_returnGivenStyle(DRYUIStyle style);
 FOUNDATION_EXTERN DRYUIStyle _dryui_takeViewAndReturnEmptyStyle(_DRYUI_VIEW *notAStyle);
 
 FOUNDATION_EXTERN void _dryui_addStyleToView(_DRYUI_VIEW *view, DRYUIStyle style);
+
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+#pragma mark -
+#pragma mark Hierarchy Building Macros
+
+#define build_subviews(args...) DRYUI_TOPLEVEL(args)
+#define add_subview(args...) DRYUI(args)
 
 #define _DRYUI_CONCATENATE_DETAIL(x, y) x##y
 #define _DRYUI_CONCATENATE(x, y) _DRYUI_CONCATENATE_DETAIL(x, y)
@@ -130,7 +105,7 @@ if (1) { \
             _DRYUI_VIEW_AND_SUPERVIEW_BLOCK = nil; \
             break; \
         } else \
-            _DRYUI_GOTO_LABEL: _DRYUI_VIEW_AND_SUPERVIEW_BLOCK = ^(_DRYUI_VIEW_TYPE(viewArg) DRYUI_VIEW_NAME, _DRYUI_VIEW *superview) \
+            _DRYUI_GOTO_LABEL: _DRYUI_VIEW_AND_SUPERVIEW_BLOCK = ^(_DRYUI_VIEW_TYPE(viewArg) _, _DRYUI_VIEW *superview) \
             // We couldn't get execution here without GOTOing here, but once we do and this statement finishes,
             // execution will jump back up to the while(1) and then into body_after_statement_after_macro.
 
@@ -290,17 +265,54 @@ typeof(variableName) _DRYUI_PASSED_INSTANCE_OR_NIL = nil; \
 DRYUIStyle _DRYUI_FIRST_STYLE_OR_NONE = DRYUIEmptyStyle; \
 ({ codeAfterVariableDeclarations }); \
 if (!variableName) { \
-    variableName = ({ \
-        NSAssert(_dryui_current_toplevel_view, @"Calls to DRYUI must be inside a call to DRYUI_TOPLEVEL."); \
-        _dryui_current_view = _DRYUI_PASSED_INSTANCE_OR_NIL ?: _dryui_instantiate_from_encoding(@encode(typeof(*(variableName)))); \
-        (typeof(variableName))_dryui_current_view; \
-    }); \
+    variableName = _DRYUI_PASSED_INSTANCE_OR_NIL ?: _dryui_instantiate_from_encoding(@encode(typeof(*(variableName)))); \
 } \
+NSAssert(_dryui_current_toplevel_view, @"Calls to DRYUI must be inside a call to DRYUI_TOPLEVEL."); \
+_dryui_current_view = variableName; \
 _DRYUI_GOTO_HELPER(variableName, \
     [_dryui_current_toplevel_view _dryui_addViewFromBuildSubviews:_dryui_current_view \
-                                                    withSuperview:DRYUI_VIEW_NAME \
+                                                    withSuperview:_ \
                                                          andBlock:_DRYUI_VIEW_AND_SUPERVIEW_BLOCK]; \
     _dryui_addStyleToView(variableName, _DRYUI_FIRST_STYLE_OR_NONE); \
     ({ codeAfterVariableAssignment }); \
     _dryui_current_view = nil; \
 )
+
+
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+#pragma mark -
+#pragma mark Style Macros
+
+// Public style declaration
+#define dryui_public_style(args...) _DRYUI_STYLE_OVERLOADED_MACRO(args, _DRYUI_PUBLIC_STYLE_2, _DRYUI_PUBLIC_STYLE_1)(args)
+
+#define _DRYUI_STYLE_OVERLOADED_MACRO(_1,_2,NAME,...) NAME
+#define _DRYUI_PUBLIC_STYLE_2(styleName, className) _DRYUI_PUBLIC_STYLE_1(styleName)
+#define _DRYUI_PUBLIC_STYLE_1(styleName) extern DRYUIStyle styleName;
+
+dryui_public_style(DRYUIEmptyStyle, UIView);
+
+// Style definition
+#define dryui_style(args...) _DRYUI_STYLE_OVERLOADED_MACRO(args, _DRYUI_IMPLEMENT_STYLE_2, _DRYUI_IMPLEMENT_STYLE_1)(args)
+
+#define _DRYUI_APPLICATION_BLOCK_NAME_FOR_STYLE(styleName) _DRYUI_applyStyle_##styleName
+
+#define _DRYUI_IMPLEMENT_STYLE_1(styleName) \
+_DRYUI_IMPLEMENT_STYLE_2(styleName, _DRYUI_VIEW)
+
+// We're going to stringify the className, so add another macro expansion pass
+// to let className expand (i.e. if it's _DRYUI_VIEW).
+#define _DRYUI_IMPLEMENT_STYLE_2(styleName, className) __DRYUI_IMPLEMENT_STYLE_2(styleName, className)
+#define __DRYUI_IMPLEMENT_STYLE_2(styleName, className) \
+static DRYUIStyleBlock _DRYUI_APPLICATION_BLOCK_NAME_FOR_STYLE(styleName); \
+static const _DRYUIStyle _DRYUIStyle_##styleName = { \
+    .name = #styleName, \
+    .viewClassName = #className, \
+    .applicationBlock = ^void(_DRYUI_VIEW *_, _DRYUI_VIEW *superview, DRYUIParentStyleBlock parent_style) { \
+        _DRYUI_APPLICATION_BLOCK_NAME_FOR_STYLE(styleName)(_, superview, parent_style); \
+    } \
+}; \
+DRYUIStyle styleName = &_DRYUIStyle_##styleName; \
+static DRYUIStyleBlock _DRYUI_APPLICATION_BLOCK_NAME_FOR_STYLE(styleName) = ^(className *_, _DRYUI_VIEW *superview, DRYUIParentStyleBlock parent_style)
+

@@ -1,10 +1,10 @@
 Pod::Spec.new do |s|
-  s.name             = "Fahrenheit"
-  s.version          = "0.2.1"
-  s.summary          = "A tiny library that provides a better API for building view hierarchies in code."
+  s.name             = "DRYUI"
+  s.version          = "0.3.0"
+  s.summary          = "A tiny library that provides a better API for building and styling view hierarchies in code."
   s.description      = %{
-    Fahrenheit is a tiny library that provides a better API for building view hierarchies in code.
-    Fahrenheit uses [Masonry](https://github.com/Masonry/Masonry) for Autolayout, and works on both iOS and OSX.
+    DRYUI is a tiny library that provides a better API for building and styling view hierarchies in code.
+    DRYUI uses [Masonry](https://github.com/Masonry/Masonry) for Autolayout, and works on both iOS and OSX.
   }
   s.homepage         = "https://github.com/GriffinSchneider/Fahrenheit"
   s.license          = 'MIT'
