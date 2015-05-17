@@ -1,4 +1,4 @@
 language: objective-c
-xcode_workspace: Fahrenheit.xcworkspace
-xcode_scheme: Fahrenheit-Example
+xcode_workspace: DRYUI.xcworkspace
+xcode_scheme: DRYUI-Example
 xcode_sdk: iphonesimulator8.1
