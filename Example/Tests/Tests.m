@@ -20,6 +20,8 @@ Style3 \
 
 @interface FahrenheitTests : XCTestCase
 
+@property UIView *f;
+
 @end
 
 @implementation FahrenheitTests
@@ -63,7 +65,7 @@ DRYUI_IMPLEMENT_STYLE(StyleButton, UIButton) {
 - (void)testFahrenheit {
 
     UIView *topLevel = [UIView new];
-    __block UIView *a, *b, *c, *d, *e, *f;
+    __block UIView *a, *b, *c, *d, *e;
     __block UIButton *g, *gg;
     
     build_subviews(topLevel) {
@@ -89,10 +91,10 @@ DRYUI_IMPLEMENT_STYLE(StyleButton, UIButton) {
                     [_ make];
                     XCTAssertNotNil(b, @"b should already be assigned when this block is run");
                     XCTAssertNotNil(c, @"c should already be assigned when this block is run");
-                    XCTAssertNotNil(f, @"f should already be assigned when this block is run");
+                    XCTAssertNotNil(self.f, @"self.f should already be assigned when this block is run");
                     XCTAssertNotNil(g, @"g should already be assigned when this block is run");
                 };
-                add_subview(f){};
+                add_subview(self.f){};
                 add_subview(g, ({gg = [UIButton buttonWithType:UIButtonTypeCustom];}), StyleButton, Style1) {
                     XCTAssertEqual(_, gg);
                     [_ make];
@@ -116,7 +118,7 @@ DRYUI_IMPLEMENT_STYLE(StyleButton, UIButton) {
     
     // Assertions about layout constraints
     XCTAssertTrue(a.translatesAutoresizingMaskIntoConstraints, @"views that don't use _.make shouldn't set translatesAutoresizingMaskIntoConstraints to NO");
-    XCTAssertTrue(f.translatesAutoresizingMaskIntoConstraints, @"views that don't use _.make shouldn't set translatesAutoresizingMaskIntoConstraints to NO");
+    XCTAssertTrue(self.f.translatesAutoresizingMaskIntoConstraints, @"views that don't use _.make shouldn't set translatesAutoresizingMaskIntoConstraints to NO");
     
     XCTAssertFalse(b.translatesAutoresizingMaskIntoConstraints, @"views that use _.make should set translatesAutoresizingMaskIntoConstraints to NO");
     XCTAssertFalse(c.translatesAutoresizingMaskIntoConstraints, @"views that use _.make should set translatesAutoresizingMaskIntoConstraints to NO");
@@ -139,7 +141,7 @@ DRYUI_IMPLEMENT_STYLE(StyleButton, UIButton) {
     
     XCTAssertNil(d.styleNames, @"d shouldn't have any styles");
     XCTAssertNil(e.styleNames, @"d shouldn't have any styles");
-    XCTAssertNil(f.styleNames, @"d shouldn't have any styles");
+    XCTAssertNil(self.f.styleNames, @"d shouldn't have any styles");
     
     
     // Assertions about style application
