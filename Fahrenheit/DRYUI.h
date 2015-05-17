@@ -293,8 +293,8 @@ if (!variableName) { \
 } \
 _DRYUI_GOTO_HELPER(variableName, \
     [_dryui_current_toplevel_view _dryui_addViewFromBuildSubviews:_dryui_current_view \
-                                                              withSuperview:DRYUI_VIEW_NAME \
-                                                                   andBlock:_DRYUI_VIEW_AND_SUPERVIEW_BLOCK]; \
+                                                    withSuperview:DRYUI_VIEW_NAME \
+                                                         andBlock:_DRYUI_VIEW_AND_SUPERVIEW_BLOCK]; \
     _dryui_addStyleToView(variableName, _DRYUI_FIRST_STYLE_OR_NONE); \
     ({ codeAfterVariableAssignment }); \
     _dryui_current_view = nil; \
