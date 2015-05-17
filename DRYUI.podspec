@@ -11,7 +11,7 @@ Pod::Spec.new do |s|
   s.author           = { "Griffin Schneider" => "griffinschneider@gmail.com" }
   s.source           = { :git => "https://github.com/GriffinSchneider/Fahrenheit.git", :tag => s.version.to_s }
   
-  s.source_files = 'Fahrenheit/**'
+  s.source_files = 'DRYUI/**'
   
   s.ios.frameworks = 'Foundation', 'UIKit'
   s.osx.frameworks = 'Foundation', 'AppKit'

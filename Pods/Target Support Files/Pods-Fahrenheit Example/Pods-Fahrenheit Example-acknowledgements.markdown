@@ -1,7 +1,7 @@
 # Acknowledgements
 This application makes use of the following third party libraries:
 
-## Fahrenheit
+## DRYUI
 
 Copyright (c) 2015 Griffin Schneider <gschneider@paypal.com>
 
