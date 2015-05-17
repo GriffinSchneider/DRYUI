@@ -7,7 +7,7 @@
 //
 
 #import "FAHViewController.h"
-#import <Fahrenheit/DRYUI.h>
+#import <DRYUI/DRYUI.h>
 
 dryui_style(Red) {
     _.backgroundColor = [UIColor redColor];
