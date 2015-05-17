@@ -44,22 +44,28 @@ DRYUI_IMPLEMENT_STYLE(Style0) {
 };
 
 DRYUI_IMPLEMENT_STYLE(Style1) {
+    parentStyle(Style0);
     if (!superview) wasSuperviewEverNil = YES;
     _.backgroundColor = [UIColor blueColor];
 };
 
 DRYUI_IMPLEMENT_STYLE(Style2) {
+    parentStyle(Style1);
     if (!superview) wasSuperviewEverNil = YES;
     _.backgroundColor = [UIColor greenColor];
 };
 
 DRYUI_IMPLEMENT_STYLE(Style3) {
+    parentStyle(Style2);
     if (!superview) wasSuperviewEverNil = YES;
     _.backgroundColor = [UIColor orangeColor];
 };
 
 DRYUI_IMPLEMENT_STYLE(StyleButton, UIButton) {
+    parentStyle(Style0);
     [_ setTitle:@"button title" forState:UIControlStateNormal];
+    parentStyle(Style1);
+    parentStyle(Style3);
 };
 
 - (void)testFahrenheit {
@@ -95,7 +101,7 @@ DRYUI_IMPLEMENT_STYLE(StyleButton, UIButton) {
                     XCTAssertNotNil(g, @"g should already be assigned when this block is run");
                 };
                 add_subview(self.f){};
-                add_subview(g, ({gg = [UIButton buttonWithType:UIButtonTypeCustom];}), StyleButton, Style1) {
+                add_subview(g, ({gg = [UIButton buttonWithType:UIButtonTypeCustom];}), Style1, StyleButton) {
                     XCTAssertEqual(_, gg);
                     [_ make];
                     _.tag = 3;
@@ -137,7 +143,7 @@ DRYUI_IMPLEMENT_STYLE(StyleButton, UIButton) {
     
     XCTAssertEqualObjects(b.styleNames, @[[NSString stringWithUTF8String:Style3->name]], @"b's styles should equal [Style3]");
     XCTAssertEqualObjects(c.styleNames, (@[[NSString stringWithUTF8String:Style0->name], [NSString stringWithUTF8String:Style1->name]]), @"c's styles should equal [Style0, Style1]");
-    XCTAssertEqualObjects(g.styleNames, (@[[NSString stringWithUTF8String:StyleButton->name], [NSString stringWithUTF8String:Style1->name]]), @"g's styles should equal [StyleButton, Style1]");
+    XCTAssertEqualObjects(g.styleNames, (@[[NSString stringWithUTF8String:Style1->name], [NSString stringWithUTF8String:StyleButton->name]]), @"g's styles should equal [StyleButton, Style1]");
     
     XCTAssertNil(d.styleNames, @"d shouldn't have any styles");
     XCTAssertNil(e.styleNames, @"d shouldn't have any styles");
@@ -149,7 +155,7 @@ DRYUI_IMPLEMENT_STYLE(StyleButton, UIButton) {
     XCTAssertEqual(a.backgroundColor, [UIColor orangeColor], @"a should be orange");
     XCTAssertEqual(b.backgroundColor, [UIColor purpleColor], @"b should be purple");
     XCTAssertEqual(c.backgroundColor, [UIColor blueColor], @"c should be blue");
-    XCTAssertEqual(g.backgroundColor, [UIColor blueColor], @"g should be blue");
+    XCTAssertEqual(g.backgroundColor, [UIColor orangeColor], @"g should be orange");
     XCTAssertEqual([g titleForState:UIControlStateNormal], @"button title");
 }
 

@@ -28,14 +28,19 @@
 #define add_subview(args...) DRYUI(args)
 #endif
 
-typedef void (^DRYUIViewAndSuperviewBlock)(id DRYUI_VIEW_NAME, _DRYUI_VIEW *superview);
+typedef struct _DRYUIStyle _DRYUIStyle;
+typedef const _DRYUIStyle * DRYUIStyle;
 
-typedef struct {
+typedef void (^DRYUIViewAndSuperviewBlock)(id DRYUI_VIEW_NAME, _DRYUI_VIEW *superview);
+typedef void (^DRYUIParentStyleBlock)(DRYUIStyle parentStyle);
+typedef void (^DRYUIStyleBlock)(id DRYUI_VIEW_NAME, _DRYUI_VIEW *superview, DRYUIParentStyleBlock parentStyle);
+
+struct _DRYUIStyle {
     const char *name;
     const char *viewClassName;
-    __unsafe_unretained DRYUIViewAndSuperviewBlock applicationBlock;
-} _DRYUIStyle;
-typedef const _DRYUIStyle * DRYUIStyle;
+    __unsafe_unretained DRYUIStyleBlock applicationBlock;
+};
+
 
 #define _DRYUI_APPLICATION_BLOCK_NAME_FOR_STYLE(styleName) _DRYUI_applyStyle_##styleName
 
@@ -52,16 +57,16 @@ _DRYUI_IMPLEMENT_STYLE_2(styleName, _DRYUI_VIEW)
 // to let className expand (i.e. if it's _DRYUI_VIEW).
 #define _DRYUI_IMPLEMENT_STYLE_2(styleName, className) __DRYUI_IMPLEMENT_STYLE_2(styleName, className)
 #define __DRYUI_IMPLEMENT_STYLE_2(styleName, className) \
-static DRYUIViewAndSuperviewBlock _DRYUI_APPLICATION_BLOCK_NAME_FOR_STYLE(styleName); \
+static DRYUIStyleBlock _DRYUI_APPLICATION_BLOCK_NAME_FOR_STYLE(styleName); \
 static const _DRYUIStyle _DRYUIStyle_##styleName = { \
     .name = #styleName, \
     .viewClassName = #className, \
-    .applicationBlock = ^void(_DRYUI_VIEW *_, _DRYUI_VIEW *superview) { \
-        _DRYUI_APPLICATION_BLOCK_NAME_FOR_STYLE(styleName)(_, superview); \
+    .applicationBlock = ^void(_DRYUI_VIEW *_, _DRYUI_VIEW *superview, DRYUIParentStyleBlock parentStyle) { \
+        _DRYUI_APPLICATION_BLOCK_NAME_FOR_STYLE(styleName)(_, superview, parentStyle); \
     } \
 }; \
 DRYUIStyle styleName = &_DRYUIStyle_##styleName; \
-static DRYUIViewAndSuperviewBlock _DRYUI_APPLICATION_BLOCK_NAME_FOR_STYLE(styleName) = ^(className *_, _DRYUI_VIEW *superview)
+static DRYUIStyleBlock _DRYUI_APPLICATION_BLOCK_NAME_FOR_STYLE(styleName) = ^(className *_, _DRYUI_VIEW *superview, DRYUIParentStyleBlock parentStyle)
 
 DRYUI_DECLARE_STYLE(DRYUIEmptyStyle);
 

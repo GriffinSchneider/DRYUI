@@ -57,16 +57,29 @@ static const char dryui_styleNamesBlocksId = 0;
     }
     
     NSString *styleName = [NSString stringWithUTF8String:style->name];
-    
-    NSAssert([self isKindOfClass:NSClassFromString([NSString stringWithUTF8String:style->viewClassName])],
-             @"Attempted to apply style %@ to a view of class %@, which isn't a subclass of %@.", styleName, NSStringFromClass([self class]), [NSString stringWithUTF8String:style->viewClassName]);
-    
+
     if (!self.styleNames) {
         self.styleNames = [NSMutableArray new];
     }
     [((NSMutableArray *)self.styleNames) addObject:styleName];
     
-    style->applicationBlock(self, self.superview);
+    [self _dryui_applyStyle:style];
+}
+
+- (void)_dryui_applyStyle:(DRYUIStyle)style {
+    if (style == DRYUIEmptyStyle) {
+        return;
+    }
+    
+    NSAssert([self isKindOfClass:NSClassFromString([NSString stringWithUTF8String:style->viewClassName])],
+             @"Attempted to apply style %@ to a view of class %@, which isn't a subclass of %@.",
+             [NSString stringWithUTF8String:style->name],
+             NSStringFromClass([self class]),
+             [NSString stringWithUTF8String:style->viewClassName]);
+    
+    style->applicationBlock(self, self.superview, ^(DRYUIStyle parentStyle) {
+        [self _dryui_applyStyle:parentStyle];
+    });
 }
 
 @end
