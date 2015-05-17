@@ -1,4 +1,4 @@
-# DRYUI [![Version](https://img.shields.io/cocoapods/v/Fahrenheit.svg?style=flat)](http://cocoapods.org/pods/Fahrenheit) [![Build Status](https://travis-ci.org/GriffinSchneider/Fahrenheit.svg?branch=fix-travis)](https://travis-ci.org/GriffinSchneider/Fahrenheit)
+# DRYUI [![Version](https://img.shields.io/cocoapods/v/DRYUI.svg?style=flat)](http://cocoapods.org/pods/DRYUI) [![Build Status](https://travis-ci.org/GriffinSchneider/DRYUI.svg?branch=fix-travis)](https://travis-ci.org/GriffinSchneider/DRYUI)
 
 DRYUI is a tiny library that provides a better API for building and styling view hierarchies in code. DRYUI uses [Masonry](https://github.com/Masonry/Masonry) for Autolayout, and works on both iOS and OSX.
 

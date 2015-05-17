@@ -6,10 +6,10 @@ Pod::Spec.new do |s|
     DRYUI is a tiny library that provides a better API for building and styling view hierarchies in code.
     DRYUI uses [Masonry](https://github.com/Masonry/Masonry) for Autolayout, and works on both iOS and OSX.
   }
-  s.homepage         = "https://github.com/GriffinSchneider/Fahrenheit"
+  s.homepage         = "https://github.com/GriffinSchneider/DRYUI"
   s.license          = 'MIT'
   s.author           = { "Griffin Schneider" => "griffinschneider@gmail.com" }
-  s.source           = { :git => "https://github.com/GriffinSchneider/Fahrenheit.git", :tag => s.version.to_s }
+  s.source           = { :git => "https://github.com/GriffinSchneider/DRYUI.git", :tag => s.version.to_s }
   
   s.source_files = 'DRYUI/**'
   

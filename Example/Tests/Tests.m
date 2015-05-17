@@ -1,6 +1,6 @@
 //
-//  FahrenheitTests.m
-//  FahrenheitTests
+//  Tests.m
+//  DRYUI
 //
 //  Created by Griffin Schneider on 03/29/2015.
 //  Copyright (c) 2014 Griffin Schneider. All rights reserved.
@@ -18,13 +18,13 @@ Style3, Style3, Style3, Style3, Style3, Style3, \
 Style3, Style3, Style3, Style3, Style3, Style3, \
 Style3 \
 
-@interface FahrenheitTests : XCTestCase
+@interface DRYUITests : XCTestCase
 
 @property UIView *f;
 
 @end
 
-@implementation FahrenheitTests
+@implementation DRYUITests
 
 - (void)setUp {
     [super setUp];
@@ -68,7 +68,7 @@ dryui_style(StyleButton, UIButton) {
     parent_style(Style3);
 };
 
-- (void)testFahrenheit {
+- (void)testDRYUI {
 
     UIView *topLevel = [UIView new];
     __block UIView *a, *b, *c, *d, *e;
