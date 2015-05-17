@@ -9,11 +9,11 @@
 /* Begin PBXBuildFile section */
 		30922CA354D52366D74ECDE0 /* libPods-Fahrenheit Example.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 523E789134D6AC637FCA70F7 /* libPods-Fahrenheit Example.a */; };
 		4556CEC3EFB2534EE7FB48E6 /* libPods-Tests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = FA863CEF09D7E32E5B26046A /* libPods-Tests.a */; };
-		5DB773C01AC894970040E95C /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 5DB773B41AC894970040E95C /* InfoPlist.strings */; };
-		5DB773C11AC894970040E95C /* FAHAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 5DB773B71AC894970040E95C /* FAHAppDelegate.m */; };
-		5DB773C31AC894970040E95C /* FAHViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 5DB773BB1AC894970040E95C /* FAHViewController.m */; };
-		5DB773C41AC894970040E95C /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 5DB773BC1AC894970040E95C /* Images.xcassets */; };
-		5DB773C51AC894970040E95C /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 5DB773BD1AC894970040E95C /* main.m */; };
+		5DD65E3D1B0933200076BF95 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 5DD65E341B0933200076BF95 /* InfoPlist.strings */; };
+		5DD65E3E1B0933200076BF95 /* FAHAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 5DD65E371B0933200076BF95 /* FAHAppDelegate.m */; };
+		5DD65E3F1B0933200076BF95 /* FAHViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 5DD65E391B0933200076BF95 /* FAHViewController.m */; };
+		5DD65E401B0933200076BF95 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 5DD65E3A1B0933200076BF95 /* Images.xcassets */; };
+		5DD65E411B0933200076BF95 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 5DD65E3B1B0933200076BF95 /* main.m */; };
 		6003F58E195388D20070C39A /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6003F58D195388D20070C39A /* Foundation.framework */; };
 		6003F590195388D20070C39A /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6003F58F195388D20070C39A /* CoreGraphics.framework */; };
 		6003F592195388D20070C39A /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6003F591195388D20070C39A /* UIKit.framework */; };
@@ -41,15 +41,15 @@
 		3ABB9301F31F45131D783CFF /* Pods-DRYUI Example.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-DRYUI Example.release.xcconfig"; path = "../Pods/Target Support Files/Pods-DRYUI Example/Pods-DRYUI Example.release.xcconfig"; sourceTree = "<group>"; };
 		49B6E25F570F92F4BB0510A8 /* Pods-Fahrenheit.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Fahrenheit.release.xcconfig"; path = "Pods/Target Support Files/Pods-Fahrenheit/Pods-Fahrenheit.release.xcconfig"; sourceTree = "<group>"; };
 		523E789134D6AC637FCA70F7 /* libPods-Fahrenheit Example.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-Fahrenheit Example.a"; sourceTree = BUILT_PRODUCTS_DIR; };
-		5DB773B51AC894970040E95C /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
-		5DB773B61AC894970040E95C /* FAHAppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FAHAppDelegate.h; sourceTree = "<group>"; };
-		5DB773B71AC894970040E95C /* FAHAppDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FAHAppDelegate.m; sourceTree = "<group>"; };
-		5DB773B81AC894970040E95C /* DRYUI Example-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "DRYUI Example-Info.plist"; sourceTree = "<group>"; };
-		5DB773B91AC894970040E95C /* DRYUI Example-Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "DRYUI Example-Prefix.pch"; sourceTree = "<group>"; };
-		5DB773BA1AC894970040E95C /* FAHViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FAHViewController.h; sourceTree = "<group>"; };
-		5DB773BB1AC894970040E95C /* FAHViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FAHViewController.m; sourceTree = "<group>"; };
-		5DB773BC1AC894970040E95C /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
-		5DB773BD1AC894970040E95C /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
+		5DD65E321B0933200076BF95 /* DRYUI Example-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "DRYUI Example-Info.plist"; sourceTree = "<group>"; };
+		5DD65E331B0933200076BF95 /* DRYUI Example-Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "DRYUI Example-Prefix.pch"; sourceTree = "<group>"; };
+		5DD65E351B0933200076BF95 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		5DD65E361B0933200076BF95 /* FAHAppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FAHAppDelegate.h; sourceTree = "<group>"; };
+		5DD65E371B0933200076BF95 /* FAHAppDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FAHAppDelegate.m; sourceTree = "<group>"; };
+		5DD65E381B0933200076BF95 /* FAHViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FAHViewController.h; sourceTree = "<group>"; };
+		5DD65E391B0933200076BF95 /* FAHViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FAHViewController.m; sourceTree = "<group>"; };
+		5DD65E3A1B0933200076BF95 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
+		5DD65E3B1B0933200076BF95 /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		6003F58A195388D20070C39A /* DRYUI Example.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "DRYUI Example.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		6003F58D195388D20070C39A /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		6003F58F195388D20070C39A /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
@@ -98,26 +98,26 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		5DB773AF1AC894970040E95C /* Fahrenheit Example */ = {
+		5DD65E311B0933200076BF95 /* DRYUI Example */ = {
 			isa = PBXGroup;
 			children = (
-				5DB773B41AC894970040E95C /* InfoPlist.strings */,
-				5DB773B61AC894970040E95C /* FAHAppDelegate.h */,
-				5DB773B71AC894970040E95C /* FAHAppDelegate.m */,
-				5DB773B81AC894970040E95C /* DRYUI Example-Info.plist */,
-				5DB773B91AC894970040E95C /* DRYUI Example-Prefix.pch */,
-				5DB773BA1AC894970040E95C /* FAHViewController.h */,
-				5DB773BB1AC894970040E95C /* FAHViewController.m */,
-				5DB773BC1AC894970040E95C /* Images.xcassets */,
-				5DB773BD1AC894970040E95C /* main.m */,
+				5DD65E321B0933200076BF95 /* DRYUI Example-Info.plist */,
+				5DD65E331B0933200076BF95 /* DRYUI Example-Prefix.pch */,
+				5DD65E341B0933200076BF95 /* InfoPlist.strings */,
+				5DD65E361B0933200076BF95 /* FAHAppDelegate.h */,
+				5DD65E371B0933200076BF95 /* FAHAppDelegate.m */,
+				5DD65E381B0933200076BF95 /* FAHViewController.h */,
+				5DD65E391B0933200076BF95 /* FAHViewController.m */,
+				5DD65E3A1B0933200076BF95 /* Images.xcassets */,
+				5DD65E3B1B0933200076BF95 /* main.m */,
 			);
-			path = "Fahrenheit Example";
+			path = "DRYUI Example";
 			sourceTree = "<group>";
 		};
 		6003F581195388D10070C39A = {
 			isa = PBXGroup;
 			children = (
-				5DB773AF1AC894970040E95C /* Fahrenheit Example */,
+				5DD65E311B0933200076BF95 /* DRYUI Example */,
 				6003F5B5195388D20070C39A /* Tests */,
 				6003F58C195388D20070C39A /* Frameworks */,
 				6003F58B195388D20070C39A /* Products */,
@@ -266,8 +266,8 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				5DB773C41AC894970040E95C /* Images.xcassets in Resources */,
-				5DB773C01AC894970040E95C /* InfoPlist.strings in Resources */,
+				5DD65E401B0933200076BF95 /* Images.xcassets in Resources */,
+				5DD65E3D1B0933200076BF95 /* InfoPlist.strings in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -349,9 +349,9 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				5DB773C31AC894970040E95C /* FAHViewController.m in Sources */,
-				5DB773C51AC894970040E95C /* main.m in Sources */,
-				5DB773C11AC894970040E95C /* FAHAppDelegate.m in Sources */,
+				5DD65E3F1B0933200076BF95 /* FAHViewController.m in Sources */,
+				5DD65E411B0933200076BF95 /* main.m in Sources */,
+				5DD65E3E1B0933200076BF95 /* FAHAppDelegate.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -374,10 +374,10 @@
 /* End PBXTargetDependency section */
 
 /* Begin PBXVariantGroup section */
-		5DB773B41AC894970040E95C /* InfoPlist.strings */ = {
+		5DD65E341B0933200076BF95 /* InfoPlist.strings */ = {
 			isa = PBXVariantGroup;
 			children = (
-				5DB773B51AC894970040E95C /* en */,
+				5DD65E351B0933200076BF95 /* en */,
 			);
 			name = InfoPlist.strings;
 			sourceTree = "<group>";
@@ -472,8 +472,8 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = "Fahrenheit Example/DRYUI Example-Prefix.pch";
-				INFOPLIST_FILE = "Fahrenheit Example/DRYUI Example-Info.plist";
+				GCC_PREFIX_HEADER = "DRYUI Example/DRYUI Example-Prefix.pch";
+				INFOPLIST_FILE = "DRYUI Example/DRYUI Example-Info.plist";
 				PRODUCT_NAME = "DRYUI Example";
 				WRAPPER_EXTENSION = app;
 			};
@@ -486,8 +486,8 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = "Fahrenheit Example/DRYUI Example-Prefix.pch";
-				INFOPLIST_FILE = "Fahrenheit Example/DRYUI Example-Info.plist";
+				GCC_PREFIX_HEADER = "DRYUI Example/DRYUI Example-Prefix.pch";
+				INFOPLIST_FILE = "DRYUI Example/DRYUI Example-Info.plist";
 				PRODUCT_NAME = "DRYUI Example";
 				WRAPPER_EXTENSION = app;
 			};
