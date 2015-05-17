@@ -154,7 +154,8 @@ void _dryui_addStyleToView(_DRYUI_VIEW *view, DRYUIStyle style) {
 }
 
 #define _DRYUI_VIEW_STRING _DRYUI_VIEW_STRING_HELPER(_DRYUI_VIEW)
-#define _DRYUI_VIEW_STRING_HELPER(x) @#x
+#define _DRYUI_VIEW_STRING_HELPER(x) __DRYUI_VIEW_STRING_HELPER(x)
+#define __DRYUI_VIEW_STRING_HELPER(x) @#x
 - (MASConstraintMaker *)make {
     NSAssert(self.constraintMaker != nil, @"%@.make should only be used inside a call to buildSubviews.", _DRYUI_VIEW_STRING);
     [self setTranslatesAutoresizingMaskIntoConstraints:NO];
