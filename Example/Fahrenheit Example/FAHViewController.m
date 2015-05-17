@@ -9,12 +9,17 @@
 #import "FAHViewController.h"
 #import <Fahrenheit/Fahrenheit.h>
 
+DRYUI_IMPLEMENT_STYLE(Red) { _.backgroundColor = [UIColor redColor]; };
+DRYUI_IMPLEMENT_STYLE(Green) { _.backgroundColor = [UIColor greenColor]; };
+DRYUI_IMPLEMENT_STYLE(Blue) { _.backgroundColor = [UIColor blueColor]; };
+DRYUI_IMPLEMENT_STYLE(Orange) { _.backgroundColor = [UIColor orangeColor]; };
+
 @interface FAHViewController ()
 
 @end
 
 @implementation FAHViewController
-
+    
 - (void)loadView {
     
     [super loadView];
@@ -22,17 +27,13 @@
     
     ºº(self.view) {
         _.backgroundColor = [UIColor whiteColor];
-        UIView* º(view1) {
-            _.backgroundColor = [UIColor redColor];
+        UIView* º(view1, Red) {
             _.make.edges.equalTo(_.superview).with.insets(insets);
-            UIView* º(view2) {
-                _.backgroundColor = [UIColor greenColor];
+            UIView* º(view2, Green) {
                 _.make.edges.equalTo(_.superview).with.insets(insets);
-                UIView* º(view3) {
-                    _.backgroundColor = [UIColor blueColor];
+                UIView* º(view3, Blue) {
                     _.make.edges.equalTo(_.superview).with.insets(insets);
-                    UIView* º(view4) {
-                        _.backgroundColor = [UIColor orangeColor];
+                    UIView* º(view4, Orange) {
                         _.make.edges.equalTo(_.superview).with.insets(insets);
                     };
                 };

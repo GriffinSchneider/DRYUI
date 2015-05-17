@@ -10,11 +10,6 @@
 #import <XCTest/XCTest.h>
 #import <Fahrenheit/Fahrenheit.h>
 
-DRYUI_STYLE(Style0);
-DRYUI_STYLE(Style1);
-DRYUI_STYLE(Style2);
-DRYUI_STYLE(Style3);
-
 #define BIG_STYLE_LIST \
 Style0, Style1, Style2, Style3, Style3, Style3, \
 Style3, Style3, Style3, Style3, Style3, Style3, \
@@ -37,6 +32,22 @@ Style3 \
     [super tearDown];
 }
 
+DRYUI_IMPLEMENT_STYLE(Style0) {
+    _.backgroundColor = [UIColor redColor];
+};
+
+DRYUI_IMPLEMENT_STYLE(Style1) {
+    _.backgroundColor = [UIColor blueColor];
+};
+
+DRYUI_IMPLEMENT_STYLE(Style2) {
+    _.backgroundColor = [UIColor greenColor];
+};
+
+DRYUI_IMPLEMENT_STYLE(Style3) {
+    _.backgroundColor = [UIColor orangeColor];
+};
+
 - (void)testFahrenheit {
 
     UIView *topLevel = [UIView new];
@@ -52,6 +63,7 @@ Style3 \
         º(b, Style3) {
             [_ make];
             XCTAssertEqual(_.superview, superview, @"superview should be bound to view.superview");
+            _.backgroundColor = [UIColor purpleColor];
             UIView* º(x) {
                 _.tag = 2;
             };
@@ -78,6 +90,31 @@ Style3 \
         };
     };
     
+    
+    // Assertions about hierarchy
+    XCTAssertEqual(a.superview, topLevel, @"a's superview should be the top view");
+    XCTAssertEqual(b.superview, topLevel, @"b's superview should be the top view");
+    XCTAssertEqual(c.superview, topLevel, @"c's superview should be the top view");
+    XCTAssertEqualObjects(topLevel.subviews, (@[a, b, c]), @"a, b, and c should be the only subviews of the top view");
+    
+    XCTAssertEqual(c.subviews.count, 1, @"c should have 1 subview");
+    XCTAssertEqual(c.subviews[0], d, @"c's subview should be d");
+    XCTAssertEqual(d.subviews.count, 3, @"d should have 3 subviews");
+    XCTAssertEqual([topLevel viewWithTag:2].superview, b, @"the view with tag 2 should be a subview of b");
+    XCTAssertEqual([topLevel viewWithTag:3].superview, d, @"the view with tag 3 should be a subview of d");
+    
+    // Assertions about layout constraints
+    XCTAssertTrue(a.translatesAutoresizingMaskIntoConstraints, @"views that don't use _.make shouldn't set translatesAutoresizingMaskIntoConstraints to NO");
+    XCTAssertTrue(f.translatesAutoresizingMaskIntoConstraints, @"views that don't use _.make shouldn't set translatesAutoresizingMaskIntoConstraints to NO");
+    
+    XCTAssertFalse(b.translatesAutoresizingMaskIntoConstraints, @"views that use _.make should set translatesAutoresizingMaskIntoConstraints to NO");
+    XCTAssertFalse(c.translatesAutoresizingMaskIntoConstraints, @"views that use _.make should set translatesAutoresizingMaskIntoConstraints to NO");
+    XCTAssertFalse(d.translatesAutoresizingMaskIntoConstraints, @"views that use _.make should set translatesAutoresizingMaskIntoConstraints to NO");
+    XCTAssertFalse(e.translatesAutoresizingMaskIntoConstraints, @"views that use _.make should set translatesAutoresizingMaskIntoConstraints to NO");
+    XCTAssertFalse(g.translatesAutoresizingMaskIntoConstraints, @"views that use _.make should set translatesAutoresizingMaskIntoConstraints to NO");
+    
+    
+    // Assertions about style association
     NSMutableArray *styles = [NSMutableArray new];
     const _DRYUIStyle *_styles[] = {BIG_STYLE_LIST};
     for (int i = 0; i < sizeof(_styles)/sizeof(_DRYUIStyle*); i++) {
@@ -93,25 +130,13 @@ Style3 \
     XCTAssertNil(e.styleNames, @"d shouldn't have any styles");
     XCTAssertNil(f.styleNames, @"d shouldn't have any styles");
     
-    XCTAssertEqual(a.superview, topLevel, @"a's superview should be the top view");
-    XCTAssertEqual(b.superview, topLevel, @"b's superview should be the top view");
-    XCTAssertEqual(c.superview, topLevel, @"c's superview should be the top view");
-    XCTAssertEqualObjects(topLevel.subviews, (@[a, b, c]), @"a, b, and c should be the only subviews of the top view");
     
-    XCTAssertEqual(c.subviews.count, 1, @"c should have 1 subview");
-    XCTAssertEqual(c.subviews[0], d, @"c's subview should be d");
-    XCTAssertEqual(d.subviews.count, 3, @"d should have 3 subviews");
-    XCTAssertEqual([topLevel viewWithTag:2].superview, b, @"the view with tag 2 should be a subview of b");
-    XCTAssertEqual([topLevel viewWithTag:3].superview, d, @"the view with tag 3 should be a subview of d");
+    // Assertions about style application
+    XCTAssertEqual(a.backgroundColor, [UIColor orangeColor], @"a should be orange");
+    XCTAssertEqual(b.backgroundColor, [UIColor purpleColor], @"b should be purple");
+    XCTAssertEqual(c.backgroundColor, [UIColor blueColor], @"c should be blue");
+    XCTAssertEqual(g.backgroundColor, [UIColor blueColor], @"g should be blue");
     
-    XCTAssertTrue(a.translatesAutoresizingMaskIntoConstraints, @"views that don't use _.make shouldn't set translatesAutoresizingMaskIntoConstraints to NO");
-    XCTAssertTrue(f.translatesAutoresizingMaskIntoConstraints, @"views that don't use _.make shouldn't set translatesAutoresizingMaskIntoConstraints to NO");
-    
-    XCTAssertFalse(b.translatesAutoresizingMaskIntoConstraints, @"views that use _.make should set translatesAutoresizingMaskIntoConstraints to NO");
-    XCTAssertFalse(c.translatesAutoresizingMaskIntoConstraints, @"views that use _.make should set translatesAutoresizingMaskIntoConstraints to NO");
-    XCTAssertFalse(d.translatesAutoresizingMaskIntoConstraints, @"views that use _.make should set translatesAutoresizingMaskIntoConstraints to NO");
-    XCTAssertFalse(e.translatesAutoresizingMaskIntoConstraints, @"views that use _.make should set translatesAutoresizingMaskIntoConstraints to NO");
-    XCTAssertFalse(g.translatesAutoresizingMaskIntoConstraints, @"views that use _.make should set translatesAutoresizingMaskIntoConstraints to NO");
 }
 
 @end

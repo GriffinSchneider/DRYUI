@@ -28,17 +28,27 @@
 #define º(args...) FAHRENHEIT(args)
 #endif
 
+typedef void (^FahrenheitViewAndSuperviewBlock)(id FAHRENHEIT_VIEW_NAME, _FAHRENHEIT_VIEW *superview);
+
 typedef struct {
     const char *name;
+    __unsafe_unretained FahrenheitViewAndSuperviewBlock applicationBlock;
 } _DRYUIStyle;
+typedef const _DRYUIStyle * DRYUIStyle;
 
-#define DRYUI_STYLE(styleName) \
-static const _DRYUIStyle _DRYUIStyle_##styleName = { .name = #styleName };  \
-static const _DRYUIStyle *styleName = &_DRYUIStyle_##styleName;
-DRYUI_STYLE(DRYUIEmptyStyle);
+#define _DRYUI_APPLICATION_BLOCK_NAME_FOR_STYLE(styleName) _DRYUI_applyStyle_##styleName
 
+#define DRYUI_DECLARE_STYLE(styleName) \
+extern DRYUIStyle styleName; \
 
-typedef void (^FahrenheitViewAndSuperviewBlock)(id FAHRENHEIT_VIEW_NAME, _FAHRENHEIT_VIEW *superview);
+#define DRYUI_IMPLEMENT_STYLE(styleName) \
+static FahrenheitViewAndSuperviewBlock _DRYUI_APPLICATION_BLOCK_NAME_FOR_STYLE(styleName); \
+static const _DRYUIStyle _DRYUIStyle_##styleName = {.name = #styleName, .applicationBlock = ^void(_FAHRENHEIT_VIEW *_, _FAHRENHEIT_VIEW *superview){_DRYUI_APPLICATION_BLOCK_NAME_FOR_STYLE(styleName)(_, superview);}}; \
+DRYUIStyle styleName = &_DRYUIStyle_##styleName; \
+static FahrenheitViewAndSuperviewBlock _DRYUI_APPLICATION_BLOCK_NAME_FOR_STYLE(styleName) = ^(_FAHRENHEIT_VIEW *_, _FAHRENHEIT_VIEW *superview)
+
+DRYUI_DECLARE_STYLE(DRYUIEmptyStyle);
+
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 @interface _FAHRENHEIT_VIEW (Fahrenheit)
@@ -60,16 +70,15 @@ typedef void (^FahrenheitViewAndSuperviewBlock)(id FAHRENHEIT_VIEW_NAME, _FAHREN
 
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-id _fahrenheit_instantiate_from_encoding(char *);
+FOUNDATION_EXTERN id _fahrenheit_instantiate_from_encoding(char *);
 
-id _fahrenheit_takeStyleAndReturnNil(const _DRYUIStyle *notAView);
-id _fahrenheit_returnGivenView(UIView *view);
+FOUNDATION_EXTERN id _fahrenheit_takeStyleAndReturnNil(DRYUIStyle notAView);
+FOUNDATION_EXTERN id _fahrenheit_returnGivenView(_FAHRENHEIT_VIEW *view);
 
-const _DRYUIStyle * _fahrenheit_returnGivenStyle(const _DRYUIStyle *style);
-const _DRYUIStyle * _fahrenheit_takeViewAndReturnEmptyStyle(UIView *notAStyle);
+FOUNDATION_EXTERN DRYUIStyle _fahrenheit_returnGivenStyle(DRYUIStyle style);
+FOUNDATION_EXTERN DRYUIStyle _fahrenheit_takeViewAndReturnEmptyStyle(_FAHRENHEIT_VIEW *notAStyle);
 
-void _fahrenheit_addStyleToView(UIView *view, const _DRYUIStyle *style);
-void _fahrenheit_applyStyles(UIView *view);
+FOUNDATION_EXTERN void _dryui_addStyleToView(_FAHRENHEIT_VIEW *view, DRYUIStyle style);
 
 #define _FAHRENHEIT_CONCATENATE_DETAIL(x, y) x##y
 #define _FAHRENHEIT_CONCATENATE(x, y) _FAHRENHEIT_CONCATENATE_DETAIL(x, y)
@@ -124,109 +133,109 @@ _FAHRENHEIT_GOTO_HELPER(viewArg, \
 #define FAHRENHEIT(args...) \
 __FAHRENHEIT_OVERLOADED_MACRO( \
 args, \
-__FAHRENHEIT_HELPER_32, \
-__FAHRENHEIT_HELPER_31, \
-__FAHRENHEIT_HELPER_30, \
-__FAHRENHEIT_HELPER_29, \
-__FAHRENHEIT_HELPER_28, \
-__FAHRENHEIT_HELPER_27, \
-__FAHRENHEIT_HELPER_26, \
-__FAHRENHEIT_HELPER_25, \
-__FAHRENHEIT_HELPER_24, \
-__FAHRENHEIT_HELPER_23, \
-__FAHRENHEIT_HELPER_22, \
-__FAHRENHEIT_HELPER_21, \
-__FAHRENHEIT_HELPER_20, \
-__FAHRENHEIT_HELPER_19, \
-__FAHRENHEIT_HELPER_18, \
-__FAHRENHEIT_HELPER_17, \
-__FAHRENHEIT_HELPER_16, \
-__FAHRENHEIT_HELPER_15, \
-__FAHRENHEIT_HELPER_14, \
-__FAHRENHEIT_HELPER_13, \
-__FAHRENHEIT_HELPER_12, \
-__FAHRENHEIT_HELPER_11, \
-__FAHRENHEIT_HELPER_10, \
-__FAHRENHEIT_HELPER_9,  \
-__FAHRENHEIT_HELPER_8,  \
-__FAHRENHEIT_HELPER_7,  \
-__FAHRENHEIT_HELPER_6,  \
-__FAHRENHEIT_HELPER_5,  \
-__FAHRENHEIT_HELPER_4,  \
-__FAHRENHEIT_HELPER_3,  \
-__FAHRENHEIT_HELPER_2,  \
-__FAHRENHEIT_HELPER_1)(args)
+__DRYUI_HELPER_32, \
+__DRYUI_HELPER_31, \
+__DRYUI_HELPER_30, \
+__DRYUI_HELPER_29, \
+__DRYUI_HELPER_28, \
+__DRYUI_HELPER_27, \
+__DRYUI_HELPER_26, \
+__DRYUI_HELPER_25, \
+__DRYUI_HELPER_24, \
+__DRYUI_HELPER_23, \
+__DRYUI_HELPER_22, \
+__DRYUI_HELPER_21, \
+__DRYUI_HELPER_20, \
+__DRYUI_HELPER_19, \
+__DRYUI_HELPER_18, \
+__DRYUI_HELPER_17, \
+__DRYUI_HELPER_16, \
+__DRYUI_HELPER_15, \
+__DRYUI_HELPER_14, \
+__DRYUI_HELPER_13, \
+__DRYUI_HELPER_12, \
+__DRYUI_HELPER_11, \
+__DRYUI_HELPER_10, \
+__DRYUI_HELPER_9,  \
+__DRYUI_HELPER_8,  \
+__DRYUI_HELPER_7,  \
+__DRYUI_HELPER_6,  \
+__DRYUI_HELPER_5,  \
+__DRYUI_HELPER_4,  \
+__DRYUI_HELPER_3,  \
+__DRYUI_HELPER_2,  \
+__DRYUI_HELPER_1)(args)
 
 // These macros just pass through to the three-underscore macros while setting the initial
 // value for the 'codeAfterVariableAssignment' accumulator.
-#define __FAHRENHEIT_HELPER_32(x, y, z, ...) ___FAHRENHEIT_HELPER_32(x, y, ;, z , ## __VA_ARGS__)
-#define __FAHRENHEIT_HELPER_31(x, y, z, ...) ___FAHRENHEIT_HELPER_31(x, y, ;, z , ## __VA_ARGS__)
-#define __FAHRENHEIT_HELPER_30(x, y, z, ...) ___FAHRENHEIT_HELPER_30(x, y, ;, z , ## __VA_ARGS__)
-#define __FAHRENHEIT_HELPER_29(x, y, z, ...) ___FAHRENHEIT_HELPER_29(x, y, ;, z , ## __VA_ARGS__)
-#define __FAHRENHEIT_HELPER_28(x, y, z, ...) ___FAHRENHEIT_HELPER_28(x, y, ;, z , ## __VA_ARGS__)
-#define __FAHRENHEIT_HELPER_27(x, y, z, ...) ___FAHRENHEIT_HELPER_27(x, y, ;, z , ## __VA_ARGS__)
-#define __FAHRENHEIT_HELPER_26(x, y, z, ...) ___FAHRENHEIT_HELPER_26(x, y, ;, z , ## __VA_ARGS__)
-#define __FAHRENHEIT_HELPER_25(x, y, z, ...) ___FAHRENHEIT_HELPER_25(x, y, ;, z , ## __VA_ARGS__)
-#define __FAHRENHEIT_HELPER_24(x, y, z, ...) ___FAHRENHEIT_HELPER_24(x, y, ;, z , ## __VA_ARGS__)
-#define __FAHRENHEIT_HELPER_23(x, y, z, ...) ___FAHRENHEIT_HELPER_23(x, y, ;, z , ## __VA_ARGS__)
-#define __FAHRENHEIT_HELPER_22(x, y, z, ...) ___FAHRENHEIT_HELPER_22(x, y, ;, z , ## __VA_ARGS__)
-#define __FAHRENHEIT_HELPER_21(x, y, z, ...) ___FAHRENHEIT_HELPER_21(x, y, ;, z , ## __VA_ARGS__)
-#define __FAHRENHEIT_HELPER_20(x, y, z, ...) ___FAHRENHEIT_HELPER_20(x, y, ;, z , ## __VA_ARGS__)
-#define __FAHRENHEIT_HELPER_19(x, y, z, ...) ___FAHRENHEIT_HELPER_19(x, y, ;, z , ## __VA_ARGS__)
-#define __FAHRENHEIT_HELPER_18(x, y, z, ...) ___FAHRENHEIT_HELPER_18(x, y, ;, z , ## __VA_ARGS__)
-#define __FAHRENHEIT_HELPER_17(x, y, z, ...) ___FAHRENHEIT_HELPER_17(x, y, ;, z , ## __VA_ARGS__)
-#define __FAHRENHEIT_HELPER_16(x, y, z, ...) ___FAHRENHEIT_HELPER_16(x, y, ;, z , ## __VA_ARGS__)
-#define __FAHRENHEIT_HELPER_15(x, y, z, ...) ___FAHRENHEIT_HELPER_15(x, y, ;, z , ## __VA_ARGS__)
-#define __FAHRENHEIT_HELPER_14(x, y, z, ...) ___FAHRENHEIT_HELPER_14(x, y, ;, z , ## __VA_ARGS__)
-#define __FAHRENHEIT_HELPER_13(x, y, z, ...) ___FAHRENHEIT_HELPER_13(x, y, ;, z , ## __VA_ARGS__)
-#define __FAHRENHEIT_HELPER_12(x, y, z, ...) ___FAHRENHEIT_HELPER_12(x, y, ;, z , ## __VA_ARGS__)
-#define __FAHRENHEIT_HELPER_11(x, y, z, ...) ___FAHRENHEIT_HELPER_11(x, y, ;, z , ## __VA_ARGS__)
-#define __FAHRENHEIT_HELPER_10(x, y, z, ...) ___FAHRENHEIT_HELPER_10(x, y, ;, z , ## __VA_ARGS__)
-#define __FAHRENHEIT_HELPER_9( x, y, z, ...) ___FAHRENHEIT_HELPER_9 (x, y, ;, z , ## __VA_ARGS__)
-#define __FAHRENHEIT_HELPER_8( x, y, z, ...) ___FAHRENHEIT_HELPER_8 (x, y, ;, z , ## __VA_ARGS__)
-#define __FAHRENHEIT_HELPER_7( x, y, z, ...) ___FAHRENHEIT_HELPER_7 (x, y, ;, z , ## __VA_ARGS__)
-#define __FAHRENHEIT_HELPER_6( x, y, z, ...) ___FAHRENHEIT_HELPER_6 (x, y, ;, z , ## __VA_ARGS__)
-#define __FAHRENHEIT_HELPER_5( x, y, z, ...) ___FAHRENHEIT_HELPER_5 (x, y, ;, z , ## __VA_ARGS__)
-#define __FAHRENHEIT_HELPER_4( x, y, z, ...) ___FAHRENHEIT_HELPER_4 (x, y, ;, z , ## __VA_ARGS__)
-#define __FAHRENHEIT_HELPER_3( x, y, z)      ___FAHRENHEIT_HELPER_3 (x, y, ;, z )
-#define __FAHRENHEIT_HELPER_2( x, y)         ___FAHRENHEIT_HELPER_2 (x, y, ;)
-#define __FAHRENHEIT_HELPER_1( x)            ___FAHRENHEIT_HELPER_1 (x, ;, ;)
+#define __DRYUI_HELPER_32(x, y, z, ...) ___DRYUI_HELPER_32(x, y, ;, z , ## __VA_ARGS__)
+#define __DRYUI_HELPER_31(x, y, z, ...) ___DRYUI_HELPER_31(x, y, ;, z , ## __VA_ARGS__)
+#define __DRYUI_HELPER_30(x, y, z, ...) ___DRYUI_HELPER_30(x, y, ;, z , ## __VA_ARGS__)
+#define __DRYUI_HELPER_29(x, y, z, ...) ___DRYUI_HELPER_29(x, y, ;, z , ## __VA_ARGS__)
+#define __DRYUI_HELPER_28(x, y, z, ...) ___DRYUI_HELPER_28(x, y, ;, z , ## __VA_ARGS__)
+#define __DRYUI_HELPER_27(x, y, z, ...) ___DRYUI_HELPER_27(x, y, ;, z , ## __VA_ARGS__)
+#define __DRYUI_HELPER_26(x, y, z, ...) ___DRYUI_HELPER_26(x, y, ;, z , ## __VA_ARGS__)
+#define __DRYUI_HELPER_25(x, y, z, ...) ___DRYUI_HELPER_25(x, y, ;, z , ## __VA_ARGS__)
+#define __DRYUI_HELPER_24(x, y, z, ...) ___DRYUI_HELPER_24(x, y, ;, z , ## __VA_ARGS__)
+#define __DRYUI_HELPER_23(x, y, z, ...) ___DRYUI_HELPER_23(x, y, ;, z , ## __VA_ARGS__)
+#define __DRYUI_HELPER_22(x, y, z, ...) ___DRYUI_HELPER_22(x, y, ;, z , ## __VA_ARGS__)
+#define __DRYUI_HELPER_21(x, y, z, ...) ___DRYUI_HELPER_21(x, y, ;, z , ## __VA_ARGS__)
+#define __DRYUI_HELPER_20(x, y, z, ...) ___DRYUI_HELPER_20(x, y, ;, z , ## __VA_ARGS__)
+#define __DRYUI_HELPER_19(x, y, z, ...) ___DRYUI_HELPER_19(x, y, ;, z , ## __VA_ARGS__)
+#define __DRYUI_HELPER_18(x, y, z, ...) ___DRYUI_HELPER_18(x, y, ;, z , ## __VA_ARGS__)
+#define __DRYUI_HELPER_17(x, y, z, ...) ___DRYUI_HELPER_17(x, y, ;, z , ## __VA_ARGS__)
+#define __DRYUI_HELPER_16(x, y, z, ...) ___DRYUI_HELPER_16(x, y, ;, z , ## __VA_ARGS__)
+#define __DRYUI_HELPER_15(x, y, z, ...) ___DRYUI_HELPER_15(x, y, ;, z , ## __VA_ARGS__)
+#define __DRYUI_HELPER_14(x, y, z, ...) ___DRYUI_HELPER_14(x, y, ;, z , ## __VA_ARGS__)
+#define __DRYUI_HELPER_13(x, y, z, ...) ___DRYUI_HELPER_13(x, y, ;, z , ## __VA_ARGS__)
+#define __DRYUI_HELPER_12(x, y, z, ...) ___DRYUI_HELPER_12(x, y, ;, z , ## __VA_ARGS__)
+#define __DRYUI_HELPER_11(x, y, z, ...) ___DRYUI_HELPER_11(x, y, ;, z , ## __VA_ARGS__)
+#define __DRYUI_HELPER_10(x, y, z, ...) ___DRYUI_HELPER_10(x, y, ;, z , ## __VA_ARGS__)
+#define __DRYUI_HELPER_9( x, y, z, ...) ___DRYUI_HELPER_9 (x, y, ;, z , ## __VA_ARGS__)
+#define __DRYUI_HELPER_8( x, y, z, ...) ___DRYUI_HELPER_8 (x, y, ;, z , ## __VA_ARGS__)
+#define __DRYUI_HELPER_7( x, y, z, ...) ___DRYUI_HELPER_7 (x, y, ;, z , ## __VA_ARGS__)
+#define __DRYUI_HELPER_6( x, y, z, ...) ___DRYUI_HELPER_6 (x, y, ;, z , ## __VA_ARGS__)
+#define __DRYUI_HELPER_5( x, y, z, ...) ___DRYUI_HELPER_5 (x, y, ;, z , ## __VA_ARGS__)
+#define __DRYUI_HELPER_4( x, y, z, ...) ___DRYUI_HELPER_4 (x, y, ;, z , ## __VA_ARGS__)
+#define __DRYUI_HELPER_3( x, y, z)      ___DRYUI_HELPER_3 (x, y, ;, z )
+#define __DRYUI_HELPER_2( x, y)         ___DRYUI_HELPER_2 (x, y, ;)
+#define __DRYUI_HELPER_1( x)            ___DRYUI_HELPER_1 (x, ;, ;)
 
 // These macros add a statement like this:
-//    _fahrenheit_addStyleToView(view, style);
-// to the 'codeAfterVariableAssignment' parameter for each style in the arguments list.
-// The second argument, y, could be wither a pre-made UIView instance getting passed to FAHRENHEIT or a style,
+//    _dryui_addStyleToView(view, style);
+// to the 'afterAssignment' parameter for each style in the arguments list.
+// The second argument, y, could be wither a pre-made UIView instance geggtting passed to FAHRENHEIT or a style,
 // so it gets handled specially by ___FAHRENHEIT_HELPER_2.
-#define ___FAHRENHEIT_HELPER_32(x, y, codeAfterVariableAssignment, z, ...) ___FAHRENHEIT_HELPER_31(x, y, codeAfterVariableAssignment; _fahrenheit_addStyleToView(x, z); , ## __VA_ARGS__)
-#define ___FAHRENHEIT_HELPER_31(x, y, codeAfterVariableAssignment, z, ...) ___FAHRENHEIT_HELPER_30(x, y, codeAfterVariableAssignment; _fahrenheit_addStyleToView(x, z); , ## __VA_ARGS__)
-#define ___FAHRENHEIT_HELPER_30(x, y, codeAfterVariableAssignment, z, ...) ___FAHRENHEIT_HELPER_29(x, y, codeAfterVariableAssignment; _fahrenheit_addStyleToView(x, z); , ## __VA_ARGS__)
-#define ___FAHRENHEIT_HELPER_29(x, y, codeAfterVariableAssignment, z, ...) ___FAHRENHEIT_HELPER_28(x, y, codeAfterVariableAssignment; _fahrenheit_addStyleToView(x, z); , ## __VA_ARGS__)
-#define ___FAHRENHEIT_HELPER_28(x, y, codeAfterVariableAssignment, z, ...) ___FAHRENHEIT_HELPER_27(x, y, codeAfterVariableAssignment; _fahrenheit_addStyleToView(x, z); , ## __VA_ARGS__)
-#define ___FAHRENHEIT_HELPER_27(x, y, codeAfterVariableAssignment, z, ...) ___FAHRENHEIT_HELPER_26(x, y, codeAfterVariableAssignment; _fahrenheit_addStyleToView(x, z); , ## __VA_ARGS__)
-#define ___FAHRENHEIT_HELPER_26(x, y, codeAfterVariableAssignment, z, ...) ___FAHRENHEIT_HELPER_25(x, y, codeAfterVariableAssignment; _fahrenheit_addStyleToView(x, z); , ## __VA_ARGS__)
-#define ___FAHRENHEIT_HELPER_25(x, y, codeAfterVariableAssignment, z, ...) ___FAHRENHEIT_HELPER_24(x, y, codeAfterVariableAssignment; _fahrenheit_addStyleToView(x, z); , ## __VA_ARGS__)
-#define ___FAHRENHEIT_HELPER_24(x, y, codeAfterVariableAssignment, z, ...) ___FAHRENHEIT_HELPER_23(x, y, codeAfterVariableAssignment; _fahrenheit_addStyleToView(x, z); , ## __VA_ARGS__)
-#define ___FAHRENHEIT_HELPER_23(x, y, codeAfterVariableAssignment, z, ...) ___FAHRENHEIT_HELPER_22(x, y, codeAfterVariableAssignment; _fahrenheit_addStyleToView(x, z); , ## __VA_ARGS__)
-#define ___FAHRENHEIT_HELPER_22(x, y, codeAfterVariableAssignment, z, ...) ___FAHRENHEIT_HELPER_21(x, y, codeAfterVariableAssignment; _fahrenheit_addStyleToView(x, z); , ## __VA_ARGS__)
-#define ___FAHRENHEIT_HELPER_21(x, y, codeAfterVariableAssignment, z, ...) ___FAHRENHEIT_HELPER_20(x, y, codeAfterVariableAssignment; _fahrenheit_addStyleToView(x, z); , ## __VA_ARGS__)
-#define ___FAHRENHEIT_HELPER_20(x, y, codeAfterVariableAssignment, z, ...) ___FAHRENHEIT_HELPER_19(x, y, codeAfterVariableAssignment; _fahrenheit_addStyleToView(x, z); , ## __VA_ARGS__)
-#define ___FAHRENHEIT_HELPER_19(x, y, codeAfterVariableAssignment, z, ...) ___FAHRENHEIT_HELPER_18(x, y, codeAfterVariableAssignment; _fahrenheit_addStyleToView(x, z); , ## __VA_ARGS__)
-#define ___FAHRENHEIT_HELPER_18(x, y, codeAfterVariableAssignment, z, ...) ___FAHRENHEIT_HELPER_17(x, y, codeAfterVariableAssignment; _fahrenheit_addStyleToView(x, z); , ## __VA_ARGS__)
-#define ___FAHRENHEIT_HELPER_17(x, y, codeAfterVariableAssignment, z, ...) ___FAHRENHEIT_HELPER_16(x, y, codeAfterVariableAssignment; _fahrenheit_addStyleToView(x, z); , ## __VA_ARGS__)
-#define ___FAHRENHEIT_HELPER_16(x, y, codeAfterVariableAssignment, z, ...) ___FAHRENHEIT_HELPER_15(x, y, codeAfterVariableAssignment; _fahrenheit_addStyleToView(x, z); , ## __VA_ARGS__)
-#define ___FAHRENHEIT_HELPER_15(x, y, codeAfterVariableAssignment, z, ...) ___FAHRENHEIT_HELPER_14(x, y, codeAfterVariableAssignment; _fahrenheit_addStyleToView(x, z); , ## __VA_ARGS__)
-#define ___FAHRENHEIT_HELPER_14(x, y, codeAfterVariableAssignment, z, ...) ___FAHRENHEIT_HELPER_13(x, y, codeAfterVariableAssignment; _fahrenheit_addStyleToView(x, z); , ## __VA_ARGS__)
-#define ___FAHRENHEIT_HELPER_13(x, y, codeAfterVariableAssignment, z, ...) ___FAHRENHEIT_HELPER_12(x, y, codeAfterVariableAssignment; _fahrenheit_addStyleToView(x, z); , ## __VA_ARGS__)
-#define ___FAHRENHEIT_HELPER_12(x, y, codeAfterVariableAssignment, z, ...) ___FAHRENHEIT_HELPER_11(x, y, codeAfterVariableAssignment; _fahrenheit_addStyleToView(x, z); , ## __VA_ARGS__)
-#define ___FAHRENHEIT_HELPER_11(x, y, codeAfterVariableAssignment, z, ...) ___FAHRENHEIT_HELPER_10(x, y, codeAfterVariableAssignment; _fahrenheit_addStyleToView(x, z); , ## __VA_ARGS__)
-#define ___FAHRENHEIT_HELPER_10(x, y, codeAfterVariableAssignment, z, ...) ___FAHRENHEIT_HELPER_9 (x, y, codeAfterVariableAssignment; _fahrenheit_addStyleToView(x, z); , ## __VA_ARGS__)
-#define ___FAHRENHEIT_HELPER_9( x, y, codeAfterVariableAssignment, z, ...) ___FAHRENHEIT_HELPER_8 (x, y, codeAfterVariableAssignment; _fahrenheit_addStyleToView(x, z); , ## __VA_ARGS__)
-#define ___FAHRENHEIT_HELPER_8( x, y, codeAfterVariableAssignment, z, ...) ___FAHRENHEIT_HELPER_7 (x, y, codeAfterVariableAssignment; _fahrenheit_addStyleToView(x, z); , ## __VA_ARGS__)
-#define ___FAHRENHEIT_HELPER_7( x, y, codeAfterVariableAssignment, z, ...) ___FAHRENHEIT_HELPER_6 (x, y, codeAfterVariableAssignment; _fahrenheit_addStyleToView(x, z); , ## __VA_ARGS__)
-#define ___FAHRENHEIT_HELPER_6( x, y, codeAfterVariableAssignment, z, ...) ___FAHRENHEIT_HELPER_5 (x, y, codeAfterVariableAssignment; _fahrenheit_addStyleToView(x, z); , ## __VA_ARGS__)
-#define ___FAHRENHEIT_HELPER_5( x, y, codeAfterVariableAssignment, z, ...) ___FAHRENHEIT_HELPER_4 (x, y, codeAfterVariableAssignment; _fahrenheit_addStyleToView(x, z); , ## __VA_ARGS__)
-#define ___FAHRENHEIT_HELPER_4( x, y, codeAfterVariableAssignment, z, ...) ___FAHRENHEIT_HELPER_3 (x, y, codeAfterVariableAssignment; _fahrenheit_addStyleToView(x, z); , ## __VA_ARGS__)
-#define ___FAHRENHEIT_HELPER_3( x, y, codeAfterVariableAssignment, z)      ___FAHRENHEIT_HELPER_2 (x, y, codeAfterVariableAssignment; _fahrenheit_addStyleToView(x, z); )
+#define ___DRYUI_HELPER_32(x, y, afterAssignment, z, ...) ___DRYUI_HELPER_31(x, y, afterAssignment; _dryui_addStyleToView(x, z); , ## __VA_ARGS__)
+#define ___DRYUI_HELPER_31(x, y, afterAssignment, z, ...) ___DRYUI_HELPER_30(x, y, afterAssignment; _dryui_addStyleToView(x, z); , ## __VA_ARGS__)
+#define ___DRYUI_HELPER_30(x, y, afterAssignment, z, ...) ___DRYUI_HELPER_29(x, y, afterAssignment; _dryui_addStyleToView(x, z); , ## __VA_ARGS__)
+#define ___DRYUI_HELPER_29(x, y, afterAssignment, z, ...) ___DRYUI_HELPER_28(x, y, afterAssignment; _dryui_addStyleToView(x, z); , ## __VA_ARGS__)
+#define ___DRYUI_HELPER_28(x, y, afterAssignment, z, ...) ___DRYUI_HELPER_27(x, y, afterAssignment; _dryui_addStyleToView(x, z); , ## __VA_ARGS__)
+#define ___DRYUI_HELPER_27(x, y, afterAssignment, z, ...) ___DRYUI_HELPER_26(x, y, afterAssignment; _dryui_addStyleToView(x, z); , ## __VA_ARGS__)
+#define ___DRYUI_HELPER_26(x, y, afterAssignment, z, ...) ___DRYUI_HELPER_25(x, y, afterAssignment; _dryui_addStyleToView(x, z); , ## __VA_ARGS__)
+#define ___DRYUI_HELPER_25(x, y, afterAssignment, z, ...) ___DRYUI_HELPER_24(x, y, afterAssignment; _dryui_addStyleToView(x, z); , ## __VA_ARGS__)
+#define ___DRYUI_HELPER_24(x, y, afterAssignment, z, ...) ___DRYUI_HELPER_23(x, y, afterAssignment; _dryui_addStyleToView(x, z); , ## __VA_ARGS__)
+#define ___DRYUI_HELPER_23(x, y, afterAssignment, z, ...) ___DRYUI_HELPER_22(x, y, afterAssignment; _dryui_addStyleToView(x, z); , ## __VA_ARGS__)
+#define ___DRYUI_HELPER_22(x, y, afterAssignment, z, ...) ___DRYUI_HELPER_21(x, y, afterAssignment; _dryui_addStyleToView(x, z); , ## __VA_ARGS__)
+#define ___DRYUI_HELPER_21(x, y, afterAssignment, z, ...) ___DRYUI_HELPER_20(x, y, afterAssignment; _dryui_addStyleToView(x, z); , ## __VA_ARGS__)
+#define ___DRYUI_HELPER_20(x, y, afterAssignment, z, ...) ___DRYUI_HELPER_19(x, y, afterAssignment; _dryui_addStyleToView(x, z); , ## __VA_ARGS__)
+#define ___DRYUI_HELPER_19(x, y, afterAssignment, z, ...) ___DRYUI_HELPER_18(x, y, afterAssignment; _dryui_addStyleToView(x, z); , ## __VA_ARGS__)
+#define ___DRYUI_HELPER_18(x, y, afterAssignment, z, ...) ___DRYUI_HELPER_17(x, y, afterAssignment; _dryui_addStyleToView(x, z); , ## __VA_ARGS__)
+#define ___DRYUI_HELPER_17(x, y, afterAssignment, z, ...) ___DRYUI_HELPER_16(x, y, afterAssignment; _dryui_addStyleToView(x, z); , ## __VA_ARGS__)
+#define ___DRYUI_HELPER_16(x, y, afterAssignment, z, ...) ___DRYUI_HELPER_15(x, y, afterAssignment; _dryui_addStyleToView(x, z); , ## __VA_ARGS__)
+#define ___DRYUI_HELPER_15(x, y, afterAssignment, z, ...) ___DRYUI_HELPER_14(x, y, afterAssignment; _dryui_addStyleToView(x, z); , ## __VA_ARGS__)
+#define ___DRYUI_HELPER_14(x, y, afterAssignment, z, ...) ___DRYUI_HELPER_13(x, y, afterAssignment; _dryui_addStyleToView(x, z); , ## __VA_ARGS__)
+#define ___DRYUI_HELPER_13(x, y, afterAssignment, z, ...) ___DRYUI_HELPER_12(x, y, afterAssignment; _dryui_addStyleToView(x, z); , ## __VA_ARGS__)
+#define ___DRYUI_HELPER_12(x, y, afterAssignment, z, ...) ___DRYUI_HELPER_11(x, y, afterAssignment; _dryui_addStyleToView(x, z); , ## __VA_ARGS__)
+#define ___DRYUI_HELPER_11(x, y, afterAssignment, z, ...) ___DRYUI_HELPER_10(x, y, afterAssignment; _dryui_addStyleToView(x, z); , ## __VA_ARGS__)
+#define ___DRYUI_HELPER_10(x, y, afterAssignment, z, ...) ___DRYUI_HELPER_9 (x, y, afterAssignment; _dryui_addStyleToView(x, z); , ## __VA_ARGS__)
+#define ___DRYUI_HELPER_9( x, y, afterAssignment, z, ...) ___DRYUI_HELPER_8 (x, y, afterAssignment; _dryui_addStyleToView(x, z); , ## __VA_ARGS__)
+#define ___DRYUI_HELPER_8( x, y, afterAssignment, z, ...) ___DRYUI_HELPER_7 (x, y, afterAssignment; _dryui_addStyleToView(x, z); , ## __VA_ARGS__)
+#define ___DRYUI_HELPER_7( x, y, afterAssignment, z, ...) ___DRYUI_HELPER_6 (x, y, afterAssignment; _dryui_addStyleToView(x, z); , ## __VA_ARGS__)
+#define ___DRYUI_HELPER_6( x, y, afterAssignment, z, ...) ___DRYUI_HELPER_5 (x, y, afterAssignment; _dryui_addStyleToView(x, z); , ## __VA_ARGS__)
+#define ___DRYUI_HELPER_5( x, y, afterAssignment, z, ...) ___DRYUI_HELPER_4 (x, y, afterAssignment; _dryui_addStyleToView(x, z); , ## __VA_ARGS__)
+#define ___DRYUI_HELPER_4( x, y, afterAssignment, z, ...) ___DRYUI_HELPER_3 (x, y, afterAssignment; _dryui_addStyleToView(x, z); , ## __VA_ARGS__)
+#define ___DRYUI_HELPER_3( x, y, afterAssignment, z)      ___DRYUI_HELPER_2 (x, y, afterAssignment; _dryui_addStyleToView(x, z); )
 
 // This macro passes through the first argument and codeAfterVariableAssignment to ___FAHRENHEIT_HELPER_1,
 // while determining whether the second argument is a pre-made UIView instance or the first style to apply.
@@ -234,31 +243,31 @@ __FAHRENHEIT_HELPER_1)(args)
 // if the second argument is a UIView instance, or nil if it isn't. The variable whose name comes from
 // _FAHRENHEIT_FIRST_STYLE_OR_NONE will be set to the given style if the second argument is a style, or the
 // empty style if it isn't.
-#define ___FAHRENHEIT_HELPER_2( x, y, codeAfterVariableAssignment) \
-___FAHRENHEIT_HELPER_1(x, \
+#define ___DRYUI_HELPER_2( x, y, codeAfterVariableAssignment) \
+___DRYUI_HELPER_1(x, \
     typeof(y) _fahrenheit_y = y; \
     _FAHRENHEIT_PASSED_INSTANCE_OR_NIL = _Generic(_fahrenheit_y, \
-        const _DRYUIStyle*: _fahrenheit_takeStyleAndReturnNil, \
+        DRYUIStyle: _fahrenheit_takeStyleAndReturnNil, \
         default: _fahrenheit_returnGivenView \
     )(_fahrenheit_y); \
     _FAHRENHEIT_FIRST_STYLE_OR_NONE = _Generic(_fahrenheit_y, \
-        const _DRYUIStyle*: _fahrenheit_returnGivenStyle, \
+        DRYUIStyle: _fahrenheit_returnGivenStyle, \
         default: _fahrenheit_takeViewAndReturnEmptyStyle \
     )(_fahrenheit_y);, \
     codeAfterVariableAssignment \
 )
 
-static _FAHRENHEIT_VIEW *_fahrenheit_current_view = nil;
-static _FAHRENHEIT_VIEW *_fahrenheit_current_toplevel_view = nil;
+FOUNDATION_EXTERN _FAHRENHEIT_VIEW *_fahrenheit_current_view;
+FOUNDATION_EXTERN _FAHRENHEIT_VIEW *_fahrenheit_current_toplevel_view;
 
-#define ___FAHRENHEIT_HELPER_1(variableName, codeAfterVariableDeclarations, codeAfterVariableAssignment) \
+#define ___DRYUI_HELPER_1(variableName, codeAfterVariableDeclarations, codeAfterVariableAssignment) \
 _Pragma("clang diagnostic push") \
 _Pragma("clang diagnostic ignored \"-Wunused-value\"") \
 variableName; \
 _Pragma("clang diagnostic pop") \
 { \
     typeof(variableName) _FAHRENHEIT_PASSED_INSTANCE_OR_NIL = nil; \
-    const _DRYUIStyle *_FAHRENHEIT_FIRST_STYLE_OR_NONE = DRYUIEmptyStyle; \
+    DRYUIStyle _FAHRENHEIT_FIRST_STYLE_OR_NONE = DRYUIEmptyStyle; \
     ({ codeAfterVariableDeclarations }); \
     if (!variableName) { \
         variableName = ({ \
@@ -267,9 +276,8 @@ _Pragma("clang diagnostic pop") \
             (typeof(variableName))_fahrenheit_current_view; \
         }); \
     } \
-    _fahrenheit_addStyleToView(variableName, _FAHRENHEIT_FIRST_STYLE_OR_NONE); \
+    _dryui_addStyleToView(variableName, _FAHRENHEIT_FIRST_STYLE_OR_NONE); \
     ({ codeAfterVariableAssignment }); \
-    _fahrenheit_applyStyles(variableName); \
 } \
 _FAHRENHEIT_GOTO_HELPER(variableName, \
     [_fahrenheit_current_toplevel_view _fahrenheit_addViewFromBuildSubviews:_fahrenheit_current_view withSuperview:FAHRENHEIT_VIEW_NAME andBlock:_FAHRENHEIT_VIEW_AND_SUPERVIEW_BLOCK]; \

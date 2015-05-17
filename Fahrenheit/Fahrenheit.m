@@ -8,6 +8,11 @@
 #import "Fahrenheit.h"
 #import <objc/runtime.h>
 
+DRYUI_IMPLEMENT_STYLE(DRYUIEmptyStyle) {
+};
+
+_FAHRENHEIT_VIEW *_fahrenheit_current_view = nil;
+_FAHRENHEIT_VIEW *_fahrenheit_current_toplevel_view = nil;
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 @interface _FAHRENHEIT_VIEW (Fahrenheit_Private)
@@ -15,8 +20,7 @@
 @property (nonatomic, strong) MASConstraintMaker *constraintMaker;
 @property (nonatomic, strong) NSMutableArray *wrappedAddBlocks;
 
-- (void)_fahrenheit_addStyle:(const _DRYUIStyle *)style;
-- (void)_fahrenheit_applyStyles;
+- (void)_fahrenheit_addStyle:(DRYUIStyle)style;
 
 @end
 
@@ -47,15 +51,15 @@ static const char fahrenheit_styleNamesBlocksId = 0;
     objc_setAssociatedObject(self, &fahrenheit_styleNamesBlocksId, styleNames, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
 }
 
-- (void)_fahrenheit_addStyle:(const _DRYUIStyle *)style {
+- (void)_fahrenheit_addStyle:(DRYUIStyle)style {
+    if (style == DRYUIEmptyStyle) {
+        return;
+    }
     if (!self.styleNames) {
         self.styleNames = [NSMutableArray new];
     }
     [((NSMutableArray *)self.styleNames) addObject:[NSString stringWithUTF8String:style->name]];
-}
-
-- (void)_fahrenheit_applyStyles {
-    
+    style->applicationBlock(self, self.superview);
 }
 
 @end
@@ -74,31 +78,25 @@ id _fahrenheit_instantiate_from_encoding(char *encoding) {
     return instance;
 }
 
-id _fahrenheit_takeStyleAndReturnNil(const _DRYUIStyle *notView) {
+id _fahrenheit_takeStyleAndReturnNil(DRYUIStyle notView) {
     return nil;
 }
 
-id _fahrenheit_returnGivenView(UIView *view) {
+id _fahrenheit_returnGivenView(_FAHRENHEIT_VIEW *view) {
     return view;
 }
 
-const _DRYUIStyle * _fahrenheit_returnGivenStyle(const _DRYUIStyle *style) {
+DRYUIStyle _fahrenheit_returnGivenStyle(DRYUIStyle style) {
     return style;
 }
 
-const _DRYUIStyle * _fahrenheit_takeViewAndReturnEmptyStyle(UIView *notAStyle) {
+DRYUIStyle _fahrenheit_takeViewAndReturnEmptyStyle(_FAHRENHEIT_VIEW *notAStyle) {
     return DRYUIEmptyStyle;
 }
 
-void _fahrenheit_addStyleToView(UIView *view, const _DRYUIStyle *style) {
-    if (style->name == DRYUIEmptyStyle->name) {
-        return;
-    }
-    [view _fahrenheit_addStyle:style];
-}
 
-void _fahrenheit_applyStyles(UIView *view) {
-    [view _fahrenheit_applyStyles];
+void _dryui_addStyleToView(_FAHRENHEIT_VIEW *view, DRYUIStyle style) {
+    [view _fahrenheit_addStyle:style];
 }
 
 
