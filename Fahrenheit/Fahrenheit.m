@@ -94,7 +94,6 @@ DRYUIStyle _fahrenheit_takeViewAndReturnEmptyStyle(_FAHRENHEIT_VIEW *notAStyle) 
     return DRYUIEmptyStyle;
 }
 
-
 void _dryui_addStyleToView(_FAHRENHEIT_VIEW *view, DRYUIStyle style) {
     [view _fahrenheit_addStyle:style];
 }

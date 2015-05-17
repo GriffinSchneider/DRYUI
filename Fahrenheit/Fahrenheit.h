@@ -265,21 +265,19 @@ _Pragma("clang diagnostic push") \
 _Pragma("clang diagnostic ignored \"-Wunused-value\"") \
 variableName; \
 _Pragma("clang diagnostic pop") \
-{ \
-    typeof(variableName) _FAHRENHEIT_PASSED_INSTANCE_OR_NIL = nil; \
-    DRYUIStyle _FAHRENHEIT_FIRST_STYLE_OR_NONE = DRYUIEmptyStyle; \
-    ({ codeAfterVariableDeclarations }); \
-    if (!variableName) { \
-        variableName = ({ \
-            NSAssert(_fahrenheit_current_toplevel_view, @"Calls to FAHRENHEIT must be inside a call to FAHRENHEIT_TOPLEVEL."); \
-            _fahrenheit_current_view = _FAHRENHEIT_PASSED_INSTANCE_OR_NIL ?: _fahrenheit_instantiate_from_encoding(@encode(typeof(*(variableName)))); \
-            (typeof(variableName))_fahrenheit_current_view; \
-        }); \
-    } \
-    _dryui_addStyleToView(variableName, _FAHRENHEIT_FIRST_STYLE_OR_NONE); \
-    ({ codeAfterVariableAssignment }); \
+typeof(variableName) _FAHRENHEIT_PASSED_INSTANCE_OR_NIL = nil; \
+DRYUIStyle _FAHRENHEIT_FIRST_STYLE_OR_NONE = DRYUIEmptyStyle; \
+({ codeAfterVariableDeclarations }); \
+if (!variableName) { \
+    variableName = ({ \
+        NSAssert(_fahrenheit_current_toplevel_view, @"Calls to FAHRENHEIT must be inside a call to FAHRENHEIT_TOPLEVEL."); \
+        _fahrenheit_current_view = _FAHRENHEIT_PASSED_INSTANCE_OR_NIL ?: _fahrenheit_instantiate_from_encoding(@encode(typeof(*(variableName)))); \
+        (typeof(variableName))_fahrenheit_current_view; \
+    }); \
 } \
 _FAHRENHEIT_GOTO_HELPER(variableName, \
     [_fahrenheit_current_toplevel_view _fahrenheit_addViewFromBuildSubviews:_fahrenheit_current_view withSuperview:FAHRENHEIT_VIEW_NAME andBlock:_FAHRENHEIT_VIEW_AND_SUPERVIEW_BLOCK]; \
+    _dryui_addStyleToView(variableName, _FAHRENHEIT_FIRST_STYLE_OR_NONE); \
+    ({ codeAfterVariableAssignment }); \
     _fahrenheit_current_view = nil; \
 )

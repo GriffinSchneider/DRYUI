@@ -32,19 +32,27 @@ Style3 \
     [super tearDown];
 }
 
+// Can't use XCTAssert without `self`, so we have to check for the superview
+// with this bool and then assert about it below.
+static BOOL wasSuperviewEverNil = NO;
+
 DRYUI_IMPLEMENT_STYLE(Style0) {
+    if (!superview) wasSuperviewEverNil = YES;
     _.backgroundColor = [UIColor redColor];
 };
 
 DRYUI_IMPLEMENT_STYLE(Style1) {
+    if (!superview) wasSuperviewEverNil = YES;
     _.backgroundColor = [UIColor blueColor];
 };
 
 DRYUI_IMPLEMENT_STYLE(Style2) {
+    if (!superview) wasSuperviewEverNil = YES;
     _.backgroundColor = [UIColor greenColor];
 };
 
 DRYUI_IMPLEMENT_STYLE(Style3) {
+    if (!superview) wasSuperviewEverNil = YES;
     _.backgroundColor = [UIColor orangeColor];
 };
 
@@ -132,6 +140,7 @@ DRYUI_IMPLEMENT_STYLE(Style3) {
     
     
     // Assertions about style application
+    XCTAssertFalse(wasSuperviewEverNil, @"superview should never be nil when applying a style");
     XCTAssertEqual(a.backgroundColor, [UIColor orangeColor], @"a should be orange");
     XCTAssertEqual(b.backgroundColor, [UIColor purpleColor], @"b should be purple");
     XCTAssertEqual(c.backgroundColor, [UIColor blueColor], @"c should be blue");
