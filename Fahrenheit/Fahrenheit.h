@@ -32,6 +32,7 @@ typedef void (^FahrenheitViewAndSuperviewBlock)(id FAHRENHEIT_VIEW_NAME, _FAHREN
 
 typedef struct {
     const char *name;
+    const char *viewClassName;
     __unsafe_unretained FahrenheitViewAndSuperviewBlock applicationBlock;
 } _DRYUIStyle;
 typedef const _DRYUIStyle * DRYUIStyle;
@@ -41,11 +42,26 @@ typedef const _DRYUIStyle * DRYUIStyle;
 #define DRYUI_DECLARE_STYLE(styleName) \
 extern DRYUIStyle styleName; \
 
-#define DRYUI_IMPLEMENT_STYLE(styleName) \
+#define _DRYUI_IMPLEMENT_STYLE_OVERLOADED_MACRO(_1,_2,NAME,...) NAME
+#define DRYUI_IMPLEMENT_STYLE(args...) _DRYUI_IMPLEMENT_STYLE_OVERLOADED_MACRO(args, _DRYUI_IMPLEMENT_STYLE_2, _DRYUI_IMPLEMENT_STYLE_1)(args)
+
+#define _DRYUI_IMPLEMENT_STYLE_1(styleName) \
+_DRYUI_IMPLEMENT_STYLE_2(styleName, _FAHRENHEIT_VIEW)
+
+// We're going to stringify the className, so add another macro expansion pass
+// to let className expand (i.e. if it's _FAHRENHEIT_VIEW).
+#define _DRYUI_IMPLEMENT_STYLE_2(styleName, className) __DRYUI_IMPLEMENT_STYLE_2(styleName, className)
+#define __DRYUI_IMPLEMENT_STYLE_2(styleName, className) \
 static FahrenheitViewAndSuperviewBlock _DRYUI_APPLICATION_BLOCK_NAME_FOR_STYLE(styleName); \
-static const _DRYUIStyle _DRYUIStyle_##styleName = {.name = #styleName, .applicationBlock = ^void(_FAHRENHEIT_VIEW *_, _FAHRENHEIT_VIEW *superview){_DRYUI_APPLICATION_BLOCK_NAME_FOR_STYLE(styleName)(_, superview);}}; \
+static const _DRYUIStyle _DRYUIStyle_##styleName = { \
+    .name = #styleName, \
+    .viewClassName = #className, \
+    .applicationBlock = ^void(_FAHRENHEIT_VIEW *_, _FAHRENHEIT_VIEW *superview) { \
+        _DRYUI_APPLICATION_BLOCK_NAME_FOR_STYLE(styleName)(_, superview); \
+    } \
+}; \
 DRYUIStyle styleName = &_DRYUIStyle_##styleName; \
-static FahrenheitViewAndSuperviewBlock _DRYUI_APPLICATION_BLOCK_NAME_FOR_STYLE(styleName) = ^(_FAHRENHEIT_VIEW *_, _FAHRENHEIT_VIEW *superview)
+static FahrenheitViewAndSuperviewBlock _DRYUI_APPLICATION_BLOCK_NAME_FOR_STYLE(styleName) = ^(className *_, _FAHRENHEIT_VIEW *superview)
 
 DRYUI_DECLARE_STYLE(DRYUIEmptyStyle);
 

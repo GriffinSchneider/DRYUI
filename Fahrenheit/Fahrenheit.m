@@ -55,10 +55,18 @@ static const char fahrenheit_styleNamesBlocksId = 0;
     if (style == DRYUIEmptyStyle) {
         return;
     }
+    
+    NSString *styleClassName = [NSString stringWithUTF8String:style->viewClassName];
+    NSString *styleName = [NSString stringWithUTF8String:style->name];
+    
+    NSAssert([self isKindOfClass:NSClassFromString(styleClassName)],
+             @"Attempted to apply style %@ to a view of class %@, which isn't a subclass of %@.", styleName, NSStringFromClass([self class]), styleClassName);
+    
     if (!self.styleNames) {
         self.styleNames = [NSMutableArray new];
     }
-    [((NSMutableArray *)self.styleNames) addObject:[NSString stringWithUTF8String:style->name]];
+    [((NSMutableArray *)self.styleNames) addObject:styleName];
+    
     style->applicationBlock(self, self.superview);
 }
 
