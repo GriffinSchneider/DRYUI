@@ -56,11 +56,10 @@ static const char fahrenheit_styleNamesBlocksId = 0;
         return;
     }
     
-    NSString *styleClassName = [NSString stringWithUTF8String:style->viewClassName];
     NSString *styleName = [NSString stringWithUTF8String:style->name];
     
-    NSAssert([self isKindOfClass:NSClassFromString(styleClassName)],
-             @"Attempted to apply style %@ to a view of class %@, which isn't a subclass of %@.", styleName, NSStringFromClass([self class]), styleClassName);
+    NSAssert([self isKindOfClass:NSClassFromString([NSString stringWithUTF8String:style->viewClassName])],
+             @"Attempted to apply style %@ to a view of class %@, which isn't a subclass of %@.", styleName, NSStringFromClass([self class]), [NSString stringWithUTF8String:style->viewClassName]);
     
     if (!self.styleNames) {
         self.styleNames = [NSMutableArray new];
