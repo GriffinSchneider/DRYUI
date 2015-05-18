@@ -26,7 +26,7 @@ typedef const _DRYUIStyle * DRYUIStyle;
 
 typedef void (^DRYUIViewAndSuperviewBlock)(id _, _DRYUI_VIEW *superview);
 typedef void (^DRYUIParentStyleBlock)(DRYUIStyle parent_style);
-typedef void (^DRYUIStyleBlock)(id _, _DRYUI_VIEW *superview, DRYUIParentStyleBlock parent_style);
+typedef void (^DRYUIStyleBlock)(id _, _DRYUI_VIEW *superview, DRYUIParentStyleBlock parent_style, id self);
 
 struct _DRYUIStyle {
     const char *name;
@@ -66,7 +66,7 @@ FOUNDATION_EXTERN id _dryui_returnGivenView(_DRYUI_VIEW *view);
 FOUNDATION_EXTERN DRYUIStyle _dryui_returnGivenStyle(DRYUIStyle style);
 FOUNDATION_EXTERN DRYUIStyle _dryui_takeViewAndReturnEmptyStyle(_DRYUI_VIEW *notAStyle);
 
-FOUNDATION_EXTERN void _dryui_addStyleToView(_DRYUI_VIEW *view, DRYUIStyle style);
+FOUNDATION_EXTERN void _dryui_addStyleToView(_DRYUI_VIEW *view, DRYUIStyle style, id selfForBlock);
 
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -198,40 +198,40 @@ __DRYUI_HELPER_1)(args)
 #define __DRYUI_HELPER_1( x)            ___DRYUI_HELPER_1 (x, ;, ;)
 
 // These macros add a statement like this:
-//    _dryui_addStyleToView(view, style);
+//    _dryui_addStyleToView(view, style, self);
 // to the 'afterAssignment' parameter for each style in the arguments list.
 // The second argument, y, could be wither a pre-made UIView instance geggtting passed to DRYUI or a style,
 // so it gets handled specially by ___DRYUI_HELPER_2.
-#define ___DRYUI_HELPER_32(x, y, afterAssignment, z, ...) ___DRYUI_HELPER_31(x, y, afterAssignment; _dryui_addStyleToView(x, z); , ## __VA_ARGS__)
-#define ___DRYUI_HELPER_31(x, y, afterAssignment, z, ...) ___DRYUI_HELPER_30(x, y, afterAssignment; _dryui_addStyleToView(x, z); , ## __VA_ARGS__)
-#define ___DRYUI_HELPER_30(x, y, afterAssignment, z, ...) ___DRYUI_HELPER_29(x, y, afterAssignment; _dryui_addStyleToView(x, z); , ## __VA_ARGS__)
-#define ___DRYUI_HELPER_29(x, y, afterAssignment, z, ...) ___DRYUI_HELPER_28(x, y, afterAssignment; _dryui_addStyleToView(x, z); , ## __VA_ARGS__)
-#define ___DRYUI_HELPER_28(x, y, afterAssignment, z, ...) ___DRYUI_HELPER_27(x, y, afterAssignment; _dryui_addStyleToView(x, z); , ## __VA_ARGS__)
-#define ___DRYUI_HELPER_27(x, y, afterAssignment, z, ...) ___DRYUI_HELPER_26(x, y, afterAssignment; _dryui_addStyleToView(x, z); , ## __VA_ARGS__)
-#define ___DRYUI_HELPER_26(x, y, afterAssignment, z, ...) ___DRYUI_HELPER_25(x, y, afterAssignment; _dryui_addStyleToView(x, z); , ## __VA_ARGS__)
-#define ___DRYUI_HELPER_25(x, y, afterAssignment, z, ...) ___DRYUI_HELPER_24(x, y, afterAssignment; _dryui_addStyleToView(x, z); , ## __VA_ARGS__)
-#define ___DRYUI_HELPER_24(x, y, afterAssignment, z, ...) ___DRYUI_HELPER_23(x, y, afterAssignment; _dryui_addStyleToView(x, z); , ## __VA_ARGS__)
-#define ___DRYUI_HELPER_23(x, y, afterAssignment, z, ...) ___DRYUI_HELPER_22(x, y, afterAssignment; _dryui_addStyleToView(x, z); , ## __VA_ARGS__)
-#define ___DRYUI_HELPER_22(x, y, afterAssignment, z, ...) ___DRYUI_HELPER_21(x, y, afterAssignment; _dryui_addStyleToView(x, z); , ## __VA_ARGS__)
-#define ___DRYUI_HELPER_21(x, y, afterAssignment, z, ...) ___DRYUI_HELPER_20(x, y, afterAssignment; _dryui_addStyleToView(x, z); , ## __VA_ARGS__)
-#define ___DRYUI_HELPER_20(x, y, afterAssignment, z, ...) ___DRYUI_HELPER_19(x, y, afterAssignment; _dryui_addStyleToView(x, z); , ## __VA_ARGS__)
-#define ___DRYUI_HELPER_19(x, y, afterAssignment, z, ...) ___DRYUI_HELPER_18(x, y, afterAssignment; _dryui_addStyleToView(x, z); , ## __VA_ARGS__)
-#define ___DRYUI_HELPER_18(x, y, afterAssignment, z, ...) ___DRYUI_HELPER_17(x, y, afterAssignment; _dryui_addStyleToView(x, z); , ## __VA_ARGS__)
-#define ___DRYUI_HELPER_17(x, y, afterAssignment, z, ...) ___DRYUI_HELPER_16(x, y, afterAssignment; _dryui_addStyleToView(x, z); , ## __VA_ARGS__)
-#define ___DRYUI_HELPER_16(x, y, afterAssignment, z, ...) ___DRYUI_HELPER_15(x, y, afterAssignment; _dryui_addStyleToView(x, z); , ## __VA_ARGS__)
-#define ___DRYUI_HELPER_15(x, y, afterAssignment, z, ...) ___DRYUI_HELPER_14(x, y, afterAssignment; _dryui_addStyleToView(x, z); , ## __VA_ARGS__)
-#define ___DRYUI_HELPER_14(x, y, afterAssignment, z, ...) ___DRYUI_HELPER_13(x, y, afterAssignment; _dryui_addStyleToView(x, z); , ## __VA_ARGS__)
-#define ___DRYUI_HELPER_13(x, y, afterAssignment, z, ...) ___DRYUI_HELPER_12(x, y, afterAssignment; _dryui_addStyleToView(x, z); , ## __VA_ARGS__)
-#define ___DRYUI_HELPER_12(x, y, afterAssignment, z, ...) ___DRYUI_HELPER_11(x, y, afterAssignment; _dryui_addStyleToView(x, z); , ## __VA_ARGS__)
-#define ___DRYUI_HELPER_11(x, y, afterAssignment, z, ...) ___DRYUI_HELPER_10(x, y, afterAssignment; _dryui_addStyleToView(x, z); , ## __VA_ARGS__)
-#define ___DRYUI_HELPER_10(x, y, afterAssignment, z, ...) ___DRYUI_HELPER_9 (x, y, afterAssignment; _dryui_addStyleToView(x, z); , ## __VA_ARGS__)
-#define ___DRYUI_HELPER_9( x, y, afterAssignment, z, ...) ___DRYUI_HELPER_8 (x, y, afterAssignment; _dryui_addStyleToView(x, z); , ## __VA_ARGS__)
-#define ___DRYUI_HELPER_8( x, y, afterAssignment, z, ...) ___DRYUI_HELPER_7 (x, y, afterAssignment; _dryui_addStyleToView(x, z); , ## __VA_ARGS__)
-#define ___DRYUI_HELPER_7( x, y, afterAssignment, z, ...) ___DRYUI_HELPER_6 (x, y, afterAssignment; _dryui_addStyleToView(x, z); , ## __VA_ARGS__)
-#define ___DRYUI_HELPER_6( x, y, afterAssignment, z, ...) ___DRYUI_HELPER_5 (x, y, afterAssignment; _dryui_addStyleToView(x, z); , ## __VA_ARGS__)
-#define ___DRYUI_HELPER_5( x, y, afterAssignment, z, ...) ___DRYUI_HELPER_4 (x, y, afterAssignment; _dryui_addStyleToView(x, z); , ## __VA_ARGS__)
-#define ___DRYUI_HELPER_4( x, y, afterAssignment, z, ...) ___DRYUI_HELPER_3 (x, y, afterAssignment; _dryui_addStyleToView(x, z); , ## __VA_ARGS__)
-#define ___DRYUI_HELPER_3( x, y, afterAssignment, z)      ___DRYUI_HELPER_2 (x, y, afterAssignment; _dryui_addStyleToView(x, z); )
+#define ___DRYUI_HELPER_32(x, y, afterAssignment, z, ...) ___DRYUI_HELPER_31(x, y, afterAssignment; _dryui_addStyleToView(x, z, self); , ## __VA_ARGS__)
+#define ___DRYUI_HELPER_31(x, y, afterAssignment, z, ...) ___DRYUI_HELPER_30(x, y, afterAssignment; _dryui_addStyleToView(x, z, self); , ## __VA_ARGS__)
+#define ___DRYUI_HELPER_30(x, y, afterAssignment, z, ...) ___DRYUI_HELPER_29(x, y, afterAssignment; _dryui_addStyleToView(x, z, self); , ## __VA_ARGS__)
+#define ___DRYUI_HELPER_29(x, y, afterAssignment, z, ...) ___DRYUI_HELPER_28(x, y, afterAssignment; _dryui_addStyleToView(x, z, self); , ## __VA_ARGS__)
+#define ___DRYUI_HELPER_28(x, y, afterAssignment, z, ...) ___DRYUI_HELPER_27(x, y, afterAssignment; _dryui_addStyleToView(x, z, self); , ## __VA_ARGS__)
+#define ___DRYUI_HELPER_27(x, y, afterAssignment, z, ...) ___DRYUI_HELPER_26(x, y, afterAssignment; _dryui_addStyleToView(x, z, self); , ## __VA_ARGS__)
+#define ___DRYUI_HELPER_26(x, y, afterAssignment, z, ...) ___DRYUI_HELPER_25(x, y, afterAssignment; _dryui_addStyleToView(x, z, self); , ## __VA_ARGS__)
+#define ___DRYUI_HELPER_25(x, y, afterAssignment, z, ...) ___DRYUI_HELPER_24(x, y, afterAssignment; _dryui_addStyleToView(x, z, self); , ## __VA_ARGS__)
+#define ___DRYUI_HELPER_24(x, y, afterAssignment, z, ...) ___DRYUI_HELPER_23(x, y, afterAssignment; _dryui_addStyleToView(x, z, self); , ## __VA_ARGS__)
+#define ___DRYUI_HELPER_23(x, y, afterAssignment, z, ...) ___DRYUI_HELPER_22(x, y, afterAssignment; _dryui_addStyleToView(x, z, self); , ## __VA_ARGS__)
+#define ___DRYUI_HELPER_22(x, y, afterAssignment, z, ...) ___DRYUI_HELPER_21(x, y, afterAssignment; _dryui_addStyleToView(x, z, self); , ## __VA_ARGS__)
+#define ___DRYUI_HELPER_21(x, y, afterAssignment, z, ...) ___DRYUI_HELPER_20(x, y, afterAssignment; _dryui_addStyleToView(x, z, self); , ## __VA_ARGS__)
+#define ___DRYUI_HELPER_20(x, y, afterAssignment, z, ...) ___DRYUI_HELPER_19(x, y, afterAssignment; _dryui_addStyleToView(x, z, self); , ## __VA_ARGS__)
+#define ___DRYUI_HELPER_19(x, y, afterAssignment, z, ...) ___DRYUI_HELPER_18(x, y, afterAssignment; _dryui_addStyleToView(x, z, self); , ## __VA_ARGS__)
+#define ___DRYUI_HELPER_18(x, y, afterAssignment, z, ...) ___DRYUI_HELPER_17(x, y, afterAssignment; _dryui_addStyleToView(x, z, self); , ## __VA_ARGS__)
+#define ___DRYUI_HELPER_17(x, y, afterAssignment, z, ...) ___DRYUI_HELPER_16(x, y, afterAssignment; _dryui_addStyleToView(x, z, self); , ## __VA_ARGS__)
+#define ___DRYUI_HELPER_16(x, y, afterAssignment, z, ...) ___DRYUI_HELPER_15(x, y, afterAssignment; _dryui_addStyleToView(x, z, self); , ## __VA_ARGS__)
+#define ___DRYUI_HELPER_15(x, y, afterAssignment, z, ...) ___DRYUI_HELPER_14(x, y, afterAssignment; _dryui_addStyleToView(x, z, self); , ## __VA_ARGS__)
+#define ___DRYUI_HELPER_14(x, y, afterAssignment, z, ...) ___DRYUI_HELPER_13(x, y, afterAssignment; _dryui_addStyleToView(x, z, self); , ## __VA_ARGS__)
+#define ___DRYUI_HELPER_13(x, y, afterAssignment, z, ...) ___DRYUI_HELPER_12(x, y, afterAssignment; _dryui_addStyleToView(x, z, self); , ## __VA_ARGS__)
+#define ___DRYUI_HELPER_12(x, y, afterAssignment, z, ...) ___DRYUI_HELPER_11(x, y, afterAssignment; _dryui_addStyleToView(x, z, self); , ## __VA_ARGS__)
+#define ___DRYUI_HELPER_11(x, y, afterAssignment, z, ...) ___DRYUI_HELPER_10(x, y, afterAssignment; _dryui_addStyleToView(x, z, self); , ## __VA_ARGS__)
+#define ___DRYUI_HELPER_10(x, y, afterAssignment, z, ...) ___DRYUI_HELPER_9 (x, y, afterAssignment; _dryui_addStyleToView(x, z, self); , ## __VA_ARGS__)
+#define ___DRYUI_HELPER_9( x, y, afterAssignment, z, ...) ___DRYUI_HELPER_8 (x, y, afterAssignment; _dryui_addStyleToView(x, z, self); , ## __VA_ARGS__)
+#define ___DRYUI_HELPER_8( x, y, afterAssignment, z, ...) ___DRYUI_HELPER_7 (x, y, afterAssignment; _dryui_addStyleToView(x, z, self); , ## __VA_ARGS__)
+#define ___DRYUI_HELPER_7( x, y, afterAssignment, z, ...) ___DRYUI_HELPER_6 (x, y, afterAssignment; _dryui_addStyleToView(x, z, self); , ## __VA_ARGS__)
+#define ___DRYUI_HELPER_6( x, y, afterAssignment, z, ...) ___DRYUI_HELPER_5 (x, y, afterAssignment; _dryui_addStyleToView(x, z, self); , ## __VA_ARGS__)
+#define ___DRYUI_HELPER_5( x, y, afterAssignment, z, ...) ___DRYUI_HELPER_4 (x, y, afterAssignment; _dryui_addStyleToView(x, z, self); , ## __VA_ARGS__)
+#define ___DRYUI_HELPER_4( x, y, afterAssignment, z, ...) ___DRYUI_HELPER_3 (x, y, afterAssignment; _dryui_addStyleToView(x, z, self); , ## __VA_ARGS__)
+#define ___DRYUI_HELPER_3( x, y, afterAssignment, z)      ___DRYUI_HELPER_2 (x, y, afterAssignment; _dryui_addStyleToView(x, z, self); )
 
 // This macro passes through the first argument and codeAfterVariableAssignment to ___DRYUI_HELPER_1,
 // while determining whether the second argument is a pre-made UIView instance or the first style to apply.
@@ -273,7 +273,7 @@ _DRYUI_GOTO_HELPER(variableName, \
     [_dryui_current_toplevel_view _dryui_addViewFromBuildSubviews:_dryui_current_view \
                                                     withSuperview:_ \
                                                          andBlock:_DRYUI_VIEW_AND_SUPERVIEW_BLOCK]; \
-    _dryui_addStyleToView(variableName, _DRYUI_FIRST_STYLE_OR_NONE); \
+    _dryui_addStyleToView(variableName, _DRYUI_FIRST_STYLE_OR_NONE, self); \
     ({ codeAfterVariableAssignment }); \
     _dryui_current_view = nil; \
 )
@@ -309,10 +309,10 @@ static DRYUIStyleBlock _DRYUI_APPLICATION_BLOCK_NAME_FOR_STYLE(styleName); \
 static const _DRYUIStyle _DRYUIStyle_##styleName = { \
     .name = #styleName, \
     .viewClassName = #className, \
-    .applicationBlock = ^void(_DRYUI_VIEW *_, _DRYUI_VIEW *superview, DRYUIParentStyleBlock parent_style) { \
-        _DRYUI_APPLICATION_BLOCK_NAME_FOR_STYLE(styleName)(_, superview, parent_style); \
+    .applicationBlock = ^void(_DRYUI_VIEW *_, _DRYUI_VIEW *superview, DRYUIParentStyleBlock parent_style, id self) { \
+        _DRYUI_APPLICATION_BLOCK_NAME_FOR_STYLE(styleName)(_, superview, parent_style, self); \
     } \
 }; \
 DRYUIStyle styleName = &_DRYUIStyle_##styleName; \
-static DRYUIStyleBlock _DRYUI_APPLICATION_BLOCK_NAME_FOR_STYLE(styleName) = ^(className *_, _DRYUI_VIEW *superview, DRYUIParentStyleBlock parent_style)
+static DRYUIStyleBlock _DRYUI_APPLICATION_BLOCK_NAME_FOR_STYLE(styleName) = ^(className *_, _DRYUI_VIEW *superview, DRYUIParentStyleBlock parent_style, id self)
 
