@@ -1,17 +1,17 @@
 PODS:
-  - Fahrenheit (0.2.1):
+  - DRYUI (0.3.0):
     - Masonry
   - Masonry (0.6.1)
 
 DEPENDENCIES:
-  - Fahrenheit (from `./`)
+  - DRYUI (from `./`)
 
 EXTERNAL SOURCES:
-  Fahrenheit:
+  DRYUI:
     :path: ./
 
 SPEC CHECKSUMS:
-  Fahrenheit: 0480ea58007dfd893874fdb4685a55652870439a
+  DRYUI: b96b616e9bc688f57e0fd142141bb6bddd96eee7
   Masonry: 4972309f2f134de9dd312f4dc4a21359b50e6caa
 
-COCOAPODS: 0.36.4
+COCOAPODS: 0.37.0
