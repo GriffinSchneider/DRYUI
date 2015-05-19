@@ -109,7 +109,7 @@ dryui_style(RedAndWhiteLabel, UILabel) {
 ```
 
 ####Styles without `build_subviews`
-To apply a subview outside of the context of `build_subviews`/`add_subview`, you can simply call `applyStyle:` on the view you want to style:
+To apply a style outside of the context of `build_subviews`/`add_subview`, you can simply call `applyStyle:` on the view you want to style:
 ```obj-c
 UIView *view = [UIView new];
 [view applyStyle:RedView];
