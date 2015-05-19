@@ -108,6 +108,13 @@ dryui_style(RedAndWhiteLabel, UILabel) {
 // Now, applying the RedAndWhiteLabel style to a UILabel will give it a red background and white text.
 ```
 
+####Styles without `build_subviews`
+To apply a subview outside of the context of `build_subviews`/`add_subview`, you can simply call `applyStyle:` on the view you want to style:
+```obj-c
+UIView *view = [UIView new];
+[view applyStyle:RedView];
+```
+
 
 ##Advanced Usage of `add_subview`:
 
