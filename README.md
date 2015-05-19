@@ -84,7 +84,7 @@ dryui_private_style(RedView) {
     _.backgroundColor = [UIColor redColor];
 };
 ```
-Declaring a stylestyle creates a new Objective-C class, so you can't do it inside of an existing `@implementation` or `@interface`.
+Declaring a style creates a new Objective-C class, so you can't do it inside of an existing `@implementation` or `@interface`.
 
 ####Styling for specific classes
 By default, style blocks assume they're being applied to `UIViews`. If you want to style a subclass of `UIView`, just add the class name as the second argument to `dryui_style`, `dryui_public_style`, or `dryui_private_style`:
