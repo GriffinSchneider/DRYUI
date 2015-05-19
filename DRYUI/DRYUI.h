@@ -300,6 +300,8 @@ dryui_style(args)
 // Public style declaration - expands to an @interface declaration for a subclass of DRYUIStyle, and
 // an extern-ed variable that holds an instance of the subclass. This singleton instance is what you use
 // to actually refer to the class.
+// Also declares the overloaded functions used to apply styles to views by add_subview. See 'Style implementation'
+// below for an explnation.
 #define dryui_public_style(args...) _DRYUI_STYLE_OVERLOADED_MACRO(args, _DRYUI_PUBLIC_STYLE_2, _DRYUI_PUBLIC_STYLE_1)(args)
 #define _DRYUI_STYLE_OVERLOADED_MACRO(_1,_2,NAME,...) NAME
 
@@ -317,7 +319,7 @@ FOUNDATION_EXTERN void __attribute__((overloadable)) _dryui_addStyleToView_accep
 // Define the empty style. Attempting to apply the empty style will result in nothing happening as fast as possible.
 dryui_public_style(DRYUIEmptyStyle, UIView);
 
-// Style implementation.
+// Style implementation
 //
 // In order to get the nice syntax where you just put curly braces after the macro, this has to expand to a
 // bunch of stuff and then the beginning of a block literal. So, declare a static variable for the block,
@@ -327,6 +329,17 @@ dryui_public_style(DRYUIEmptyStyle, UIView);
 // When you refer to the style, (i.e. 'DRYUIEmptyStyle'), you're actually referencing a static variable
 // that contains a singleton instance of the class implemented here. We can't assign to that variable statically,
 // so instead we assign it when our class gets the 'load' message.
+//
+// Styles make heavy use of __attribute__((overloadable)) to get type safety for style application. Every style
+// declares additional overloaded versions of the _dryui_addStyleToView and _dryui_addStyleToView_acceptView
+// functions that take the UIView subclass that the style applies to as the first argument, and an instance of the
+// style's class as the second argument. This means that, for example, if you declare a style named 'ButtonStyle'
+// that applies only to 'UIButton*', then there is no version of _dryui_addStyleToView that takes a 'UIView*' and
+// a 'ButtonStyle', which will cause a compiler warning if you try to apply 'ButtonStyle' to a UIView!
+//
+// The _dryui_addStyleToView_acceptView function is a hack to support the case where the second argument to add_subview
+// is a UIView instance - this function has 1 additional overloaded version where the first and second arguments are
+// UIViews, so that you won't get a compiler warning about there being a UIView where we expect a DRYUIStyle.
 #define dryui_style(args...) _DRYUI_STYLE_OVERLOADED_MACRO(args, _DRYUI_IMPLEMENT_STYLE_2, _DRYUI_IMPLEMENT_STYLE_1)(args)
 
 #define _DRYUI_IMPLEMENT_STYLE_1(styleName) _DRYUI_IMPLEMENT_STYLE_2(styleName, _DRYUI_VIEW)
