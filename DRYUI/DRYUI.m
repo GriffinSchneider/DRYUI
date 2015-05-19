@@ -93,6 +93,10 @@ DRYUIStyle * __attribute((overloadable)) _dryui_returnGivenStyleOrEmptyStyle(_DR
     return DRYUIEmptyStyle;
 }
 
+void __attribute__((overloadable)) _dryui_addStyleToView_acceptView(_DRYUI_VIEW *view, UIView *notAStyle, id selfForBlock) {
+    
+}
+
 void _dryui_applyStyle(_DRYUI_VIEW *view, DRYUIStyle *style, id selfForBlock) {
     if (style == DRYUIEmptyStyle) {
         return;
@@ -117,7 +121,7 @@ void _dryui_applyStyle(_DRYUI_VIEW *view, DRYUIStyle *style, id selfForBlock) {
 }
 
 
-void _dryui_addStyleToView(_DRYUI_VIEW *view, DRYUIStyle *style, id selfForBlock) {
+void _dryui_addStyleToView_internal(_DRYUI_VIEW *view, DRYUIStyle *style, id selfForBlock) {
     if (style == DRYUIEmptyStyle) {
         return;
     }

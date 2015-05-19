@@ -71,9 +71,9 @@ FOUNDATION_EXTERN id __attribute((overloadable)) _dryui_returnGivenViewOrNil(_DR
 FOUNDATION_EXTERN DRYUIStyle * __attribute((overloadable)) _dryui_returnGivenStyleOrEmptyStyle(DRYUIStyle *style);
 FOUNDATION_EXTERN DRYUIStyle * __attribute((overloadable)) _dryui_returnGivenStyleOrEmptyStyle(_DRYUI_VIEW *notAStyle);
 
-FOUNDATION_EXTERN id _dryui_instantiate_from_encoding(char *);
+FOUNDATION_EXTERN id  _dryui_instantiate_from_encoding(char *);
 
-FOUNDATION_EXTERN void _dryui_addStyleToView(_DRYUI_VIEW *view, DRYUIStyle *style, id selfForBlock);
+FOUNDATION_EXTERN void _dryui_addStyleToView_internal(_DRYUI_VIEW *view, DRYUIStyle *style, id selfForBlock);
 
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -253,6 +253,7 @@ ___DRYUI_HELPER_1(x, \
     _DRYUI_PASSED_INSTANCE_OR_NIL = _dryui_returnGivenViewOrNil(_dryui_y); \
     _DRYUI_FIRST_STYLE_OR_NONE = _dryui_returnGivenStyleOrEmptyStyle(_dryui_y); \
 , \
+    _dryui_addStyleToView_acceptView(x, (typeof(y))_DRYUI_FIRST_STYLE_OR_NONE, self); \
     codeAfterVariableAssignment \
 )
 
@@ -263,9 +264,10 @@ FOUNDATION_EXTERN _DRYUI_VIEW *_dryui_current_toplevel_view;
 _Pragma("clang diagnostic push") \
 _Pragma("clang diagnostic ignored \"-Wunused-value\"") \
 variableName; \
+_Pragma("clang diagnostic ignored \"-Wunused-variable\"") \
+DRYUIStyle *_DRYUI_FIRST_STYLE_OR_NONE = DRYUIEmptyStyle; \
 _Pragma("clang diagnostic pop") \
 typeof(variableName) _DRYUI_PASSED_INSTANCE_OR_NIL = nil; \
-DRYUIStyle *_DRYUI_FIRST_STYLE_OR_NONE = DRYUIEmptyStyle; \
 ({ codeAfterVariableDeclarations }); \
 if (!variableName) { \
     variableName = _DRYUI_PASSED_INSTANCE_OR_NIL ?: _dryui_instantiate_from_encoding(@encode(typeof(*(variableName)))); \
@@ -276,7 +278,6 @@ _DRYUI_GOTO_HELPER(variableName, \
     [_dryui_current_toplevel_view _dryui_addViewFromBuildSubviews:_dryui_current_view \
                                                     withSuperview:_ \
                                                          andBlock:_DRYUI_VIEW_AND_SUPERVIEW_BLOCK]; \
-    _dryui_addStyleToView(variableName, _DRYUI_FIRST_STYLE_OR_NONE, self); \
     ({ codeAfterVariableAssignment }); \
     _dryui_current_view = nil; \
 )
@@ -301,11 +302,17 @@ dryui_style(args)
 // to actually refer to the class.
 #define dryui_public_style(args...) _DRYUI_STYLE_OVERLOADED_MACRO(args, _DRYUI_PUBLIC_STYLE_2, _DRYUI_PUBLIC_STYLE_1)(args)
 #define _DRYUI_STYLE_OVERLOADED_MACRO(_1,_2,NAME,...) NAME
-#define _DRYUI_PUBLIC_STYLE_2(styleName, className) _DRYUI_PUBLIC_STYLE_1(styleName)
-#define _DRYUI_PUBLIC_STYLE_1(styleName) \
+
+#define _DRYUI_PUBLIC_STYLE_1(styleName) _DRYUI_PUBLIC_STYLE_2(styleName, _DRYUI_VIEW)
+
+#define _DRYUI_PUBLIC_STYLE_2(styleName, className) \
 @interface _DRYUI_STYLE_CLASS_NAME(styleName) : DRYUIStyle \
 @end \
+FOUNDATION_EXTERN void __attribute__((overloadable)) _dryui_addStyleToView(className *view, _DRYUI_STYLE_CLASS_NAME(styleName) *style, id selfForBlock); \
+FOUNDATION_EXTERN void __attribute__((overloadable)) _dryui_addStyleToView_acceptView(className *view, _DRYUI_STYLE_CLASS_NAME(styleName) *style, id selfForBlock); \
 FOUNDATION_EXTERN _DRYUI_STYLE_CLASS_NAME(styleName) *styleName;
+
+FOUNDATION_EXTERN void __attribute__((overloadable)) _dryui_addStyleToView_acceptView(_DRYUI_VIEW *view, UIView *notAStyle, id selfForBlock);
 
 // Define the empty style. Attempting to apply the empty style will result in nothing happening as fast as possible.
 dryui_public_style(DRYUIEmptyStyle, UIView);
@@ -339,5 +346,12 @@ static DRYUIStyleBlock _DRYUI_STYLE_APPLICATION_BLOCK_VARIABLE_NAME(styleName); 
 - (NSString *)viewClassName {return @ # className;} \
 - (DRYUIStyleBlock)applicationBlock {return _DRYUI_STYLE_APPLICATION_BLOCK_VARIABLE_NAME(styleName);} \
 @end \
+\
+void __attribute__((overloadable)) _dryui_addStyleToView(className *view, _DRYUI_STYLE_CLASS_NAME(styleName) *style, id selfForBlock) { \
+    _dryui_addStyleToView_internal(view, style, selfForBlock); \
+} \
+void __attribute__((overloadable)) _dryui_addStyleToView_acceptView(className *view, _DRYUI_STYLE_CLASS_NAME(styleName) *style, id selfForBlock) { \
+    _dryui_addStyleToView_internal(view, style, selfForBlock); \
+} \
 \
 static DRYUIStyleBlock _DRYUI_STYLE_APPLICATION_BLOCK_VARIABLE_NAME(styleName) = ^(className *_, _DRYUI_VIEW *superview, DRYUIParentStyleBlock parent_style, id self) \

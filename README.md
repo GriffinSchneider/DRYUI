@@ -93,7 +93,7 @@ dryui_style(RedButton, UIButton) {
     // _ is now a UIButton *
 };
 ```
-Attempting to apply a style like this to a view of the wrong type will trigger an exception at runtime.
+Attempting to apply a style like this to a view of the wrong type will trigger a compiler warning, and then a runtime exception.
 
 ####Style inheritance
 Styles also support simple inheritance like this:
