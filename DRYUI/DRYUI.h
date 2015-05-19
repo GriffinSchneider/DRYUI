@@ -58,13 +58,17 @@ struct _DRYUIStyle {
 #pragma mark -
 #pragma mark Hierarchy Building Macros
 
+// These seemingly pointlesss functions are used to determine whether a macro parameter is a UIView *
+// or a DRYUIStyle - the first set of functions will return the given view if it's called with a view, or
+// nil if it's called with a DRYUIStyle.
+// The second functions will return the given style if called with a style, or DRYUIEmptyStyle (the 'nil' style)
+// when called with a view.
+FOUNDATION_EXTERN id __attribute((overloadable)) _dryui_returnGivenViewOrNil(DRYUIStyle notAView);
+FOUNDATION_EXTERN id __attribute((overloadable)) _dryui_returnGivenViewOrNil(_DRYUI_VIEW *view);
+FOUNDATION_EXTERN DRYUIStyle __attribute((overloadable)) _dryui_returnGivenStyleOrEmptyStyle(DRYUIStyle style);
+FOUNDATION_EXTERN DRYUIStyle __attribute((overloadable)) _dryui_returnGivenStyleOrEmptyStyle(_DRYUI_VIEW *notAStyle);
+
 FOUNDATION_EXTERN id _dryui_instantiate_from_encoding(char *);
-
-FOUNDATION_EXTERN id _dryui_takeStyleAndReturnNil(DRYUIStyle notAView);
-FOUNDATION_EXTERN id _dryui_returnGivenView(_DRYUI_VIEW *view);
-
-FOUNDATION_EXTERN DRYUIStyle _dryui_returnGivenStyle(DRYUIStyle style);
-FOUNDATION_EXTERN DRYUIStyle _dryui_takeViewAndReturnEmptyStyle(_DRYUI_VIEW *notAStyle);
 
 FOUNDATION_EXTERN void _dryui_addStyleToView(_DRYUI_VIEW *view, DRYUIStyle style, id selfForBlock);
 
@@ -241,15 +245,11 @@ __DRYUI_HELPER_1)(args)
 // empty style if it isn't.
 #define ___DRYUI_HELPER_2( x, y, codeAfterVariableAssignment) \
 ___DRYUI_HELPER_1(x, \
+  \
     typeof(y) _dryui_y = y; \
-    _DRYUI_PASSED_INSTANCE_OR_NIL = _Generic(_dryui_y, \
-        DRYUIStyle: _dryui_takeStyleAndReturnNil, \
-        default: _dryui_returnGivenView \
-    )(_dryui_y); \
-    _DRYUI_FIRST_STYLE_OR_NONE = _Generic(_dryui_y, \
-        DRYUIStyle: _dryui_returnGivenStyle, \
-        default: _dryui_takeViewAndReturnEmptyStyle \
-    )(_dryui_y);, \
+    _DRYUI_PASSED_INSTANCE_OR_NIL = _dryui_returnGivenViewOrNil(_dryui_y); \
+    _DRYUI_FIRST_STYLE_OR_NONE = _dryui_returnGivenStyleOrEmptyStyle(_dryui_y); \
+, \
     codeAfterVariableAssignment \
 )
 

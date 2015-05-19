@@ -127,19 +127,19 @@ id _dryui_instantiate_from_encoding(char *encoding) {
     return instance;
 }
 
-id _dryui_takeStyleAndReturnNil(DRYUIStyle notView) {
+id __attribute((overloadable)) _dryui_returnGivenViewOrNil(DRYUIStyle notAView) {
     return nil;
 }
 
-id _dryui_returnGivenView(_DRYUI_VIEW *view) {
+id __attribute((overloadable)) _dryui_returnGivenViewOrNil(_DRYUI_VIEW *view) {
     return view;
 }
 
-DRYUIStyle _dryui_returnGivenStyle(DRYUIStyle style) {
+DRYUIStyle __attribute((overloadable)) _dryui_returnGivenStyleOrEmptyStyle(DRYUIStyle style) {
     return style;
 }
 
-DRYUIStyle _dryui_takeViewAndReturnEmptyStyle(_DRYUI_VIEW *notAStyle) {
+DRYUIStyle __attribute((overloadable)) _dryui_returnGivenStyleOrEmptyStyle(_DRYUI_VIEW *notAStyle) {
     return DRYUIEmptyStyle;
 }
 
