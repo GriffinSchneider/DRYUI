@@ -314,10 +314,10 @@ FOUNDATION_EXTERN void __attribute__((overloadable)) _dryui_addStyleToView(class
 FOUNDATION_EXTERN void __attribute__((overloadable)) _dryui_addStyleToView_acceptView(className *view, _DRYUI_STYLE_CLASS_NAME(styleName) *style, id selfForBlock); \
 FOUNDATION_EXTERN _DRYUI_STYLE_CLASS_NAME(styleName) *styleName;
 
-FOUNDATION_EXTERN void __attribute__((overloadable)) _dryui_addStyleToView_acceptView(_DRYUI_VIEW *view, UIView *notAStyle, id selfForBlock);
+FOUNDATION_EXTERN void __attribute__((overloadable)) _dryui_addStyleToView_acceptView(_DRYUI_VIEW *view, _DRYUI_VIEW *notAStyle, id selfForBlock);
 
 // Define the empty style. Attempting to apply the empty style will result in nothing happening as fast as possible.
-dryui_public_style(DRYUIEmptyStyle, UIView);
+dryui_public_style(DRYUIEmptyStyle, _DRYUI_VIEW);
 
 // Style implementation
 //

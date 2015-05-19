@@ -93,7 +93,7 @@ DRYUIStyle * __attribute((overloadable)) _dryui_returnGivenStyleOrEmptyStyle(_DR
     return DRYUIEmptyStyle;
 }
 
-void __attribute__((overloadable)) _dryui_addStyleToView_acceptView(_DRYUI_VIEW *view, UIView *notAStyle, id selfForBlock) {
+void __attribute__((overloadable)) _dryui_addStyleToView_acceptView(_DRYUI_VIEW *view, _DRYUI_VIEW *notAStyle, id selfForBlock) {
     
 }
 
