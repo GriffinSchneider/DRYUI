@@ -24,6 +24,41 @@ Style3 \
 
 @end
 
+
+// Can't use XCTAssert without `self`, so we have to save booleans from
+// these blocks and assert later instead of asserting in the blocks themselves
+static BOOL wasSuperviewEverNil = NO;
+
+dryui_private_style(Style0) {
+    if (!superview) wasSuperviewEverNil = YES;
+    _.backgroundColor = [UIColor redColor];
+};
+
+dryui_private_style(Style1) {
+    parent_style(Style0);
+    if (!superview) wasSuperviewEverNil = YES;
+    _.backgroundColor = [UIColor blueColor];
+};
+
+dryui_private_style(Style2) {
+    parent_style(Style1);
+    if (!superview) wasSuperviewEverNil = YES;
+    _.backgroundColor = [UIColor greenColor];
+};
+
+dryui_private_style(Style3) {
+    parent_style(Style2);
+    if (!superview) wasSuperviewEverNil = YES;
+    _.backgroundColor = [UIColor orangeColor];
+};
+
+dryui_private_style(StyleButton, UIButton) {
+    parent_style(Style0);
+    [_ setTitle:@"button title" forState:UIControlStateNormal];
+    parent_style(Style1);
+    parent_style(Style3);
+};
+
 @implementation DRYUITests
 
 - (void)setUp {
@@ -34,39 +69,6 @@ Style3 \
     [super tearDown];
 }
 
-// Can't use XCTAssert without `self`, so we have to save booleans from
-// these blocks and assert later instead of asserting in the blocks themselves
-static BOOL wasSuperviewEverNil = NO;
-
-dryui_style(Style0) {
-    if (!superview) wasSuperviewEverNil = YES;
-    _.backgroundColor = [UIColor redColor];
-};
-
-dryui_style(Style1) {
-    parent_style(Style0);
-    if (!superview) wasSuperviewEverNil = YES;
-    _.backgroundColor = [UIColor blueColor];
-};
-
-dryui_style(Style2) {
-    parent_style(Style1);
-    if (!superview) wasSuperviewEverNil = YES;
-    _.backgroundColor = [UIColor greenColor];
-};
-
-dryui_style(Style3) {
-    parent_style(Style2);
-    if (!superview) wasSuperviewEverNil = YES;
-    _.backgroundColor = [UIColor orangeColor];
-};
-
-dryui_style(StyleButton, UIButton) {
-    parent_style(Style0);
-    [_ setTitle:@"button title" forState:UIControlStateNormal];
-    parent_style(Style1);
-    parent_style(Style3);
-};
 
 - (void)testDRYUI {
 
@@ -141,20 +143,16 @@ dryui_style(StyleButton, UIButton) {
     
     
     // Assertions about style association
-    NSMutableArray *styles = [NSMutableArray new];
-    const _DRYUIStyle *_styles[] = {BIG_STYLE_LIST};
-    for (int i = 0; i < sizeof(_styles)/sizeof(_DRYUIStyle*); i++) {
-        [styles addObject:[NSString stringWithUTF8String:_styles[i]->name]];
-    }
-    XCTAssertEqualObjects(a.styleNames, styles, @"a's styles should equal the BIG_STYLE_LIST");
+    NSArray *styles = @[BIG_STYLE_LIST];
+    XCTAssertEqualObjects(a.styles, styles, @"a's styles should equal the BIG_STYLE_LIST");
     
-    XCTAssertEqualObjects(b.styleNames, @[[NSString stringWithUTF8String:Style3->name]], @"b's styles should equal [Style3]");
-    XCTAssertEqualObjects(c.styleNames, (@[[NSString stringWithUTF8String:Style0->name], [NSString stringWithUTF8String:Style1->name]]), @"c's styles should equal [Style0, Style1]");
-    XCTAssertEqualObjects(g.styleNames, (@[[NSString stringWithUTF8String:Style1->name], [NSString stringWithUTF8String:StyleButton->name]]), @"g's styles should equal [StyleButton, Style1]");
+    XCTAssertEqualObjects(b.styles, @[Style3], @"b's styles should equal [Style3]");
+    XCTAssertEqualObjects(c.styles, (@[Style0, Style1]), @"c's styles should equal [Style0, Style1]");
+    XCTAssertEqualObjects(g.styles, (@[Style1, StyleButton]), @"g's styles should equal [StyleButton, Style1]");
     
-    XCTAssertNil(d.styleNames, @"d shouldn't have any styles");
-    XCTAssertNil(e.styleNames, @"d shouldn't have any styles");
-    XCTAssertNil(self.f.styleNames, @"d shouldn't have any styles");
+    XCTAssertNil(d.styles, @"d shouldn't have any styles");
+    XCTAssertNil(e.styles, @"d shouldn't have any styles");
+    XCTAssertNil(self.f.styles, @"d shouldn't have any styles");
     
     
     // Assertions about style application

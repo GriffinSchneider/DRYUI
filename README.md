@@ -56,7 +56,13 @@ build_subviews(self.view) {
 ##Styling
 
 ####Basics
-You can define a style like this in a `.m` file:
+You can define a style like this:
+
+in a `.h` file:
+```obj-c
+dryui_public_style(RedView);
+```
+and in the `.m`:
 ```obj-c
 dryui_style(RedView) {
     _.backgroundColor = [UIColor redColor];
@@ -72,14 +78,16 @@ build_subviews(self.view) {
 ```
 You can add any number of styles to a view in this way, and they'll be applied by calling the style blocks in the order they were added. The main block after `add_subview` runs after all styles have been applied, so it can override them.
 
-If you want your style to be public, add a declaration like this to the `.h` file:
+If you want your style to be private to a `.m` file, then omit the `dryui_public_style` and use `dryui_private_style` in the `.m`:
 ```obj-c
-dryui_public_style(RedView);
+dryui_private_style(RedView) {
+    _.backgroundColor = [UIColor redColor];
+};
 ```
-This just `extern`s the style for you so you can use it globally.
+Declaring a stylestyle creates a new Objective-C class, so you can't do it inside of an existing `@implementation` or `@interface`.
 
 ####Styling for specific classes
-By default, style blocks assume they're being applied to `UIViews`. If you want to style a subclass of `UIView`, just add the class name as the second argument to `dryui_style`:
+By default, style blocks assume they're being applied to `UIViews`. If you want to style a subclass of `UIView`, just add the class name as the second argument to `dryui_style`, `dryui_public_style`, or `dryui_private_style`:
 ```obj-c
 dryui_style(RedButton, UIButton) {
     // _ is now a UIButton *
