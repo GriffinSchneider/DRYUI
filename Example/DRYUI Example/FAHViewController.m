@@ -9,18 +9,19 @@
 #import "FAHViewController.h"
 #import <DRYUI/DRYUI.h>
 
-dryui_style(Red) {
+dryui_private_style(Red) {
     _.backgroundColor = [UIColor redColor];
 };
-dryui_style(Green) {
+dryui_private_style(Green) {
     _.backgroundColor = [UIColor greenColor];
 };
-dryui_style(Blue) {
+dryui_private_style(Blue) {
     _.backgroundColor = [UIColor blueColor];
 };
-dryui_style(Orange) {
+dryui_private_style(Orange) {
     _.backgroundColor = [UIColor orangeColor];
 };
+
 
 @interface FAHViewController ()
 
