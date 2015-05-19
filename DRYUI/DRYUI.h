@@ -71,7 +71,7 @@ FOUNDATION_EXTERN id __attribute((overloadable)) _dryui_returnGivenViewOrNil(_DR
 FOUNDATION_EXTERN DRYUIStyle * __attribute((overloadable)) _dryui_returnGivenStyleOrEmptyStyle(DRYUIStyle *style);
 FOUNDATION_EXTERN DRYUIStyle * __attribute((overloadable)) _dryui_returnGivenStyleOrEmptyStyle(_DRYUI_VIEW *notAStyle);
 
-FOUNDATION_EXTERN id  _dryui_instantiate_from_encoding(char *);
+FOUNDATION_EXTERN id _dryui_instantiate_from_encoding(char *);
 
 FOUNDATION_EXTERN void _dryui_addStyleToView_internal(_DRYUI_VIEW *view, DRYUIStyle *style, id selfForBlock);
 
