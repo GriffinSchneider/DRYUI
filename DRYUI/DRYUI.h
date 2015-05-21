@@ -263,6 +263,7 @@ FOUNDATION_EXTERN _DRYUI_VIEW *_dryui_current_toplevel_view;
 #define ___DRYUI_HELPER_1(variableName, codeAfterVariableDeclarations, codeAfterVariableAssignment) \
 _Pragma("clang diagnostic push") \
 _Pragma("clang diagnostic ignored \"-Wunused-value\"") \
+_Pragma("clang diagnostic ignored \"-Wunused-getter-return-value\"") \
 variableName; \
 _Pragma("clang diagnostic ignored \"-Wunused-variable\"") \
 DRYUIStyle *_DRYUI_FIRST_STYLE_OR_NONE = DRYUIEmptyStyle; \
