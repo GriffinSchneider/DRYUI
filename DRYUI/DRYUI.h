@@ -37,7 +37,6 @@ typedef void (^DRYUIStyleBlock)(id _, _DRYUI_VIEW *superview, DRYUIParentStyleBl
 - (void)applyStyle:(DRYUIStyle *)style withSelf:(id)self;
 
 - (void)_dryui_buildSubviews:(DRYUIViewAndSuperviewBlock)block;
-- (id)_dryui_addViewFromBuildSubviews:(_DRYUI_VIEW *)view withSuperview:(_DRYUI_VIEW *)superview andBlock:(DRYUIViewAndSuperviewBlock)block;
 
 @end
 
@@ -75,6 +74,7 @@ FOUNDATION_EXTERN id _dryui_instantiate_from_encoding(char *);
 
 FOUNDATION_EXTERN void _dryui_addStyleToView_internal(_DRYUI_VIEW *view, DRYUIStyle *style, id selfForBlock);
 
+FOUNDATION_EXTERN void _dryui_addViewFromBuildSubviews(_DRYUI_VIEW *view, _DRYUI_VIEW *superview, DRYUIViewAndSuperviewBlock block);
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 #pragma mark -
@@ -92,6 +92,7 @@ FOUNDATION_EXTERN void _dryui_addStyleToView_internal(_DRYUI_VIEW *view, DRYUISt
 #define _DRYUI_FIRST_STYLE_OR_NONE _DRYUI_CONCATENATE(_dryui_firstStyleOrNone, __LINE__)
 #define _DRYUI_VIEW_AND_SUPERVIEW_BLOCK _DRYUI_CONCATENATE(_dryui_viewAndSuperviewBlockk, __LINE__)
 #define _DRYUI_GOTO_LABEL _DRYUI_CONCATENATE(_dryui_gotoLabel, __LINE__)
+#define _DRYUI_PREVIOUS_TOPLEVEL_VIEW _DRYUI_CONCATENATE(_dryui_previousTopLevelView, __LINE__)
 
 #define _DRYUI_VIEW_TYPE(viewArg) typeof([viewArg _dryui_selfOrInstanceOfSelf])
 
@@ -117,17 +118,11 @@ if (1) { \
             // execution will jump back up to the while(1) and then into body_after_statement_after_macro.
 
 #define DRYUI_TOPLEVEL(viewArg) \
-_Pragma("clang diagnostic push") \
-_Pragma("clang diagnostic ignored \"-Wunused-value\"") \
-({ \
-_Pragma("clang diagnostic pop") \
-    NSAssert(_dryui_current_toplevel_view == nil, @"Calls to DRYUI_TOPLEVEL should not be nested."); \
-    _dryui_current_toplevel_view = [viewArg _dryui_selfOrInstanceOfSelf]; \
-    (_DRYUI_VIEW_TYPE(viewArg))_dryui_current_toplevel_view; \
-}); \
+UIView *_DRYUI_PREVIOUS_TOPLEVEL_VIEW = _dryui_current_toplevel_view; \
+_dryui_current_toplevel_view = [viewArg _dryui_selfOrInstanceOfSelf]; \
 _DRYUI_GOTO_HELPER(viewArg, \
     [_dryui_current_toplevel_view _dryui_buildSubviews:_DRYUI_VIEW_AND_SUPERVIEW_BLOCK]; \
-    _dryui_current_toplevel_view = nil; \
+    _dryui_current_toplevel_view = _DRYUI_PREVIOUS_TOPLEVEL_VIEW; \
 )
 
 // DRYUI expands to one of the two-underscore macros below, depending on how many arguments it's called with.
@@ -276,9 +271,7 @@ if (!variableName) { \
 NSAssert(_dryui_current_toplevel_view, @"Calls to DRYUI must be inside a call to DRYUI_TOPLEVEL."); \
 _dryui_current_view = variableName; \
 _DRYUI_GOTO_HELPER(variableName, \
-    [_dryui_current_toplevel_view _dryui_addViewFromBuildSubviews:_dryui_current_view \
-                                                    withSuperview:_ \
-                                                         andBlock:_DRYUI_VIEW_AND_SUPERVIEW_BLOCK]; \
+    _dryui_addViewFromBuildSubviews(_dryui_current_view, _, _DRYUI_VIEW_AND_SUPERVIEW_BLOCK); \
     ({ codeAfterVariableAssignment }); \
     _dryui_current_view = nil; \
 )

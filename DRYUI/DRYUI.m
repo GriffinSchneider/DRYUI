@@ -56,6 +56,17 @@ static const char dryui_stylesId = 0;
     self.wrappedAddBlocks = nil;
 }
 
+- (void)runAddBlock:(DRYUIViewAndSuperviewBlock)block {
+    self.constraintMaker = [[MASConstraintMaker alloc] initWithView:self];
+    self.wrappedAddBlocks = [NSMutableArray array];
+    
+    block(self, self.superview);
+    
+    [self.constraintMaker install];
+    self.constraintMaker = nil;
+    [self runAllWrappedAddBlocks];
+}
+
 @end
 
 
@@ -134,28 +145,7 @@ void _dryui_addStyleToView_internal(_DRYUI_VIEW *view, DRYUIStyle *style, id sel
     _dryui_applyStyle(view, style, selfForBlock);
 }
 
-
-////////////////////////////////////////////////////////////////////////////////////////////////////
-@implementation _DRYUI_VIEW (DRYUI)
-
-@dynamic styles;
-
-- (void)runAddBlock:(DRYUIViewAndSuperviewBlock)block {
-    self.constraintMaker = [[MASConstraintMaker alloc] initWithView:self];
-    self.wrappedAddBlocks = [NSMutableArray array];
-    
-    block(self, self.superview);
-    
-    [self.constraintMaker install];
-    self.constraintMaker = nil;
-    [self runAllWrappedAddBlocks];
-}
-
-- (void)_dryui_buildSubviews:(DRYUIViewAndSuperviewBlock)block {
-    [self runAddBlock:block];
-}
-
-- (id)_dryui_addViewFromBuildSubviews:(_DRYUI_VIEW *)view withSuperview:(_DRYUI_VIEW *)superview andBlock:(DRYUIViewAndSuperviewBlock)block {
+void _dryui_addViewFromBuildSubviews(_DRYUI_VIEW *view, _DRYUI_VIEW *superview, DRYUIViewAndSuperviewBlock block) {
     [superview addSubview:view];
     
     // Don't actually need to weakify this reference since the block will get released
@@ -172,7 +162,16 @@ void _dryui_addStyleToView_internal(_DRYUI_VIEW *view, DRYUIStyle *style, id sel
             [weakView runAddBlock:block];
         }];
     }
-    return view;
+}
+
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+@implementation _DRYUI_VIEW (DRYUI)
+
+@dynamic styles;
+
+- (void)_dryui_buildSubviews:(DRYUIViewAndSuperviewBlock)block {
+    [self runAddBlock:block];
 }
 
 - (void)applyStyle:(DRYUIStyle *)style {
