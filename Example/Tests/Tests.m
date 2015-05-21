@@ -79,7 +79,14 @@ dryui_private_style(StyleButton, UIButton) {
     __block UIButton *h = [UIButton new];
     UIButton *hh = h;
     
+    UIView *other;
+    
     build_subviews(topLevel) {
+        
+        build_subviews(other) {};
+        XCTAssertEqual(_, topLevel);
+        XCTAssertEqual(_dryui_current_toplevel_view, topLevel);
+        
         _.make.edges.equalTo(_);
         add_subview(a, BIG_STYLE_LIST) {
             XCTAssertNotNil(b, @"b should already be assigned when this block is run");
