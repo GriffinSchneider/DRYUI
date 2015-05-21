@@ -9,7 +9,7 @@ DRYUI is available through [CocoaPods](http://cocoapods.org). To install
 it, just add the following line to your Podfile:
 
 ```ruby
-pod DRYUI
+pod 'DRYUI'
 ```
 
 
