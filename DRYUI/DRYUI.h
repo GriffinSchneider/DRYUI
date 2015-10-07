@@ -301,6 +301,7 @@ dryui_style(__VA_ARGS__)
 // Also declares the overloaded functions used to apply styles to views by add_subview. See 'Style implementation'
 // below for an explnation.
 
+typedef NSArray* (^_DRYUI_blockReturnedByStyleBlock)( ); \
 
 #define _dryui_style_block(name, ...) void (^name)(id _, _DRYUI_VIEW *superview, DRYUIParentStyleBlock parent_style, id self , ##__VA_ARGS__ )
 
@@ -313,9 +314,10 @@ metamacro_if_eq(1, metamacro_argcount(args))(dryui_public_style1(args))(metamacr
 #define dryui_public_styleMore(styleName, className, ...) \
 @interface _DRYUI_STYLE_CLASS_NAME(styleName) : DRYUIStyle \
 @end \
+typedef _DRYUI_blockReturnedByStyleBlock (^_DRYUI_blockForStyle_##styleName)( __VA_ARGS__ ); \
 FOUNDATION_EXTERN void __attribute__((overloadable)) _dryui_addStyleToView(className *view, _DRYUI_STYLE_CLASS_NAME(styleName) *style, id selfForBlock); \
 FOUNDATION_EXTERN void __attribute__((overloadable)) _dryui_addStyleToView_acceptView(className *view, _DRYUI_STYLE_CLASS_NAME(styleName) *style, id selfForBlock); \
-static void (^styleName)( __VA_ARGS__ ); \
+static _DRYUI_blockForStyle_##styleName styleName; \
 
 FOUNDATION_EXTERN void __attribute__((overloadable)) _dryui_addStyleToView_acceptView(_DRYUI_VIEW *view, _DRYUI_VIEW *notAStyle, id selfForBlock);
 
@@ -347,7 +349,6 @@ dryui_public_style(DRYUIEmptyStyle, _DRYUI_VIEW);
 static const char dryui_thingOnBlockKey = 0;
 
 
-
 #define dryui_style(args...) \
 metamacro_if_eq(1, metamacro_argcount(args))(dryui_style1(args))(metamacro_if_eq(2, metamacro_argcount(args))(dryui_style2(args))(dryui_styleMore(args)))
 
@@ -375,7 +376,7 @@ void __attribute__((overloadable)) _dryui_addStyleToView_acceptView(className *v
 } \
 \
 \
-static void (^styleName)( __VA_ARGS__ ) = (void (^)( __VA_ARGS__ ))^(id first, ...) { \
+static _DRYUI_blockForStyle_##styleName styleName = (_DRYUI_blockForStyle_##styleName) ^_DRYUI_blockReturnedByStyleBlock(id first, ...) { \
     NSMutableArray *argArray = [NSMutableArray array]; \
     va_list args; \
     va_start(args, first); \
@@ -383,6 +384,7 @@ static void (^styleName)( __VA_ARGS__ ) = (void (^)( __VA_ARGS__ ))^(id first, .
     id eachObject; \
     while ((eachObject = va_arg(args, id))) [argArray addObject:eachObject]; \
     va_end(args); \
+    return ^NSArray*() { return argArray; };\
 \
 }; \
 \
