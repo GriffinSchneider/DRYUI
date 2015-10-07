@@ -12,40 +12,6 @@ dryui_style(DRYUIEmptyStyle, _DRYUI_VIEW) {
 };
 
 
-//@interface _DRYUI_Style_DRYUIEmptyStyle : DRYUIStyle
-//@end typedef void (^_DRYUI_applicationBlockForStyle_DRYUIEmptyStyle)(id _, UIView *superview, DRYUIParentStyleBlock parent_style, id self );
-//typedef void (^_DRYUI_blockReturnedByBlockReturnedByBlockForStyle_DRYUIEmptyStyle)( _DRYUI_Style_DRYUIEmptyStyle*,_DRYUI_applicationBlockForStyle_DRYUIEmptyStyle applicationBlock);
-//typedef _DRYUI_blockReturnedByBlockReturnedByBlockForStyle_DRYUIEmptyStyle (^_DRYUI_blockReturnedByBlockForStyle_DRYUIEmptyStyle)( _DRYUI_Style_DRYUIEmptyStyle* );
-//typedef _DRYUI_blockReturnedByBlockForStyle_DRYUIEmptyStyle (^_DRYUI_blockForStyle_DRYUIEmptyStyle)( );
-//extern void __attribute__((overloadable)) _dryui_addStyleToView(UIView *view, _DRYUI_blockReturnedByBlockForStyle_DRYUIEmptyStyle firstLevelBlock, id selfForBlock);
-//extern void __attribute__((overloadable)) _dryui_addStyleToView(UIView *view, _DRYUI_blockReturnedByBlockReturnedByBlockForStyle_DRYUIEmptyStyle secondLevelBlock, id selfForBlock);
-//extern void __attribute__((overloadable)) _dryui_addStyleToView_acceptView(UIView *view, _DRYUI_blockReturnedByBlockForStyle_DRYUIEmptyStyle firstLevelBlock, id selfForBlock);
-//extern void __attribute__((overloadable)) _dryui_addStyleToView_acceptView(UIView *view, _DRYUI_blockReturnedByBlockReturnedByBlockForStyle_DRYUIEmptyStyle secondLevelBlock, id selfForBlock);
-//static _DRYUI_blockForStyle_DRYUIEmptyStyle DRYUIEmptyStyle;
-
-//static _DRYUI_applicationBlockForStyle_DRYUIEmptyStyle _DRYUI_Style_DRYUIEmptyStyle_applicationBlock;
-//@implementation _DRYUI_Style_DRYUIEmptyStyle
-//+ (void)load { objc_setAssociatedObject(DRYUIEmptyStyle, &dryui_thingOnBlockKey, @(444), OBJC_ASSOCIATION_RETAIN);}
-//- (NSString *)name {return @ "DRYUIEmptyStyle";}
-//- (NSString *)viewClassName {return @ "UIView";}
-//- (DRYUIStyleBlock)applicationBlock {return _DRYUI_Style_DRYUIEmptyStyle_applicationBlock;}
-//@end
-//void __attribute__((overloadable)) _dryui_addStyleToView(UIView *view, _DRYUI_blockReturnedByBlockForStyle_DRYUIEmptyStyle firstLevelBlock, id selfForBlock) { }
-//void __attribute__((overloadable)) _dryui_addStyleToView(UIView *view, _DRYUI_blockReturnedByBlockReturnedByBlockForStyle_DRYUIEmptyStyle secondLevelBlock, id selfForBlock) { }
-//void __attribute__((overloadable)) _dryui_addStyleToView_acceptView(UIView *view, _DRYUI_blockReturnedByBlockForStyle_DRYUIEmptyStyle firstLevelBlock, id selfForBlock) { }
-//void __attribute__((overloadable)) _dryui_addStyleToView_acceptView(UIView *view, _DRYUI_blockReturnedByBlockReturnedByBlockForStyle_DRYUIEmptyStyle secondLevelBlock, id selfForBlock) { }
-//static _DRYUI_blockForStyle_DRYUIEmptyStyle DRYUIEmptyStyle = ^_DRYUI_blockReturnedByBlockForStyle_DRYUIEmptyStyle( ) {
-//    return ^_DRYUI_blockReturnedByBlockReturnedByBlockForStyle_DRYUIEmptyStyle(_DRYUI_Style_DRYUIEmptyStyle *style) {
-//        return ^(_DRYUI_Style_DRYUIEmptyStyle *style, _DRYUI_applicationBlockForStyle_DRYUIEmptyStyle applicationBlock) {
-//        };
-//    };
-//    return nil;
-//};
-//static _DRYUI_applicationBlockForStyle_DRYUIEmptyStyle _DRYUI_Style_DRYUIEmptyStyle_applicationBlock = ^(id _, UIView *superview, DRYUIParentStyleBlock parent_style, id self ) {
-//};
-
-
-
 dryui_private_style(TestStyle, _DRYUI_VIEW, NSString *, stringArg) {
 };
 
@@ -163,10 +129,11 @@ void _dryui_applyStyle(_DRYUI_VIEW *view, DRYUIStyle *style, id selfForBlock) {
     view.constraintMaker = [[MASConstraintMaker alloc] initWithView:view];
     view.wrappedAddBlocks = [NSMutableArray array];
     
-    style.applicationBlock(view, view.superview, ^(DRYUIStyle *parent_style) {
-        _dryui_applyStyle(view, parent_style, selfForBlock);
-    }, selfForBlock);
-    
+    // TODO
+//    style.applicationBlock(view, view.superview, ^(DRYUIStyle *parent_style) {
+//        _dryui_applyStyle(view, parent_style, selfForBlock);
+//    }, selfForBlock);
+//    
     [view.constraintMaker install];
     view.constraintMaker = nil;
     [view runAllWrappedAddBlocks];

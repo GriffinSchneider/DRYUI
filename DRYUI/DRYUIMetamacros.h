@@ -12,12 +12,14 @@
 #import <libextobjc/metamacros.h>
 
 // This file just defines a macro 'dryui_metamacro_foreach_comma' which has the same behavior that
-// calling libextobjc'smetamacro_foreach would have if you could pass a comma (,) as SEP.
+// calling libextobjc'smetamacro_foreach would have, except that after each even-numbered expansion
+// a comma (,) is inserted.
 
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-#define dryui_metamacro_foreach_comma(MACRO, ...) \
-dryui_metamacro_foreach_cxt(dryui_metamacro_foreach_iter, MACRO, __VA_ARGS__)
+#define dryui_id_macro(idx, x) x
+#define dryui_metamacro_foreach_even_comma(...) \
+dryui_metamacro_foreach_cxt(dryui_metamacro_foreach_iter, dryui_id_macro, __VA_ARGS__)
 
 #define dryui_metamacro_foreach_cxt(MACRO, CONTEXT, ...) \
 metamacro_concat(dryui_metamacro_foreach_cxt, metamacro_argcount(__VA_ARGS__))(MACRO, CONTEXT, __VA_ARGS__)
@@ -25,102 +27,92 @@ metamacro_concat(dryui_metamacro_foreach_cxt, metamacro_argcount(__VA_ARGS__))(M
 #define dryui_metamacro_foreach_iter(INDEX, MACRO, ARG) MACRO(INDEX, ARG)
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-#define dryui_metamacro_for_cxt0(MACRO, CONTEXT)
-#define dryui_metamacro_for_cxt1(MACRO, CONTEXT) MACRO(0, CONTEXT)
+#define dryui_metamacro_foreach_cxt0(MACRO, CONTEXT)
+#define dryui_metamacro_foreach_cxt1(MACRO, CONTEXT, _0) MACRO(0, CONTEXT, _0)
 
-#define dryui_metamacro_for_cxt2(MACRO, CONTEXT) \
-dryui_metamacro_for_cxt1(MACRO, CONTEXT) \
-, \
-MACRO(1, CONTEXT)
+#define dryui_metamacro_foreach_cxt2(MACRO, CONTEXT, _0, _1) \
+dryui_metamacro_foreach_cxt1(MACRO, CONTEXT, _0) \
+MACRO(1, CONTEXT, _1)
 
-#define dryui_metamacro_for_cxt3(MACRO, CONTEXT) \
-dryui_metamacro_for_cxt2(MACRO, CONTEXT) \
+#define dryui_metamacro_foreach_cxt3(MACRO, CONTEXT, _0, _1, _2) \
+dryui_metamacro_foreach_cxt2(MACRO, CONTEXT, _0, _1) \
 , \
-MACRO(2, CONTEXT)
+MACRO(2, CONTEXT, _2)
 
-#define dryui_metamacro_for_cxt4(MACRO, CONTEXT) \
-dryui_metamacro_for_cxt3(MACRO, CONTEXT) \
-, \
-MACRO(3, CONTEXT)
+#define dryui_metamacro_foreach_cxt4(MACRO, CONTEXT, _0, _1, _2, _3) \
+dryui_metamacro_foreach_cxt3(MACRO, CONTEXT, _0, _1, _2) \
+MACRO(3, CONTEXT, _3)
 
-#define dryui_metamacro_for_cxt5(MACRO, CONTEXT) \
-dryui_metamacro_for_cxt4(MACRO, CONTEXT) \
-, \
-MACRO(4, CONTEXT)
+#define dryui_metamacro_foreach_cxt5(MACRO, CONTEXT, _0, _1, _2, _3, _4) \
+dryui_metamacro_foreach_cxt4(MACRO, CONTEXT, _0, _1, _2, _3) \
+. \
+MACRO(4, CONTEXT, _4)
 
-#define dryui_metamacro_for_cxt6(MACRO, CONTEXT) \
-dryui_metamacro_for_cxt5(MACRO, CONTEXT) \
-, \
-MACRO(5, CONTEXT)
+#define dryui_metamacro_foreach_cxt6(MACRO, CONTEXT, _0, _1, _2, _3, _4, _5) \
+dryui_metamacro_foreach_cxt5(MACRO, CONTEXT, _0, _1, _2, _3, _4) \
+MACRO(5, CONTEXT, _5)
 
-#define dryui_metamacro_for_cxt7(MACRO, CONTEXT) \
-dryui_metamacro_for_cxt6(MACRO, CONTEXT) \
+#define dryui_metamacro_foreach_cxt7(MACRO, CONTEXT, _0, _1, _2, _3, _4, _5, _6) \
+dryui_metamacro_foreach_cxt6(MACRO, CONTEXT, _0, _1, _2, _3, _4, _5) \
 , \
-MACRO(6, CONTEXT)
+MACRO(6, CONTEXT, _6)
 
-#define dryui_metamacro_for_cxt8(MACRO, CONTEXT) \
-dryui_metamacro_for_cxt7(MACRO, CONTEXT) \
-, \
-MACRO(7, CONTEXT)
+#define dryui_metamacro_foreach_cxt8(MACRO, CONTEXT, _0, _1, _2, _3, _4, _5, _6, _7) \
+dryui_metamacro_foreach_cxt7(MACRO, CONTEXT, _0, _1, _2, _3, _4, _5, _6) \
+MACRO(7, CONTEXT, _7)
 
-#define dryui_metamacro_for_cxt9(MACRO, CONTEXT) \
-dryui_metamacro_for_cxt8(MACRO, CONTEXT) \
+#define dryui_metamacro_foreach_cxt9(MACRO, CONTEXT, _0, _1, _2, _3, _4, _5, _6, _7, _8) \
+dryui_metamacro_foreach_cxt8(MACRO, CONTEXT, _0, _1, _2, _3, _4, _5, _6, _7) \
 , \
-MACRO(8, CONTEXT)
+MACRO(8, CONTEXT, _8)
 
-#define dryui_metamacro_for_cxt10(MACRO, CONTEXT) \
-dryui_metamacro_for_cxt9(MACRO, CONTEXT) \
-, \
-MACRO(9, CONTEXT)
+#define dryui_metamacro_foreach_cxt10(MACRO, CONTEXT, _0, _1, _2, _3, _4, _5, _6, _7, _8, _9) \
+dryui_metamacro_foreach_cxt9(MACRO, CONTEXT, _0, _1, _2, _3, _4, _5, _6, _7, _8) \
+MACRO(9, CONTEXT, _9)
 
-#define dryui_metamacro_for_cxt11(MACRO, CONTEXT) \
-dryui_metamacro_for_cxt10(MACRO, CONTEXT) \
+#define dryui_metamacro_foreach_cxt11(MACRO, CONTEXT, _0, _1, _2, _3, _4, _5, _6, _7, _8, _9, _10) \
+dryui_metamacro_foreach_cxt10(MACRO, CONTEXT, _0, _1, _2, _3, _4, _5, _6, _7, _8, _9) \
 , \
-MACRO(10, CONTEXT)
+MACRO(10, CONTEXT, _10)
 
-#define dryui_metamacro_for_cxt12(MACRO, CONTEXT) \
-dryui_metamacro_for_cxt11(MACRO, CONTEXT) \
-, \
-MACRO(11, CONTEXT)
+#define dryui_metamacro_foreach_cxt12(MACRO, CONTEXT, _0, _1, _2, _3, _4, _5, _6, _7, _8, _9, _10, _11) \
+dryui_metamacro_foreach_cxt11(MACRO, CONTEXT, _0, _1, _2, _3, _4, _5, _6, _7, _8, _9, _10) \
+MACRO(11, CONTEXT, _11)
 
-#define dryui_metamacro_for_cxt13(MACRO, CONTEXT) \
-dryui_metamacro_for_cxt12(MACRO, CONTEXT) \
+#define dryui_metamacro_foreach_cxt13(MACRO, CONTEXT, _0, _1, _2, _3, _4, _5, _6, _7, _8, _9, _10, _11, _12) \
+dryui_metamacro_foreach_cxt12(MACRO, CONTEXT, _0, _1, _2, _3, _4, _5, _6, _7, _8, _9, _10, _11) \
 , \
-MACRO(12, CONTEXT)
+MACRO(12, CONTEXT, _12)
 
-#define dryui_metamacro_for_cxt14(MACRO, CONTEXT) \
-dryui_metamacro_for_cxt13(MACRO, CONTEXT) \
-, \
-MACRO(13, CONTEXT)
+#define dryui_metamacro_foreach_cxt14(MACRO, CONTEXT, _0, _1, _2, _3, _4, _5, _6, _7, _8, _9, _10, _11, _12, _13) \
+dryui_metamacro_foreach_cxt13(MACRO, CONTEXT, _0, _1, _2, _3, _4, _5, _6, _7, _8, _9, _10, _11, _12) \
+MACRO(13, CONTEXT, _13)
 
-#define dryui_metamacro_for_cxt15(MACRO, CONTEXT) \
-dryui_metamacro_for_cxt14(MACRO, CONTEXT) \
+#define dryui_metamacro_foreach_cxt15(MACRO, CONTEXT, _0, _1, _2, _3, _4, _5, _6, _7, _8, _9, _10, _11, _12, _13, _14) \
+dryui_metamacro_foreach_cxt14(MACRO, CONTEXT, _0, _1, _2, _3, _4, _5, _6, _7, _8, _9, _10, _11, _12, _13) \
 , \
-MACRO(14, CONTEXT)
+MACRO(14, CONTEXT, _14)
 
-#define dryui_metamacro_for_cxt16(MACRO, CONTEXT) \
-dryui_metamacro_for_cxt15(MACRO, CONTEXT) \
-, \
-MACRO(15, CONTEXT)
+#define dryui_metamacro_foreach_cxt16(MACRO, CONTEXT, _0, _1, _2, _3, _4, _5, _6, _7, _8, _9, _10, _11, _12, _13, _14, _15) \
+dryui_metamacro_foreach_cxt15(MACRO, CONTEXT, _0, _1, _2, _3, _4, _5, _6, _7, _8, _9, _10, _11, _12, _13, _14) \
+MACRO(15, CONTEXT, _15)
 
-#define dryui_metamacro_for_cxt17(MACRO, CONTEXT) \
-dryui_metamacro_for_cxt16(MACRO, CONTEXT) \
+#define dryui_metamacro_foreach_cxt17(MACRO, CONTEXT, _0, _1, _2, _3, _4, _5, _6, _7, _8, _9, _10, _11, _12, _13, _14, _15, _16) \
+dryui_metamacro_foreach_cxt16(MACRO, CONTEXT, _0, _1, _2, _3, _4, _5, _6, _7, _8, _9, _10, _11, _12, _13, _14, _15) \
 , \
-MACRO(16, CONTEXT)
+MACRO(16, CONTEXT, _16)
 
-#define dryui_metamacro_for_cxt18(MACRO, CONTEXT) \
-dryui_metamacro_for_cxt17(MACRO, CONTEXT) \
-, \
-MACRO(17, CONTEXT)
+#define dryui_metamacro_foreach_cxt18(MACRO, CONTEXT, _0, _1, _2, _3, _4, _5, _6, _7, _8, _9, _10, _11, _12, _13, _14, _15, _16, _17) \
+dryui_metamacro_foreach_cxt17(MACRO, CONTEXT, _0, _1, _2, _3, _4, _5, _6, _7, _8, _9, _10, _11, _12, _13, _14, _15, _16) \
+MACRO(17, CONTEXT, _17)
 
-#define dryui_metamacro_for_cxt19(MACRO, CONTEXT) \
-dryui_metamacro_for_cxt18(MACRO, CONTEXT) \
+#define dryui_metamacro_foreach_cxt19(MACRO, CONTEXT, _0, _1, _2, _3, _4, _5, _6, _7, _8, _9, _10, _11, _12, _13, _14, _15, _16, _17, _18) \
+dryui_metamacro_foreach_cxt18(MACRO, CONTEXT, _0, _1, _2, _3, _4, _5, _6, _7, _8, _9, _10, _11, _12, _13, _14, _15, _16, _17) \
 , \
-MACRO(18, CONTEXT)
+MACRO(18, CONTEXT, _18)
 
-#define dryui_metamacro_for_cxt20(MACRO, CONTEXT) \
-dryui_metamacro_for_cxt19(MACRO, CONTEXT) \
-, \
-MACRO(19, CONTEXT)
+#define dryui_metamacro_foreach_cxt20(MACRO, CONTEXT, _0, _1, _2, _3, _4, _5, _6, _7, _8, _9, _10, _11, _12, _13, _14, _15, _16, _17, _18, _19) \
+dryui_metamacro_foreach_cxt19(MACRO, CONTEXT, _0, _1, _2, _3, _4, _5, _6, _7, _8, _9, _10, _11, _12, _13, _14, _15, _16, _17, _18) \
+MACRO(19, CONTEXT, _19)
 
 #endif

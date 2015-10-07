@@ -46,7 +46,6 @@ typedef void (^DRYUIStyleBlock)(id _, _DRYUI_VIEW *superview, DRYUIParentStyleBl
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 @interface DRYUIStyle : NSObject
 @property (nonatomic, readonly) NSString *name;
-@property (nonatomic, readonly) DRYUIStyleBlock applicationBlock;
 @property (nonatomic, readonly) NSString *viewClassName;
 @end
 
@@ -293,10 +292,11 @@ _DRYUI_GOTO_HELPER(variableName, \
 #define _DRYUI_EXTRACT_VARIABLE_NAMES(...) \
 metamacro_if_eq(1, metamacro_argcount( bogus , ##__VA_ARGS__ ))()(metamacro_foreach(_DRYUI_EXTRACT_VARIABLE_NAME,, __VA_ARGS__ ))
 
-#define _DRYUI_EXTRACT_ARGUMENT(idx, something) metamacro_if_eq(metamacro_is_even(idx), 1)(, something)( something)
 #define _DRYUI_EXTRACT_ARGUMENTS(...) \
-metamacro_if_eq(1, metamacro_argcount( bogus , ##__VA_ARGS__ ))()(dryui_metamacro_foreach_comma(_DRYUI_EXTRACT_ARGUMENT, __VA_ARGS__ ))
+metamacro_if_eq(1, metamacro_argcount( bogus , ##__VA_ARGS__ ))()(dryui_metamacro_foreach_even_comma( __VA_ARGS__ ))
 
+// Expands to a comma (,) if there are any arguments. Otherwise, expands to nothing.
+#define _DRYUI_COMMA_IF_ANY_ARGS(...) metamacro_if_eq(1, metamacro_argcount(bogus , ##__VA_ARGS__))()(,)
 
 // Private styles are just the public style declaration and then the style implementation
 #define dryui_private_style(...) \
@@ -309,7 +309,7 @@ dryui_style(__VA_ARGS__)
 // Also declares the overloaded functions used to apply styles to views by add_subview. See 'Style implementation'
 // below for an explnation.
 
-#define _dryui_style_block(name, ...) void (^name)(id _, _DRYUI_VIEW *superview, DRYUIParentStyleBlock parent_style, id self , ##__VA_ARGS__ )
+#define _dryui_style_block(name, ...)void (^name)(id _, _DRYUI_VIEW *superview, DRYUIParentStyleBlock parent_style, id self _DRYUI_COMMA_IF_ANY_ARGS( __VA_ARGS__ ) _DRYUI_EXTRACT_ARGUMENTS( __VA_ARGS__ ))
 
 #define dryui_public_style(args...) \
 metamacro_if_eq(1, metamacro_argcount(args))(dryui_public_style1(args))(metamacro_if_eq(2, metamacro_argcount(args))(dryui_public_style2(args))(dryui_public_styleMore(args)))
@@ -387,7 +387,6 @@ static _DRYUI_applicationBlockForStyle_##styleName _DRYUI_STYLE_APPLICATION_BLOC
 } \
 - (NSString *)name {return @ # styleName;} \
 - (NSString *)viewClassName {return @ # className;} \
-- (DRYUIStyleBlock)applicationBlock {return _DRYUI_STYLE_APPLICATION_BLOCK_VARIABLE_NAME(styleName);} \
 @end \
 \
 \
@@ -412,4 +411,4 @@ static _DRYUI_blockForStyle_##styleName styleName = ^_DRYUI_blockReturnedByBlock
     }; \
 }; \
 \
-static _DRYUI_applicationBlockForStyle_##styleName _DRYUI_STYLE_APPLICATION_BLOCK_VARIABLE_NAME(styleName) = ^(className *_, _DRYUI_VIEW *superview, DRYUIParentStyleBlock parent_style, id self, _DRYUI_EXTRACT_ARGUMENTS( __VA_ARGS__ )) \
+static _DRYUI_applicationBlockForStyle_##styleName _DRYUI_STYLE_APPLICATION_BLOCK_VARIABLE_NAME(styleName) = ^(className *_, _DRYUI_VIEW *superview, DRYUIParentStyleBlock parent_style, id self _DRYUI_COMMA_IF_ANY_ARGS( __VA_ARGS__ ) _DRYUI_EXTRACT_ARGUMENTS( __VA_ARGS__ )) \
