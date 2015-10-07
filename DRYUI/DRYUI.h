@@ -14,9 +14,11 @@
   #define _DRYUI_VIEW NSView
 #endif
 
-
 #import <Foundation/Foundation.h>
 #import <Masonry/Masonry.h>
+#import <libextobjc/metamacros.h>
+#import <objc/runtime.h>
+#import "DRYUIMetamacros.h"
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 #pragma mark -
@@ -24,19 +26,19 @@
 @class DRYUIStyle;
 
 typedef void (^DRYUIViewAndSuperviewBlock)(id _, _DRYUI_VIEW *superview);
-typedef void (^DRYUIParentStyleBlock)(DRYUIStyle *parent_style);
-typedef void (^DRYUIStyleBlock)(id _, _DRYUI_VIEW *superview, DRYUIParentStyleBlock parent_style, id self);
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 @interface _DRYUI_VIEW (DRYUI)
 
+
 @property (nonatomic, strong, readonly) MASConstraintMaker *make;
 @property (nonatomic, strong, readonly) NSArray *styles;
 
-- (void)applyStyle:(DRYUIStyle *)style;
-- (void)applyStyle:(DRYUIStyle *)style withSelf:(id)self;
-
 - (void)_dryui_buildSubviews:(DRYUIViewAndSuperviewBlock)block;
+
+@property (nonatomic, strong) MASConstraintMaker *constraintMaker;
+@property (nonatomic, strong) NSMutableArray *wrappedAddBlocks;
+- (void)runAllWrappedAddBlocks;
 
 @end
 
@@ -44,7 +46,6 @@ typedef void (^DRYUIStyleBlock)(id _, _DRYUI_VIEW *superview, DRYUIParentStyleBl
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 @interface DRYUIStyle : NSObject
 @property (nonatomic, readonly) NSString *name;
-@property (nonatomic, readonly) DRYUIStyleBlock applicationBlock;
 @property (nonatomic, readonly) NSString *viewClassName;
 @end
 
@@ -60,19 +61,7 @@ typedef void (^DRYUIStyleBlock)(id _, _DRYUI_VIEW *superview, DRYUIParentStyleBl
 #pragma mark -
 #pragma mark Hierarchy Building Macros
 
-// These seemingly pointlesss functions are used to determine whether a macro parameter is a UIView *
-// or a DRYUIStyle * - the first set of functions will return the given view if it's called with a view, or
-// nil if it's called with a DRYUIStyle.
-// The second functions will return the given style if called with a style, or DRYUIEmptyStyle (the 'nil' style)
-// when called with a view.
-FOUNDATION_EXTERN id __attribute((overloadable)) _dryui_returnGivenViewOrNil(DRYUIStyle *notAView);
-FOUNDATION_EXTERN id __attribute((overloadable)) _dryui_returnGivenViewOrNil(_DRYUI_VIEW *view);
-FOUNDATION_EXTERN DRYUIStyle * __attribute((overloadable)) _dryui_returnGivenStyleOrEmptyStyle(DRYUIStyle *style);
-FOUNDATION_EXTERN DRYUIStyle * __attribute((overloadable)) _dryui_returnGivenStyleOrEmptyStyle(_DRYUI_VIEW *notAStyle);
-
 FOUNDATION_EXTERN id _dryui_instantiate_from_encoding(char *);
-
-FOUNDATION_EXTERN void _dryui_addStyleToView_internal(_DRYUI_VIEW *view, DRYUIStyle *style, id selfForBlock);
 
 FOUNDATION_EXTERN void _dryui_addViewFromBuildSubviews(_DRYUI_VIEW *view, _DRYUI_VIEW *superview, DRYUIViewAndSuperviewBlock block);
 
@@ -93,6 +82,7 @@ FOUNDATION_EXTERN void _dryui_addViewFromBuildSubviews(_DRYUI_VIEW *view, _DRYUI
 #define _DRYUI_VIEW_AND_SUPERVIEW_BLOCK _DRYUI_CONCATENATE(_dryui_viewAndSuperviewBlockk, __LINE__)
 #define _DRYUI_GOTO_LABEL _DRYUI_CONCATENATE(_dryui_gotoLabel, __LINE__)
 #define _DRYUI_PREVIOUS_TOPLEVEL_VIEW _DRYUI_CONCATENATE(_dryui_previousTopLevelView, __LINE__)
+#define _DRYUI_SAVED_SECOND_ARGUMENT _DRYUI_CONCATENATE(_dryui_savedSecondArgument, __LINE__)
 
 #define _DRYUI_VIEW_TYPE(viewArg) typeof([viewArg _dryui_selfOrInstanceOfSelf])
 
@@ -118,7 +108,7 @@ if (1) { \
             // execution will jump back up to the while(1) and then into body_after_statement_after_macro.
 
 #define DRYUI_TOPLEVEL(viewArg) \
-UIView *_DRYUI_PREVIOUS_TOPLEVEL_VIEW = _dryui_current_toplevel_view; \
+_DRYUI_VIEW *_DRYUI_PREVIOUS_TOPLEVEL_VIEW = _dryui_current_toplevel_view; \
 _dryui_current_toplevel_view = [viewArg _dryui_selfOrInstanceOfSelf]; \
 _DRYUI_GOTO_HELPER(viewArg, \
     [_dryui_current_toplevel_view _dryui_buildSubviews:_DRYUI_VIEW_AND_SUPERVIEW_BLOCK]; \
@@ -200,40 +190,40 @@ __DRYUI_HELPER_1)(args)
 #define __DRYUI_HELPER_1( x)            ___DRYUI_HELPER_1 (x, ;, ;)
 
 // These macros add a statement like this:
-//    _dryui_addStyleToView(view, style, self);
+//    _dryui_addStyleToView(view, style(), self);
 // to the 'afterAssignment' parameter for each style in the arguments list.
 // The second argument, y, could be wither a pre-made UIView instance geggtting passed to DRYUI or a style,
 // so it gets handled specially by ___DRYUI_HELPER_2.
-#define ___DRYUI_HELPER_32(x, y, afterAssignment, z, ...) ___DRYUI_HELPER_31(x, y, afterAssignment; _dryui_addStyleToView(x, z, self); , ## __VA_ARGS__)
-#define ___DRYUI_HELPER_31(x, y, afterAssignment, z, ...) ___DRYUI_HELPER_30(x, y, afterAssignment; _dryui_addStyleToView(x, z, self); , ## __VA_ARGS__)
-#define ___DRYUI_HELPER_30(x, y, afterAssignment, z, ...) ___DRYUI_HELPER_29(x, y, afterAssignment; _dryui_addStyleToView(x, z, self); , ## __VA_ARGS__)
-#define ___DRYUI_HELPER_29(x, y, afterAssignment, z, ...) ___DRYUI_HELPER_28(x, y, afterAssignment; _dryui_addStyleToView(x, z, self); , ## __VA_ARGS__)
-#define ___DRYUI_HELPER_28(x, y, afterAssignment, z, ...) ___DRYUI_HELPER_27(x, y, afterAssignment; _dryui_addStyleToView(x, z, self); , ## __VA_ARGS__)
-#define ___DRYUI_HELPER_27(x, y, afterAssignment, z, ...) ___DRYUI_HELPER_26(x, y, afterAssignment; _dryui_addStyleToView(x, z, self); , ## __VA_ARGS__)
-#define ___DRYUI_HELPER_26(x, y, afterAssignment, z, ...) ___DRYUI_HELPER_25(x, y, afterAssignment; _dryui_addStyleToView(x, z, self); , ## __VA_ARGS__)
-#define ___DRYUI_HELPER_25(x, y, afterAssignment, z, ...) ___DRYUI_HELPER_24(x, y, afterAssignment; _dryui_addStyleToView(x, z, self); , ## __VA_ARGS__)
-#define ___DRYUI_HELPER_24(x, y, afterAssignment, z, ...) ___DRYUI_HELPER_23(x, y, afterAssignment; _dryui_addStyleToView(x, z, self); , ## __VA_ARGS__)
-#define ___DRYUI_HELPER_23(x, y, afterAssignment, z, ...) ___DRYUI_HELPER_22(x, y, afterAssignment; _dryui_addStyleToView(x, z, self); , ## __VA_ARGS__)
-#define ___DRYUI_HELPER_22(x, y, afterAssignment, z, ...) ___DRYUI_HELPER_21(x, y, afterAssignment; _dryui_addStyleToView(x, z, self); , ## __VA_ARGS__)
-#define ___DRYUI_HELPER_21(x, y, afterAssignment, z, ...) ___DRYUI_HELPER_20(x, y, afterAssignment; _dryui_addStyleToView(x, z, self); , ## __VA_ARGS__)
-#define ___DRYUI_HELPER_20(x, y, afterAssignment, z, ...) ___DRYUI_HELPER_19(x, y, afterAssignment; _dryui_addStyleToView(x, z, self); , ## __VA_ARGS__)
-#define ___DRYUI_HELPER_19(x, y, afterAssignment, z, ...) ___DRYUI_HELPER_18(x, y, afterAssignment; _dryui_addStyleToView(x, z, self); , ## __VA_ARGS__)
-#define ___DRYUI_HELPER_18(x, y, afterAssignment, z, ...) ___DRYUI_HELPER_17(x, y, afterAssignment; _dryui_addStyleToView(x, z, self); , ## __VA_ARGS__)
-#define ___DRYUI_HELPER_17(x, y, afterAssignment, z, ...) ___DRYUI_HELPER_16(x, y, afterAssignment; _dryui_addStyleToView(x, z, self); , ## __VA_ARGS__)
-#define ___DRYUI_HELPER_16(x, y, afterAssignment, z, ...) ___DRYUI_HELPER_15(x, y, afterAssignment; _dryui_addStyleToView(x, z, self); , ## __VA_ARGS__)
-#define ___DRYUI_HELPER_15(x, y, afterAssignment, z, ...) ___DRYUI_HELPER_14(x, y, afterAssignment; _dryui_addStyleToView(x, z, self); , ## __VA_ARGS__)
-#define ___DRYUI_HELPER_14(x, y, afterAssignment, z, ...) ___DRYUI_HELPER_13(x, y, afterAssignment; _dryui_addStyleToView(x, z, self); , ## __VA_ARGS__)
-#define ___DRYUI_HELPER_13(x, y, afterAssignment, z, ...) ___DRYUI_HELPER_12(x, y, afterAssignment; _dryui_addStyleToView(x, z, self); , ## __VA_ARGS__)
-#define ___DRYUI_HELPER_12(x, y, afterAssignment, z, ...) ___DRYUI_HELPER_11(x, y, afterAssignment; _dryui_addStyleToView(x, z, self); , ## __VA_ARGS__)
-#define ___DRYUI_HELPER_11(x, y, afterAssignment, z, ...) ___DRYUI_HELPER_10(x, y, afterAssignment; _dryui_addStyleToView(x, z, self); , ## __VA_ARGS__)
-#define ___DRYUI_HELPER_10(x, y, afterAssignment, z, ...) ___DRYUI_HELPER_9 (x, y, afterAssignment; _dryui_addStyleToView(x, z, self); , ## __VA_ARGS__)
-#define ___DRYUI_HELPER_9( x, y, afterAssignment, z, ...) ___DRYUI_HELPER_8 (x, y, afterAssignment; _dryui_addStyleToView(x, z, self); , ## __VA_ARGS__)
-#define ___DRYUI_HELPER_8( x, y, afterAssignment, z, ...) ___DRYUI_HELPER_7 (x, y, afterAssignment; _dryui_addStyleToView(x, z, self); , ## __VA_ARGS__)
-#define ___DRYUI_HELPER_7( x, y, afterAssignment, z, ...) ___DRYUI_HELPER_6 (x, y, afterAssignment; _dryui_addStyleToView(x, z, self); , ## __VA_ARGS__)
-#define ___DRYUI_HELPER_6( x, y, afterAssignment, z, ...) ___DRYUI_HELPER_5 (x, y, afterAssignment; _dryui_addStyleToView(x, z, self); , ## __VA_ARGS__)
-#define ___DRYUI_HELPER_5( x, y, afterAssignment, z, ...) ___DRYUI_HELPER_4 (x, y, afterAssignment; _dryui_addStyleToView(x, z, self); , ## __VA_ARGS__)
-#define ___DRYUI_HELPER_4( x, y, afterAssignment, z, ...) ___DRYUI_HELPER_3 (x, y, afterAssignment; _dryui_addStyleToView(x, z, self); , ## __VA_ARGS__)
-#define ___DRYUI_HELPER_3( x, y, afterAssignment, z)      ___DRYUI_HELPER_2 (x, y, afterAssignment; _dryui_addStyleToView(x, z, self); )
+#define ___DRYUI_HELPER_32(x, y, afterAssignment, z, ...) ___DRYUI_HELPER_31(x, y, afterAssignment; _dryui_addStyleToView(x, z(nil), self); , ## __VA_ARGS__)
+#define ___DRYUI_HELPER_31(x, y, afterAssignment, z, ...) ___DRYUI_HELPER_30(x, y, afterAssignment; _dryui_addStyleToView(x, z(nil), self); , ## __VA_ARGS__)
+#define ___DRYUI_HELPER_30(x, y, afterAssignment, z, ...) ___DRYUI_HELPER_29(x, y, afterAssignment; _dryui_addStyleToView(x, z(nil), self); , ## __VA_ARGS__)
+#define ___DRYUI_HELPER_29(x, y, afterAssignment, z, ...) ___DRYUI_HELPER_28(x, y, afterAssignment; _dryui_addStyleToView(x, z(nil), self); , ## __VA_ARGS__)
+#define ___DRYUI_HELPER_28(x, y, afterAssignment, z, ...) ___DRYUI_HELPER_27(x, y, afterAssignment; _dryui_addStyleToView(x, z(nil), self); , ## __VA_ARGS__)
+#define ___DRYUI_HELPER_27(x, y, afterAssignment, z, ...) ___DRYUI_HELPER_26(x, y, afterAssignment; _dryui_addStyleToView(x, z(nil), self); , ## __VA_ARGS__)
+#define ___DRYUI_HELPER_26(x, y, afterAssignment, z, ...) ___DRYUI_HELPER_25(x, y, afterAssignment; _dryui_addStyleToView(x, z(nil), self); , ## __VA_ARGS__)
+#define ___DRYUI_HELPER_25(x, y, afterAssignment, z, ...) ___DRYUI_HELPER_24(x, y, afterAssignment; _dryui_addStyleToView(x, z(nil), self); , ## __VA_ARGS__)
+#define ___DRYUI_HELPER_24(x, y, afterAssignment, z, ...) ___DRYUI_HELPER_23(x, y, afterAssignment; _dryui_addStyleToView(x, z(nil), self); , ## __VA_ARGS__)
+#define ___DRYUI_HELPER_23(x, y, afterAssignment, z, ...) ___DRYUI_HELPER_22(x, y, afterAssignment; _dryui_addStyleToView(x, z(nil), self); , ## __VA_ARGS__)
+#define ___DRYUI_HELPER_22(x, y, afterAssignment, z, ...) ___DRYUI_HELPER_21(x, y, afterAssignment; _dryui_addStyleToView(x, z(nil), self); , ## __VA_ARGS__)
+#define ___DRYUI_HELPER_21(x, y, afterAssignment, z, ...) ___DRYUI_HELPER_20(x, y, afterAssignment; _dryui_addStyleToView(x, z(nil), self); , ## __VA_ARGS__)
+#define ___DRYUI_HELPER_20(x, y, afterAssignment, z, ...) ___DRYUI_HELPER_19(x, y, afterAssignment; _dryui_addStyleToView(x, z(nil), self); , ## __VA_ARGS__)
+#define ___DRYUI_HELPER_19(x, y, afterAssignment, z, ...) ___DRYUI_HELPER_18(x, y, afterAssignment; _dryui_addStyleToView(x, z(nil), self); , ## __VA_ARGS__)
+#define ___DRYUI_HELPER_18(x, y, afterAssignment, z, ...) ___DRYUI_HELPER_17(x, y, afterAssignment; _dryui_addStyleToView(x, z(nil), self); , ## __VA_ARGS__)
+#define ___DRYUI_HELPER_17(x, y, afterAssignment, z, ...) ___DRYUI_HELPER_16(x, y, afterAssignment; _dryui_addStyleToView(x, z(nil), self); , ## __VA_ARGS__)
+#define ___DRYUI_HELPER_16(x, y, afterAssignment, z, ...) ___DRYUI_HELPER_15(x, y, afterAssignment; _dryui_addStyleToView(x, z(nil), self); , ## __VA_ARGS__)
+#define ___DRYUI_HELPER_15(x, y, afterAssignment, z, ...) ___DRYUI_HELPER_14(x, y, afterAssignment; _dryui_addStyleToView(x, z(nil), self); , ## __VA_ARGS__)
+#define ___DRYUI_HELPER_14(x, y, afterAssignment, z, ...) ___DRYUI_HELPER_13(x, y, afterAssignment; _dryui_addStyleToView(x, z(nil), self); , ## __VA_ARGS__)
+#define ___DRYUI_HELPER_13(x, y, afterAssignment, z, ...) ___DRYUI_HELPER_12(x, y, afterAssignment; _dryui_addStyleToView(x, z(nil), self); , ## __VA_ARGS__)
+#define ___DRYUI_HELPER_12(x, y, afterAssignment, z, ...) ___DRYUI_HELPER_11(x, y, afterAssignment; _dryui_addStyleToView(x, z(nil), self); , ## __VA_ARGS__)
+#define ___DRYUI_HELPER_11(x, y, afterAssignment, z, ...) ___DRYUI_HELPER_10(x, y, afterAssignment; _dryui_addStyleToView(x, z(nil), self); , ## __VA_ARGS__)
+#define ___DRYUI_HELPER_10(x, y, afterAssignment, z, ...) ___DRYUI_HELPER_9 (x, y, afterAssignment; _dryui_addStyleToView(x, z(nil), self); , ## __VA_ARGS__)
+#define ___DRYUI_HELPER_9( x, y, afterAssignment, z, ...) ___DRYUI_HELPER_8 (x, y, afterAssignment; _dryui_addStyleToView(x, z(nil), self); , ## __VA_ARGS__)
+#define ___DRYUI_HELPER_8( x, y, afterAssignment, z, ...) ___DRYUI_HELPER_7 (x, y, afterAssignment; _dryui_addStyleToView(x, z(nil), self); , ## __VA_ARGS__)
+#define ___DRYUI_HELPER_7( x, y, afterAssignment, z, ...) ___DRYUI_HELPER_6 (x, y, afterAssignment; _dryui_addStyleToView(x, z(nil), self); , ## __VA_ARGS__)
+#define ___DRYUI_HELPER_6( x, y, afterAssignment, z, ...) ___DRYUI_HELPER_5 (x, y, afterAssignment; _dryui_addStyleToView(x, z(nil), self); , ## __VA_ARGS__)
+#define ___DRYUI_HELPER_5( x, y, afterAssignment, z, ...) ___DRYUI_HELPER_4 (x, y, afterAssignment; _dryui_addStyleToView(x, z(nil), self); , ## __VA_ARGS__)
+#define ___DRYUI_HELPER_4( x, y, afterAssignment, z, ...) ___DRYUI_HELPER_3 (x, y, afterAssignment; _dryui_addStyleToView(x, z(nil), self); , ## __VA_ARGS__)
+#define ___DRYUI_HELPER_3( x, y, afterAssignment, z)      ___DRYUI_HELPER_2 (x, y, afterAssignment; _dryui_addStyleToView(x, z(nil), self); )
 
 // This macro passes through the first argument and codeAfterVariableAssignment to ___DRYUI_HELPER_1,
 // while determining whether the second argument is a pre-made UIView instance or the first style to apply.
@@ -244,11 +234,10 @@ __DRYUI_HELPER_1)(args)
 #define ___DRYUI_HELPER_2( x, y, codeAfterVariableAssignment) \
 ___DRYUI_HELPER_1(x, \
   \
-    typeof(y) _dryui_y = y; \
-    _DRYUI_PASSED_INSTANCE_OR_NIL = _dryui_returnGivenViewOrNil(_dryui_y); \
-    _DRYUI_FIRST_STYLE_OR_NONE = _dryui_returnGivenStyleOrEmptyStyle(_dryui_y); \
+    typeof(y) _DRYUI_SAVED_SECOND_ARGUMENT = y; \
+    _DRYUI_PASSED_INSTANCE_OR_NIL = _dryui_returnGivenViewOrNil(_DRYUI_SAVED_SECOND_ARGUMENT); \
 , \
-    _dryui_addStyleToView_acceptView(x, (typeof(y))_DRYUI_FIRST_STYLE_OR_NONE, self); \
+    _dryui_addStyleToView_acceptView(x, _DRYUI_SAVED_SECOND_ARGUMENT, self); \
     codeAfterVariableAssignment \
 )
 
@@ -261,10 +250,9 @@ _Pragma("clang diagnostic ignored \"-Wunused-value\"") \
 _Pragma("clang diagnostic ignored \"-Wunused-getter-return-value\"") \
 variableName; \
 _Pragma("clang diagnostic ignored \"-Wunused-variable\"") \
-DRYUIStyle *_DRYUI_FIRST_STYLE_OR_NONE = DRYUIEmptyStyle; \
 _Pragma("clang diagnostic pop") \
 typeof(variableName) _DRYUI_PASSED_INSTANCE_OR_NIL = nil; \
-({ codeAfterVariableDeclarations }); \
+codeAfterVariableDeclarations \
 if (!variableName) { \
     variableName = _DRYUI_PASSED_INSTANCE_OR_NIL ?: _dryui_instantiate_from_encoding(@encode(typeof(*(variableName)))); \
 } \
@@ -282,36 +270,152 @@ _DRYUI_GOTO_HELPER(variableName, \
 #pragma mark -
 #pragma mark Style Macros
 
+#define dryui_applyStyle(view, style, selfForStyle) _dryui_addStyleToView(view, style(nil), selfForStyle)
+
+#define dryui_parentStyle(style) _dryui_addStyleToView_internal(_, style(nil), self)
+
+
+
 // Helper macros that generate static variable names that store all the actual style data
 #define _DRYUI_STYLE_CLASS_NAME(styleName) _DRYUI_Style_ ## styleName
+#define _DRYUI_INSTANCE_OF_CLASS_STYLE_NAME(styleName) _DRYUI_InstanceOfClassForStyle_ ## styleName
 #define _DRYUI_STYLE_APPLICATION_BLOCK_VARIABLE_NAME(styleName) _DRYUI_Style_ ## styleName ## _applicationBlock
 
+
+#define _DRYUI_EXTRACT_VARIABLE_NAME(idx, something) metamacro_if_eq(metamacro_is_even(idx), 1)()(something)
+#define _DRYUI_EXTRACT_VARIABLE_NAMES(...) \
+metamacro_if_eq(1, metamacro_argcount( bogus , ##__VA_ARGS__ ))()(dryui_metamacro_foreach_even_comma(_DRYUI_EXTRACT_VARIABLE_NAME , ##__VA_ARGS__ ))
+
+#define _DRYUI_NOTHING(idx, x) x
+#define _DRYUI_EXTRACT_ARGUMENTS(...) \
+metamacro_if_eq(1, metamacro_argcount( bogus , ##__VA_ARGS__ ))()(dryui_metamacro_foreach_even_comma(_DRYUI_NOTHING , ##__VA_ARGS__ ))
+
+// Expands to a comma (,) if there are any arguments. Otherwise, expands to nothing.
+#define _DRYUI_COMMA_IF_ANY_ARGS(...) metamacro_if_eq(1, metamacro_argcount(bogus , ##__VA_ARGS__))()(,)
+
 // Private styles are just the public style declaration and then the style implementation
-#define dryui_private_style(args...) \
-dryui_public_style(args) \
-dryui_style(args)
+#define dryui_private_style(...) \
+dryui_public_style(__VA_ARGS__) \
+dryui_style(__VA_ARGS__)
 
 // Public style declaration - expands to an @interface declaration for a subclass of DRYUIStyle, and
 // an extern-ed variable that holds an instance of the subclass. This singleton instance is what you use
 // to actually refer to the class.
 // Also declares the overloaded functions used to apply styles to views by add_subview. See 'Style implementation'
 // below for an explnation.
-#define dryui_public_style(args...) _DRYUI_STYLE_OVERLOADED_MACRO(args, _DRYUI_PUBLIC_STYLE_2, _DRYUI_PUBLIC_STYLE_1)(args)
-#define _DRYUI_STYLE_OVERLOADED_MACRO(_1,_2,NAME,...) NAME
 
-#define _DRYUI_PUBLIC_STYLE_1(styleName) _DRYUI_PUBLIC_STYLE_2(styleName, _DRYUI_VIEW)
+#define _dryui_style_block(name, ...)void (^name)(id _, _DRYUI_VIEW *superview, id self _DRYUI_COMMA_IF_ANY_ARGS( __VA_ARGS__ ) _DRYUI_EXTRACT_ARGUMENTS( __VA_ARGS__ ))
 
-#define _DRYUI_PUBLIC_STYLE_2(styleName, className) \
+#define dryui_public_style(args...) \
+metamacro_if_eq(1, metamacro_argcount(args))(dryui_public_style1(args))(metamacro_if_eq(2, metamacro_argcount(args))(dryui_public_style2(args))(dryui_public_styleMore(args)))
+
+#define dryui_public_style1(styleName) dryui_public_style2(styleName, _DRYUI_VIEW)
+#define dryui_public_style2(styleName, className) dryui_public_styleMore(styleName, className)
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Main entry point for public style
+#define dryui_public_styleMore(styleName, className, ...) \
 @interface _DRYUI_STYLE_CLASS_NAME(styleName) : DRYUIStyle \
-@end \
-FOUNDATION_EXTERN void __attribute__((overloadable)) _dryui_addStyleToView(className *view, _DRYUI_STYLE_CLASS_NAME(styleName) *style, id selfForBlock); \
-FOUNDATION_EXTERN void __attribute__((overloadable)) _dryui_addStyleToView_acceptView(className *view, _DRYUI_STYLE_CLASS_NAME(styleName) *style, id selfForBlock); \
-FOUNDATION_EXTERN _DRYUI_STYLE_CLASS_NAME(styleName) *styleName;
+@end  \
+\
+typedef _dryui_style_block(_DRYUI_applicationBlockForStyle_##styleName , ##__VA_ARGS__ ); \
+static _DRYUI_STYLE_CLASS_NAME(styleName)* _DRYUI_INSTANCE_OF_CLASS_STYLE_NAME(styleName); \
+static _DRYUI_applicationBlockForStyle_##styleName _DRYUI_STYLE_APPLICATION_BLOCK_VARIABLE_NAME(styleName); \
+_DRYUI_TYPEDEFS(styleName, className , ##__VA_ARGS__ )\
+\
 
-FOUNDATION_EXTERN void __attribute__((overloadable)) _dryui_addStyleToView_acceptView(_DRYUI_VIEW *view, _DRYUI_VIEW *notAStyle, id selfForBlock);
+
+
+#define _DRYUI_TYPEDEFS(styleName, className, ...) metamacro_if_eq(1, metamacro_argcount(bogus , ##__VA_ARGS__ ))(_DRYUI_TYPEDEFS_NO_ARGS(styleName, className))(_DRYUI_TYPEDEFS_SOME_ARGS(styleName, className , ##__VA_ARGS__ ))
+
+#define _DRYUI_TYPEDEFS_NO_ARGS(styleName, className) \
+\
+typedef void (^_DRYUI_blockThatGetsPassedByAddStyleToView_##styleName )(); \
+typedef void                                            (^_DRYUI_blockReturnedByBlockForStyle_##styleName)( _DRYUI_STYLE_CLASS_NAME(styleName)*, _DRYUI_blockThatGetsPassedByAddStyleToView_##styleName blockFromAddStyleToView); \
+typedef _DRYUI_blockReturnedByBlockForStyle_##styleName (^_DRYUI_blockForStyle_##styleName)(_DRYUI_STYLE_CLASS_NAME(styleName)*); \
+\
+static _DRYUI_blockForStyle_##styleName styleName; \
+\
+static inline id __attribute((overloadable, unused)) _dryui_returnGivenViewOrNil(_DRYUI_blockForStyle_##styleName notAView) { \
+    return nil; \
+} \
+static inline id __attribute((overloadable, unused)) _dryui_returnGivenStyleOrEmptyStyle(_DRYUI_blockForStyle_##styleName style) { \
+    return style; \
+} \
+static inline void __attribute__((overloadable, unused)) _dryui_addStyleToView_internal(className *view, _DRYUI_blockReturnedByBlockForStyle_##styleName firstLevelBlock, id selfForBlock) { \
+    firstLevelBlock(_DRYUI_INSTANCE_OF_CLASS_STYLE_NAME(styleName), ^() { \
+        _DRYUI_STYLE_APPLICATION_BLOCK_VARIABLE_NAME(styleName)(view, view.superview, selfForBlock); \
+    }); \
+} \
+static inline void __attribute__((overloadable, unused)) _dryui_addStyleToView(className *view, _DRYUI_blockReturnedByBlockForStyle_##styleName firstLevelBlock, id selfForBlock) { \
+    id oldConstraintMaker = view.constraintMaker; \
+    view.constraintMaker = [[MASConstraintMaker alloc] initWithView:view]; \
+    view.wrappedAddBlocks = [NSMutableArray array]; \
+    \
+    _dryui_addStyleToView_internal(view, firstLevelBlock, selfForBlock); \
+    \
+    [view.constraintMaker install]; \
+    view.constraintMaker = oldConstraintMaker; \
+    [view runAllWrappedAddBlocks]; \
+    [((NSMutableArray *)view.styles) addObject:styleName]; \
+} \
+static inline void __attribute__((overloadable, unused)) _dryui_addStyleToView_acceptView(className *view, _DRYUI_blockForStyle_##styleName firstLevelBlock, id selfForBlock) { \
+    _dryui_addStyleToView(view, firstLevelBlock(nil), selfForBlock);\
+} \
+
+
+#define _DRYUI_TYPEDEFS_SOME_ARGS(styleName, className, ...) \
+\
+typedef void (^_DRYUI_blockThatGetsPassedByAddStyleToView_##styleName )(_DRYUI_EXTRACT_ARGUMENTS( __VA_ARGS__)); \
+typedef void                                                           (^_DRYUI_blockReturnedByBlockReturnedByBlockForStyle_##styleName)( _DRYUI_STYLE_CLASS_NAME(styleName)*, _DRYUI_blockThatGetsPassedByAddStyleToView_##styleName blockFromAddStyleToView); \
+typedef _DRYUI_blockReturnedByBlockReturnedByBlockForStyle_##styleName (^_DRYUI_blockReturnedByBlockForStyle_##styleName)(_DRYUI_STYLE_CLASS_NAME(styleName)*); \
+typedef _DRYUI_blockReturnedByBlockForStyle_##styleName                (^_DRYUI_blockForStyle_##styleName)(_DRYUI_EXTRACT_ARGUMENTS( __VA_ARGS__)); \
+\
+static _DRYUI_blockForStyle_##styleName styleName; \
+\
+static inline id __attribute((overloadable, unused)) _dryui_returnGivenViewOrNil(_DRYUI_blockReturnedByBlockForStyle_##styleName notAView) { \
+    return nil; \
+} \
+static inline id  __attribute((overloadable, unused)) _dryui_returnGivenStyleOrEmptyStyle(_DRYUI_blockReturnedByBlockForStyle_##styleName style) { \
+    return style(nil); \
+} \
+static inline void __attribute__((overloadable, unused)) _dryui_addStyleToView_internal(className *view, _DRYUI_blockReturnedByBlockReturnedByBlockForStyle_##styleName secondLevelBlock, id selfForBlock) { \
+    secondLevelBlock(_DRYUI_INSTANCE_OF_CLASS_STYLE_NAME(styleName), ^(_DRYUI_EXTRACT_ARGUMENTS( __VA_ARGS__ )) { \
+        _DRYUI_STYLE_APPLICATION_BLOCK_VARIABLE_NAME(styleName)(view, view.superview, selfForBlock _DRYUI_COMMA_IF_ANY_ARGS( __VA_ARGS__ ) _DRYUI_EXTRACT_VARIABLE_NAMES( __VA_ARGS__ )); \
+    }); \
+} \
+static inline void __attribute__((overloadable, unused)) _dryui_addStyleToView(className *view, _DRYUI_blockReturnedByBlockReturnedByBlockForStyle_##styleName secondLevelBlock, id selfForBlock) { \
+    id oldConstraintMaker = view.constraintMaker; \
+    view.constraintMaker = [[MASConstraintMaker alloc] initWithView:view]; \
+    view.wrappedAddBlocks = [NSMutableArray array]; \
+    \
+    _dryui_addStyleToView_internal(view, secondLevelBlock, selfForBlock); \
+    \
+    [view.constraintMaker install]; \
+    view.constraintMaker = oldConstraintMaker; \
+    [view runAllWrappedAddBlocks]; \
+    [((NSMutableArray *)view.styles) addObject:styleName]; \
+    \
+} \
+static inline void __attribute__((overloadable, unused)) _dryui_addStyleToView_acceptView(className *view, _DRYUI_blockReturnedByBlockForStyle_##styleName secondLevelBlock, id selfForBlock) { \
+    _dryui_addStyleToView(view, secondLevelBlock(nil), selfForBlock); \
+} \
+
+
+static inline id __attribute((overloadable, unused)) _dryui_returnGivenViewOrNil(_DRYUI_VIEW *view) {
+    return view;
+}
+
+static inline void __attribute__((overloadable, unused)) _dryui_addStyleToView_acceptView(_DRYUI_VIEW *view, _DRYUI_VIEW *notAStyle, id selfForBlock) {
+}
+
+static inline id __attribute((overloadable, unused)) _dryui_returnGivenStyleOrEmptyStyle(_DRYUI_VIEW *notAStyle) {
+    return nil;
+}
 
 // Define the empty style. Attempting to apply the empty style will result in nothing happening as fast as possible.
 dryui_public_style(DRYUIEmptyStyle, _DRYUI_VIEW);
+dryui_public_style(DRYUIEmptyStyleWithArg, _DRYUI_VIEW, id, bogusArg);
 
 // Style implementation
 //
@@ -334,31 +438,59 @@ dryui_public_style(DRYUIEmptyStyle, _DRYUI_VIEW);
 // The _dryui_addStyleToView_acceptView function is a hack to support the case where the second argument to add_subview
 // is a UIView instance - this function has 1 additional overloaded version where the first and second arguments are
 // UIViews, so that you won't get a compiler warning about there being a UIView where we expect a DRYUIStyle.
-#define dryui_style(args...) _DRYUI_STYLE_OVERLOADED_MACRO(args, _DRYUI_IMPLEMENT_STYLE_2, _DRYUI_IMPLEMENT_STYLE_1)(args)
 
-#define _DRYUI_IMPLEMENT_STYLE_1(styleName) _DRYUI_IMPLEMENT_STYLE_2(styleName, _DRYUI_VIEW)
+static const char dryui_thingOnBlockKey = 0;
 
-// We're going to stringify the className, so add another macro expansion pass
-// to let className expand (i.e. if it's _DRYUI_VIEW).
-#define _DRYUI_IMPLEMENT_STYLE_2(styleName, className) __DRYUI_IMPLEMENT_STYLE_2(styleName, className)
 
-#define __DRYUI_IMPLEMENT_STYLE_2(styleName, className) \
+#define dryui_style(args...) \
+metamacro_if_eq(1, metamacro_argcount(args))(dryui_style1(args))(metamacro_if_eq(2, metamacro_argcount(args))(dryui_style2(args))(dryui_styleMore(args)))
+
+
+
+#define dryui_style1(styleName) dryui_style2(styleName, _DRYUI_VIEW)
+#define dryui_style2(styleName, className) dryui_styleMore(styleName, className)
+
+#define dryui_styleMore(styleName, className, ...) \
 \
-_DRYUI_STYLE_CLASS_NAME(styleName) *styleName; \
-static DRYUIStyleBlock _DRYUI_STYLE_APPLICATION_BLOCK_VARIABLE_NAME(styleName); \
 \
 @implementation _DRYUI_STYLE_CLASS_NAME(styleName) \
-+ (void)load {styleName = [self new];} \
++ (void)load { \
+    objc_setAssociatedObject(styleName, &dryui_thingOnBlockKey, @(444), OBJC_ASSOCIATION_RETAIN); \
+    _DRYUI_INSTANCE_OF_CLASS_STYLE_NAME(styleName) = [self new]; \
+} \
 - (NSString *)name {return @ # styleName;} \
 - (NSString *)viewClassName {return @ # className;} \
-- (DRYUIStyleBlock)applicationBlock {return _DRYUI_STYLE_APPLICATION_BLOCK_VARIABLE_NAME(styleName);} \
 @end \
 \
-void __attribute__((overloadable)) _dryui_addStyleToView(className *view, _DRYUI_STYLE_CLASS_NAME(styleName) *style, id selfForBlock) { \
-    _dryui_addStyleToView_internal(view, style, selfForBlock); \
-} \
-void __attribute__((overloadable)) _dryui_addStyleToView_acceptView(className *view, _DRYUI_STYLE_CLASS_NAME(styleName) *style, id selfForBlock) { \
-    _dryui_addStyleToView_internal(view, style, selfForBlock); \
-} \
+dryui_splitoutthing(styleName, className , ##__VA_ARGS__ ); \
 \
-static DRYUIStyleBlock _DRYUI_STYLE_APPLICATION_BLOCK_VARIABLE_NAME(styleName) = ^(className *_, _DRYUI_VIEW *superview, DRYUIParentStyleBlock parent_style, id self) \
+static _DRYUI_applicationBlockForStyle_##styleName _DRYUI_STYLE_APPLICATION_BLOCK_VARIABLE_NAME(styleName) = ^(className *_, _DRYUI_VIEW *superview, id self _DRYUI_COMMA_IF_ANY_ARGS( __VA_ARGS__ ) _DRYUI_EXTRACT_ARGUMENTS( __VA_ARGS__ )) \
+
+
+
+
+#define dryui_splitoutthing(styleName, className, ...) metamacro_if_eq(1, metamacro_argcount(bogus , ##__VA_ARGS__ ))(dryui_splitoutthing_noargs(styleName, className))(dryui_splitoutthing_someargs(styleName, className , ##__VA_ARGS__ ))
+
+
+#define dryui_splitoutthing_noargs(styleName, className) \
+\
+static _DRYUI_blockForStyle_##styleName styleName = ^_DRYUI_blockReturnedByBlockForStyle_##styleName(_DRYUI_STYLE_CLASS_NAME(styleName)* bogus) { \
+    return ^(_DRYUI_STYLE_CLASS_NAME(styleName) *style, _DRYUI_blockThatGetsPassedByAddStyleToView_##styleName blockFromAddStyleToView) { \
+        return blockFromAddStyleToView(); \
+    }; \
+}; \
+
+
+
+#define dryui_splitoutthing_someargs(styleName, className, ...) \
+\
+static _DRYUI_blockForStyle_##styleName styleName = ^_DRYUI_blockReturnedByBlockForStyle_##styleName( _DRYUI_EXTRACT_ARGUMENTS( __VA_ARGS__ ) ) { \
+    return ^_DRYUI_blockReturnedByBlockReturnedByBlockForStyle_##styleName(_DRYUI_STYLE_CLASS_NAME(styleName)* bogus) { \
+        return ^(_DRYUI_STYLE_CLASS_NAME(styleName) *style, _DRYUI_blockThatGetsPassedByAddStyleToView_##styleName blockFromAddStyleToView) { \
+            return blockFromAddStyleToView(_DRYUI_EXTRACT_VARIABLE_NAMES( __VA_ARGS__ )); \
+        }; \
+    }; \
+}; \
+
+
+

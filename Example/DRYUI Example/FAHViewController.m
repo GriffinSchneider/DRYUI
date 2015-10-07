@@ -9,16 +9,16 @@
 #import "FAHViewController.h"
 #import <DRYUI/DRYUI.h>
 
-dryui_private_style(Red) {
+dryui_private_style(Red, UIView) {
     _.backgroundColor = [UIColor redColor];
 };
-dryui_private_style(Green) {
+dryui_private_style(Green, UIView) {
     _.backgroundColor = [UIColor greenColor];
 };
-dryui_private_style(Blue) {
+dryui_private_style(Blue, UIView) {
     _.backgroundColor = [UIColor blueColor];
 };
-dryui_private_style(Orange) {
+dryui_private_style(Orange, UIView) {
     _.backgroundColor = [UIColor orangeColor];
 };
 
@@ -27,11 +27,12 @@ dryui_private_style(Orange) {
 
 @end
 
+
 @implementation FAHViewController
-    
+
 - (void)loadView {
-    
     [super loadView];
+    
     UIEdgeInsets insets = UIEdgeInsetsMake(30, 30, 30, 30);
     
     build_subviews(self.view) {
