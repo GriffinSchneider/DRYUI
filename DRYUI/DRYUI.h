@@ -287,6 +287,9 @@ _DRYUI_GOTO_HELPER(variableName, \
 #define _DRYUI_STYLE_CLASS_NAME(styleName) _DRYUI_Style_ ## styleName
 #define _DRYUI_STYLE_APPLICATION_BLOCK_VARIABLE_NAME(styleName) _DRYUI_Style_ ## styleName ## _applicationBlock
 
+#define _DRYUI_NEW_THING_VARIABLE_NAME(styleName) _DRYUI_Style_newthing_ ## styleName ## _applicationBlock
+
+
 // Private styles are just the public style declaration and then the style implementation
 #define dryui_private_style(args...) \
 dryui_public_style(args) \
@@ -303,11 +306,9 @@ dryui_style(args)
 metamacro_if_eq(1, metamacro_argcount(args))(dryui_public_style1(args))(metamacro_if_eq(2, metamacro_argcount(args))(dryui_public_style2(args))(dryui_public_styleMore(args)))
 
 #define dryui_public_style1(styleName) dryui_public_style2(styleName, _DRYUI_VIEW)
-#define dryui_public_style2(styleName, className) _dryui_public_style(styleName, className, ())
-#define dryui_public_styleMore(styleName, className, styleArgs...) _dryui_public_style(styleName, className, (styleArgs))
+#define dryui_public_style2(styleName, className) dryui_public_styleMore(styleName, className)
 
-#define _dryui_public_style(styleName, className, styleArgs) __dryui_public_style(styleName, className, styleArgs)
-#define __dryui_public_style(styleName, className, styleArgs) \
+#define dryui_public_styleMore(styleName, className, ...) \
 @interface _DRYUI_STYLE_CLASS_NAME(styleName) : DRYUIStyle \
 @end \
 FOUNDATION_EXTERN void __attribute__((overloadable)) _dryui_addStyleToView(className *view, _DRYUI_STYLE_CLASS_NAME(styleName) *style, id selfForBlock); \
@@ -342,20 +343,19 @@ dryui_public_style(DRYUIEmptyStyle, _DRYUI_VIEW);
 // UIViews, so that you won't get a compiler warning about there being a UIView where we expect a DRYUIStyle.
 
 
+#define _dryui_style_block(name, ...) void (^name)(id _, _DRYUI_VIEW *superview, DRYUIParentStyleBlock parent_style, id self)
+
+
 #define dryui_style(args...) \
 metamacro_if_eq(1, metamacro_argcount(args))(dryui_style1(args))(metamacro_if_eq(2, metamacro_argcount(args))(dryui_style2(args))(dryui_styleMore(args)))
 
 #define dryui_style1(styleName) dryui_style2(styleName, _DRYUI_VIEW)
-#define dryui_style2(styleName, className) _dryui_style(styleName, className, ())
-#define dryui_styleMore(styleName, className, styleArgs...) _dryui_style(styleName, className, (styleArgs))
+#define dryui_style2(styleName, className) dryui_styleMore(styleName, className)
 
-#define _dryui_style_block(name, styleArgs) void (^name)(id _, _DRYUI_VIEW *superview, DRYUIParentStyleBlock parent_style, id self)
-
-#define _dryui_style(styleName, className, styleArgs) __dryui_style(styleName, className, styleArgs)
-#define __dryui_style(styleName, className, styleArgs) \
+#define dryui_styleMore(styleName, className, ...) \
 \
 _DRYUI_STYLE_CLASS_NAME(styleName) *styleName; \
-static _dryui_style_block(_DRYUI_STYLE_APPLICATION_BLOCK_VARIABLE_NAME(styleName), styleArgs) ; \
+static DRYUIStyleBlock _DRYUI_STYLE_APPLICATION_BLOCK_VARIABLE_NAME(styleName); \
 \
 @implementation _DRYUI_STYLE_CLASS_NAME(styleName) \
 + (void)load { \
@@ -363,7 +363,7 @@ static _dryui_style_block(_DRYUI_STYLE_APPLICATION_BLOCK_VARIABLE_NAME(styleName
 } \
 - (NSString *)name {return @ # styleName;} \
 - (NSString *)viewClassName {return @ # className;} \
-- (_dryui_style_block(,))applicationBlock {return _DRYUI_STYLE_APPLICATION_BLOCK_VARIABLE_NAME(styleName);} \
+- (DRYUIStyleBlock)applicationBlock {return _DRYUI_STYLE_APPLICATION_BLOCK_VARIABLE_NAME(styleName);} \
 @end \
 \
 void __attribute__((overloadable)) _dryui_addStyleToView(className *view, _DRYUI_STYLE_CLASS_NAME(styleName) *style, id selfForBlock) { \
@@ -373,4 +373,4 @@ void __attribute__((overloadable)) _dryui_addStyleToView_acceptView(className *v
     _dryui_addStyleToView_internal(view, style, selfForBlock); \
 } \
 \
-static _dryui_style_block(_DRYUI_STYLE_APPLICATION_BLOCK_VARIABLE_NAME(styleName), styleArgs) = ^(className *_, _DRYUI_VIEW *superview, DRYUIParentStyleBlock parent_style, id self) \
+static DRYUIStyleBlock _DRYUI_NEW_THING_VARIABLE_NAME(styleName) = ^(className *_, _DRYUI_VIEW *superview, DRYUIParentStyleBlock parent_style, id self) \
