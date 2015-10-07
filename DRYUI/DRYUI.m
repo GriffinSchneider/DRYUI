@@ -8,7 +8,7 @@
 #import "DRYUI.h"
 #import <objc/runtime.h>
 
-dryui_style(DRYUIEmptyStyle, _DRYUI_VIEW) {
+dryui_style(DRYUIEmptyStyle, _DRYUI_VIEW, NSString *arg) {
 };
 
 _DRYUI_VIEW *_dryui_current_view = nil;
