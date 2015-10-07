@@ -8,11 +8,12 @@
 #import "DRYUI.h"
 #import <objc/runtime.h>
 
-dryui_style(DRYUIEmptyStyle) {
+dryui_style(DRYUIEmptyStyle, _DRYUI_VIEW) {
 };
 
 _DRYUI_VIEW *_dryui_current_view = nil;
 _DRYUI_VIEW *_dryui_current_toplevel_view = nil;
+
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 @interface _DRYUI_VIEW (DRYUI_Private)

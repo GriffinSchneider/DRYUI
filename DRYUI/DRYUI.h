@@ -14,9 +14,10 @@
   #define _DRYUI_VIEW NSView
 #endif
 
-
 #import <Foundation/Foundation.h>
 #import <Masonry/Masonry.h>
+#import <libextobjc/metamacros.h>
+#import <objc/runtime.h>
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 #pragma mark -
@@ -296,12 +297,17 @@ dryui_style(args)
 // to actually refer to the class.
 // Also declares the overloaded functions used to apply styles to views by add_subview. See 'Style implementation'
 // below for an explnation.
-#define dryui_public_style(args...) _DRYUI_STYLE_OVERLOADED_MACRO(args, _DRYUI_PUBLIC_STYLE_2, _DRYUI_PUBLIC_STYLE_1)(args)
-#define _DRYUI_STYLE_OVERLOADED_MACRO(_1,_2,NAME,...) NAME
 
-#define _DRYUI_PUBLIC_STYLE_1(styleName) _DRYUI_PUBLIC_STYLE_2(styleName, _DRYUI_VIEW)
 
-#define _DRYUI_PUBLIC_STYLE_2(styleName, className) \
+#define dryui_public_style(args...) \
+metamacro_if_eq(1, metamacro_argcount(args))(dryui_public_style1(args))(metamacro_if_eq(2, metamacro_argcount(args))(dryui_public_style2(args))(dryui_public_styleMore(args)))
+
+#define dryui_public_style1(styleName) dryui_public_style2(styleName, _DRYUI_VIEW)
+#define dryui_public_style2(styleName, className) _dryui_public_style(styleName, className, ())
+#define dryui_public_styleMore(styleName, className, styleArgs...) _dryui_public_style(styleName, className, (styleArgs))
+
+#define _dryui_public_style(styleName, className, styleArgs) __dryui_public_style(styleName, className, styleArgs)
+#define __dryui_public_style(styleName, className, styleArgs) \
 @interface _DRYUI_STYLE_CLASS_NAME(styleName) : DRYUIStyle \
 @end \
 FOUNDATION_EXTERN void __attribute__((overloadable)) _dryui_addStyleToView(className *view, _DRYUI_STYLE_CLASS_NAME(styleName) *style, id selfForBlock); \
@@ -334,24 +340,30 @@ dryui_public_style(DRYUIEmptyStyle, _DRYUI_VIEW);
 // The _dryui_addStyleToView_acceptView function is a hack to support the case where the second argument to add_subview
 // is a UIView instance - this function has 1 additional overloaded version where the first and second arguments are
 // UIViews, so that you won't get a compiler warning about there being a UIView where we expect a DRYUIStyle.
-#define dryui_style(args...) _DRYUI_STYLE_OVERLOADED_MACRO(args, _DRYUI_IMPLEMENT_STYLE_2, _DRYUI_IMPLEMENT_STYLE_1)(args)
 
-#define _DRYUI_IMPLEMENT_STYLE_1(styleName) _DRYUI_IMPLEMENT_STYLE_2(styleName, _DRYUI_VIEW)
 
-// We're going to stringify the className, so add another macro expansion pass
-// to let className expand (i.e. if it's _DRYUI_VIEW).
-#define _DRYUI_IMPLEMENT_STYLE_2(styleName, className) __DRYUI_IMPLEMENT_STYLE_2(styleName, className)
+#define dryui_style(args...) \
+metamacro_if_eq(1, metamacro_argcount(args))(dryui_style1(args))(metamacro_if_eq(2, metamacro_argcount(args))(dryui_style2(args))(dryui_styleMore(args)))
 
-#define __DRYUI_IMPLEMENT_STYLE_2(styleName, className) \
+#define dryui_style1(styleName) dryui_style2(styleName, _DRYUI_VIEW)
+#define dryui_style2(styleName, className) _dryui_style(styleName, className, ())
+#define dryui_styleMore(styleName, className, styleArgs...) _dryui_style(styleName, className, (styleArgs))
+
+#define _dryui_style_block(name, styleArgs) void (^name)(id _, _DRYUI_VIEW *superview, DRYUIParentStyleBlock parent_style, id self)
+
+#define _dryui_style(styleName, className, styleArgs) __dryui_style(styleName, className, styleArgs)
+#define __dryui_style(styleName, className, styleArgs) \
 \
 _DRYUI_STYLE_CLASS_NAME(styleName) *styleName; \
-static DRYUIStyleBlock _DRYUI_STYLE_APPLICATION_BLOCK_VARIABLE_NAME(styleName); \
+static _dryui_style_block(_DRYUI_STYLE_APPLICATION_BLOCK_VARIABLE_NAME(styleName), styleArgs) ; \
 \
 @implementation _DRYUI_STYLE_CLASS_NAME(styleName) \
-+ (void)load {styleName = [self new];} \
++ (void)load { \
+    styleName = [self new]; \
+} \
 - (NSString *)name {return @ # styleName;} \
 - (NSString *)viewClassName {return @ # className;} \
-- (DRYUIStyleBlock)applicationBlock {return _DRYUI_STYLE_APPLICATION_BLOCK_VARIABLE_NAME(styleName);} \
+- (_dryui_style_block(,))applicationBlock {return _DRYUI_STYLE_APPLICATION_BLOCK_VARIABLE_NAME(styleName);} \
 @end \
 \
 void __attribute__((overloadable)) _dryui_addStyleToView(className *view, _DRYUI_STYLE_CLASS_NAME(styleName) *style, id selfForBlock) { \
@@ -361,4 +373,4 @@ void __attribute__((overloadable)) _dryui_addStyleToView_acceptView(className *v
     _dryui_addStyleToView_internal(view, style, selfForBlock); \
 } \
 \
-static DRYUIStyleBlock _DRYUI_STYLE_APPLICATION_BLOCK_VARIABLE_NAME(styleName) = ^(className *_, _DRYUI_VIEW *superview, DRYUIParentStyleBlock parent_style, id self) \
+static _dryui_style_block(_DRYUI_STYLE_APPLICATION_BLOCK_VARIABLE_NAME(styleName), styleArgs) = ^(className *_, _DRYUI_VIEW *superview, DRYUIParentStyleBlock parent_style, id self) \

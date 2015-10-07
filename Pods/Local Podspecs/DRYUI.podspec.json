@@ -2,7 +2,7 @@
   "name": "DRYUI",
   "version": "0.3.3",
   "summary": "A tiny library that provides a better API for building and styling view hierarchies in code.",
-  "description": "\n    DRYUI is a tiny library that provides a better API for building and styling view hierarchies in code.\n    DRYUI uses [Masonry](https://github.com/Masonry/Masonry) for Autolayout, and works on both iOS and OSX.\n  ",
+  "description": "DRYUI is a tiny library that provides a better API for building and styling view hierarchies in code.\nDRYUI uses [Masonry](https://github.com/Masonry/Masonry) for Autolayout, and works on both iOS and OSX.",
   "homepage": "https://github.com/GriffinSchneider/DRYUI",
   "license": "MIT",
   "authors": {
@@ -32,6 +32,9 @@
   "requires_arc": true,
   "dependencies": {
     "Masonry": [
+
+    ],
+    "libextobjc": [
 
     ]
   }
