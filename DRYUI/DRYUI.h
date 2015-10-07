@@ -18,6 +18,7 @@
 #import <Masonry/Masonry.h>
 #import <libextobjc/metamacros.h>
 #import <objc/runtime.h>
+#import "DRYUIMetamacros.h"
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 #pragma mark -
@@ -287,7 +288,14 @@ _DRYUI_GOTO_HELPER(variableName, \
 #define _DRYUI_STYLE_CLASS_NAME(styleName) _DRYUI_Style_ ## styleName
 #define _DRYUI_STYLE_APPLICATION_BLOCK_VARIABLE_NAME(styleName) _DRYUI_Style_ ## styleName ## _applicationBlock
 
-#define _DRYUI_NEW_THING_VARIABLE_NAME(styleName) _DRYUI_Style_newthing_ ## styleName ## _applicationBlock
+
+#define _DRYUI_EXTRACT_VARIABLE_NAME(idx, something) metamacro_if_eq(metamacro_is_even(idx), 1)()(, something)
+#define _DRYUI_EXTRACT_VARIABLE_NAMES(...) \
+metamacro_if_eq(1, metamacro_argcount( bogus , ##__VA_ARGS__ ))()(metamacro_foreach(_DRYUI_EXTRACT_VARIABLE_NAME,, __VA_ARGS__ ))
+
+#define _DRYUI_EXTRACT_ARGUMENT(idx, something) metamacro_if_eq(metamacro_is_even(idx), 1)(, something)( something)
+#define _DRYUI_EXTRACT_ARGUMENTS(...) \
+metamacro_if_eq(1, metamacro_argcount( bogus , ##__VA_ARGS__ ))()(dryui_metamacro_foreach_comma(_DRYUI_EXTRACT_ARGUMENT, __VA_ARGS__ ))
 
 
 // Private styles are just the public style declaration and then the style implementation
@@ -312,9 +320,10 @@ metamacro_if_eq(1, metamacro_argcount(args))(dryui_public_style1(args))(metamacr
 #define dryui_public_styleMore(styleName, className, ...) \
 @interface _DRYUI_STYLE_CLASS_NAME(styleName) : DRYUIStyle \
 @end \
-typedef NSArray*                                                       (^_DRYUI_blockReturnedByBlockReturnedByBlockForStyle_##styleName)( _DRYUI_STYLE_CLASS_NAME(styleName)* ); \
+typedef _dryui_style_block(_DRYUI_applicationBlockForStyle_##styleName , ##__VA_ARGS__ );\
+typedef void                                                           (^_DRYUI_blockReturnedByBlockReturnedByBlockForStyle_##styleName)( _DRYUI_STYLE_CLASS_NAME(styleName)*,_DRYUI_applicationBlockForStyle_##styleName applicationBlock); \
 typedef _DRYUI_blockReturnedByBlockReturnedByBlockForStyle_##styleName (^_DRYUI_blockReturnedByBlockForStyle_##styleName)( _DRYUI_STYLE_CLASS_NAME(styleName)* ); \
-typedef _DRYUI_blockReturnedByBlockForStyle_##styleName                (^_DRYUI_blockForStyle_##styleName)( __VA_ARGS__ ); \
+typedef _DRYUI_blockReturnedByBlockForStyle_##styleName                (^_DRYUI_blockForStyle_##styleName)(_DRYUI_EXTRACT_ARGUMENTS( __VA_ARGS__)); \
 FOUNDATION_EXTERN void __attribute__((overloadable)) _dryui_addStyleToView(className *view, _DRYUI_blockReturnedByBlockForStyle_##styleName firstLevelBlock, id selfForBlock); \
 FOUNDATION_EXTERN void __attribute__((overloadable)) _dryui_addStyleToView(className *view, _DRYUI_blockReturnedByBlockReturnedByBlockForStyle_##styleName secondLevelBlock, id selfForBlock); \
 FOUNDATION_EXTERN void __attribute__((overloadable)) _dryui_addStyleToView_acceptView(className *view, _DRYUI_blockReturnedByBlockForStyle_##styleName firstLevelBlock, id selfForBlock); \
@@ -363,12 +372,14 @@ static const char dryui_thingOnBlockKey = 0;
 #define dryui_style(args...) \
 metamacro_if_eq(1, metamacro_argcount(args))(dryui_style1(args))(metamacro_if_eq(2, metamacro_argcount(args))(dryui_style2(args))(dryui_styleMore(args)))
 
+
+
 #define dryui_style1(styleName) dryui_style2(styleName, _DRYUI_VIEW)
 #define dryui_style2(styleName, className) dryui_styleMore(styleName, className)
 
 #define dryui_styleMore(styleName, className, ...) \
 \
-static DRYUIStyleBlock _DRYUI_STYLE_APPLICATION_BLOCK_VARIABLE_NAME(styleName); \
+static _DRYUI_applicationBlockForStyle_##styleName _DRYUI_STYLE_APPLICATION_BLOCK_VARIABLE_NAME(styleName); \
 \
 @implementation _DRYUI_STYLE_CLASS_NAME(styleName) \
 + (void)load { \
@@ -394,20 +405,11 @@ void __attribute__((overloadable)) _dryui_addStyleToView_acceptView(className *v
 } \
 \
 \
-static _DRYUI_blockForStyle_##styleName styleName = (_DRYUI_blockForStyle_##styleName) ^_DRYUI_blockReturnedByBlockForStyle_##styleName(id first, ...) { \
-    NSMutableArray *argArray = [NSMutableArray array]; \
-    va_list args; \
-    va_start(args, first); \
-    if (first) [argArray addObject:first]; \
-    id eachObject; \
-    while ((eachObject = va_arg(args, id))) [argArray addObject:eachObject]; \
-    va_end(args); \
+static _DRYUI_blockForStyle_##styleName styleName = ^_DRYUI_blockReturnedByBlockForStyle_##styleName( _DRYUI_EXTRACT_ARGUMENTS( __VA_ARGS__ ) ) { \
     return ^_DRYUI_blockReturnedByBlockReturnedByBlockForStyle_##styleName(_DRYUI_STYLE_CLASS_NAME(styleName) *style) { \
-        return ^NSArray*(_DRYUI_STYLE_CLASS_NAME(styleName) *style) { \
-            return argArray; \
+        return ^(_DRYUI_STYLE_CLASS_NAME(styleName) *style, _DRYUI_applicationBlockForStyle_##styleName applicationBlock) { \
         }; \
-    };\
-\
+    }; \
 }; \
 \
-static _dryui_style_block(_DRYUI_NEW_THING_VARIABLE_NAME(styleName) , ##__VA_ARGS__ ) = ^(className *_, _DRYUI_VIEW *superview, DRYUIParentStyleBlock parent_style, id self , ##__VA_ARGS__ ) \
+static _DRYUI_applicationBlockForStyle_##styleName _DRYUI_STYLE_APPLICATION_BLOCK_VARIABLE_NAME(styleName) = ^(className *_, _DRYUI_VIEW *superview, DRYUIParentStyleBlock parent_style, id self, _DRYUI_EXTRACT_ARGUMENTS( __VA_ARGS__ )) \

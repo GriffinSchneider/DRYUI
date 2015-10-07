@@ -23,6 +23,7 @@
 		50AEDFD0FB2F1C6D9DE158D7BD16EB73 /* MASConstraint+Private.h in Headers */ = {isa = PBXBuildFile; fileRef = 08F5E183E27E0029CCA6EDE3723A67A7 /* MASConstraint+Private.h */; };
 		5816096046F13C7DE9E2ED38D72AA5EE /* MASLayoutConstraint.m in Sources */ = {isa = PBXBuildFile; fileRef = 2DD5CC99EA08355656BF562A033ED7BB /* MASLayoutConstraint.m */; };
 		5C3D4B276203599B4EB37623724FB445 /* EXTConcreteProtocol.m in Sources */ = {isa = PBXBuildFile; fileRef = 01ED7845C652ADE798091813046DAB3B /* EXTConcreteProtocol.m */; settings = {COMPILER_FLAGS = "-DOS_OBJECT_USE_OBJC=0"; }; };
+		5DBF1B101BC5D5D0001503A4 /* DRYUIMetamacros.h in Headers */ = {isa = PBXBuildFile; fileRef = 5DBF1B0F1BC5D5D0001503A4 /* DRYUIMetamacros.h */; settings = {ASSET_TAGS = (); }; };
 		61E48C42B66532A29DB479A66B446366 /* DRYUI.m in Sources */ = {isa = PBXBuildFile; fileRef = 0F482B7461B1E2B58D48FE22DBD9C244 /* DRYUI.m */; };
 		6321AB3B82DC8F3C232CB41FA020A836 /* Masonry-dummy.m in Sources */ = {isa = PBXBuildFile; fileRef = E61221C5F4FB84D97DA8408A6EBA7C73 /* Masonry-dummy.m */; };
 		66F6E0FD27B2760ADFD42B403B6FA8E9 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B01A6C01C98A3BCA0AF01B6487EA60BF /* UIKit.framework */; };
@@ -156,6 +157,7 @@
 		5614683C29D0FBCBF4CFCA7454C8CC8F /* MASViewConstraint.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; name = MASViewConstraint.m; path = Masonry/MASViewConstraint.m; sourceTree = "<group>"; };
 		5A2E1997E8A3533A6683F3556EF25CDD /* View+MASShorthandAdditions.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = "View+MASShorthandAdditions.h"; path = "Masonry/View+MASShorthandAdditions.h"; sourceTree = "<group>"; };
 		5ADB44D1F44AB6F58584A073D5B41EB1 /* Pods-DRYUI Example.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = "Pods-DRYUI Example.debug.xcconfig"; sourceTree = "<group>"; };
+		5DBF1B0F1BC5D5D0001503A4 /* DRYUIMetamacros.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DRYUIMetamacros.h; sourceTree = "<group>"; };
 		6020FA651E9D72A23779F7487B2524BF /* MASConstraint.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; name = MASConstraint.m; path = Masonry/MASConstraint.m; sourceTree = "<group>"; };
 		6BD73932813ACBED03F1208C43D994EF /* EXTSelectorChecking.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = EXTSelectorChecking.h; path = extobjc/EXTSelectorChecking.h; sourceTree = "<group>"; };
 		6E54AEA6882F0FC263915B92DF9151AE /* libMasonry.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libMasonry.a; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -445,6 +447,7 @@
 		BC605515C8EBA4674DFF0C951E7A7B75 /* DRYUI */ = {
 			isa = PBXGroup;
 			children = (
+				5DBF1B0F1BC5D5D0001503A4 /* DRYUIMetamacros.h */,
 				D7BDB7CE15A6314C7B357D9B8EEA9D4C /* DRYUI.h */,
 				0F482B7461B1E2B58D48FE22DBD9C244 /* DRYUI.m */,
 			);
@@ -589,6 +592,7 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				5DBF1B101BC5D5D0001503A4 /* DRYUIMetamacros.h in Headers */,
 				DED040E477787BDCCA9CBEEBCB82F57B /* DRYUI.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
