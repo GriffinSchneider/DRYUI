@@ -29,8 +29,14 @@ static const char dryui_constraintMakerId = 0;
 static const char dryui_wrappedAddBlocksId = 0;
 static const char dryui_stylesId = 0;
 
+typedef void (^Thingy)(NSString *);
+typedef void (^Lel)(id, id);
 
 - (MASConstraintMaker *)constraintMaker {
+    Thingy t = ^(NSString *_) {
+        
+    };
+    ((Lel)t)(nil, nil);
     return objc_getAssociatedObject(self, &dryui_constraintMakerId);
 }
 - (void)setConstraintMaker:(MASConstraintMaker *)constraintMaker {
@@ -103,7 +109,8 @@ DRYUIStyle * __attribute((overloadable)) _dryui_returnGivenStyleOrEmptyStyle(DRY
 }
 
 DRYUIStyle * __attribute((overloadable)) _dryui_returnGivenStyleOrEmptyStyle(_DRYUI_VIEW *notAStyle) {
-    return DRYUIEmptyStyle;
+    // TODO
+//    return DRYUIEmptyStyle;
 }
 
 void __attribute__((overloadable)) _dryui_addStyleToView_acceptView(_DRYUI_VIEW *view, _DRYUI_VIEW *notAStyle, id selfForBlock) {
@@ -111,9 +118,10 @@ void __attribute__((overloadable)) _dryui_addStyleToView_acceptView(_DRYUI_VIEW 
 }
 
 void _dryui_applyStyle(_DRYUI_VIEW *view, DRYUIStyle *style, id selfForBlock) {
-    if (style == DRYUIEmptyStyle) {
-        return;
-    }
+    // TODO
+//    if (style == DRYUIEmptyStyle) {
+//        return;
+//    }
     
     NSCAssert([view isKindOfClass:NSClassFromString([style viewClassName])],
               @"Attempted to apply style %@ to a view of class %@, which isn't a subclass of %@.",
@@ -135,9 +143,10 @@ void _dryui_applyStyle(_DRYUI_VIEW *view, DRYUIStyle *style, id selfForBlock) {
 
 
 void _dryui_addStyleToView_internal(_DRYUI_VIEW *view, DRYUIStyle *style, id selfForBlock) {
-    if (style == DRYUIEmptyStyle) {
-        return;
-    }
+    // TODO
+//    if (style == DRYUIEmptyStyle) {
+//        return;
+//    }
     
     if (!view.styles) {
         view.styles = [NSMutableArray new];

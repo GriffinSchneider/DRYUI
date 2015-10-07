@@ -301,8 +301,6 @@ dryui_style(__VA_ARGS__)
 // Also declares the overloaded functions used to apply styles to views by add_subview. See 'Style implementation'
 // below for an explnation.
 
-typedef NSArray* (^_DRYUI_blockReturnedByStyleBlock)( ); \
-
 #define _dryui_style_block(name, ...) void (^name)(id _, _DRYUI_VIEW *superview, DRYUIParentStyleBlock parent_style, id self , ##__VA_ARGS__ )
 
 #define dryui_public_style(args...) \
@@ -314,9 +312,13 @@ metamacro_if_eq(1, metamacro_argcount(args))(dryui_public_style1(args))(metamacr
 #define dryui_public_styleMore(styleName, className, ...) \
 @interface _DRYUI_STYLE_CLASS_NAME(styleName) : DRYUIStyle \
 @end \
-typedef _DRYUI_blockReturnedByStyleBlock (^_DRYUI_blockForStyle_##styleName)( __VA_ARGS__ ); \
-FOUNDATION_EXTERN void __attribute__((overloadable)) _dryui_addStyleToView(className *view, _DRYUI_STYLE_CLASS_NAME(styleName) *style, id selfForBlock); \
-FOUNDATION_EXTERN void __attribute__((overloadable)) _dryui_addStyleToView_acceptView(className *view, _DRYUI_STYLE_CLASS_NAME(styleName) *style, id selfForBlock); \
+typedef NSArray*                                                       (^_DRYUI_blockReturnedByBlockReturnedByBlockForStyle_##styleName)( _DRYUI_STYLE_CLASS_NAME(styleName)* ); \
+typedef _DRYUI_blockReturnedByBlockReturnedByBlockForStyle_##styleName (^_DRYUI_blockReturnedByBlockForStyle_##styleName)( _DRYUI_STYLE_CLASS_NAME(styleName)* ); \
+typedef _DRYUI_blockReturnedByBlockForStyle_##styleName                (^_DRYUI_blockForStyle_##styleName)( __VA_ARGS__ ); \
+FOUNDATION_EXTERN void __attribute__((overloadable)) _dryui_addStyleToView(className *view, _DRYUI_blockReturnedByBlockForStyle_##styleName firstLevelBlock, id selfForBlock); \
+FOUNDATION_EXTERN void __attribute__((overloadable)) _dryui_addStyleToView(className *view, _DRYUI_blockReturnedByBlockReturnedByBlockForStyle_##styleName secondLevelBlock, id selfForBlock); \
+FOUNDATION_EXTERN void __attribute__((overloadable)) _dryui_addStyleToView_acceptView(className *view, _DRYUI_blockReturnedByBlockForStyle_##styleName firstLevelBlock, id selfForBlock); \
+FOUNDATION_EXTERN void __attribute__((overloadable)) _dryui_addStyleToView_acceptView(className *view, _DRYUI_blockReturnedByBlockReturnedByBlockForStyle_##styleName secondLevelBlock, id selfForBlock); \
 static _DRYUI_blockForStyle_##styleName styleName; \
 
 FOUNDATION_EXTERN void __attribute__((overloadable)) _dryui_addStyleToView_acceptView(_DRYUI_VIEW *view, _DRYUI_VIEW *notAStyle, id selfForBlock);
@@ -349,6 +351,15 @@ dryui_public_style(DRYUIEmptyStyle, _DRYUI_VIEW);
 static const char dryui_thingOnBlockKey = 0;
 
 
+
+//void __attribute__((overloadable)) _dryui_addStyleToView(className *view, _DRYUI_STYLE_CLASS_NAME(styleName) *style, id selfForBlock) { \
+//    _dryui_addStyleToView_internal(view, style, selfForBlock); \
+//} \
+//void __attribute__((overloadable)) _dryui_addStyleToView_acceptView(className *view, _DRYUI_STYLE_CLASS_NAME(styleName) *style, id selfForBlock) { \
+//    _dryui_addStyleToView_internal(view, style, selfForBlock); \
+//} \
+
+
 #define dryui_style(args...) \
 metamacro_if_eq(1, metamacro_argcount(args))(dryui_style1(args))(metamacro_if_eq(2, metamacro_argcount(args))(dryui_style2(args))(dryui_styleMore(args)))
 
@@ -368,15 +379,22 @@ static DRYUIStyleBlock _DRYUI_STYLE_APPLICATION_BLOCK_VARIABLE_NAME(styleName); 
 - (DRYUIStyleBlock)applicationBlock {return _DRYUI_STYLE_APPLICATION_BLOCK_VARIABLE_NAME(styleName);} \
 @end \
 \
-void __attribute__((overloadable)) _dryui_addStyleToView(className *view, _DRYUI_STYLE_CLASS_NAME(styleName) *style, id selfForBlock) { \
-    _dryui_addStyleToView_internal(view, style, selfForBlock); \
+\
+void __attribute__((overloadable)) _dryui_addStyleToView(className *view, _DRYUI_blockReturnedByBlockForStyle_##styleName firstLevelBlock, id selfForBlock) { \
+    \
 } \
-void __attribute__((overloadable)) _dryui_addStyleToView_acceptView(className *view, _DRYUI_STYLE_CLASS_NAME(styleName) *style, id selfForBlock) { \
-    _dryui_addStyleToView_internal(view, style, selfForBlock); \
+void __attribute__((overloadable)) _dryui_addStyleToView(className *view, _DRYUI_blockReturnedByBlockReturnedByBlockForStyle_##styleName secondLevelBlock, id selfForBlock) { \
+    \
+} \
+void __attribute__((overloadable)) _dryui_addStyleToView_acceptView(className *view, _DRYUI_blockReturnedByBlockForStyle_##styleName firstLevelBlock, id selfForBlock) { \
+    \
+} \
+void __attribute__((overloadable)) _dryui_addStyleToView_acceptView(className *view, _DRYUI_blockReturnedByBlockReturnedByBlockForStyle_##styleName secondLevelBlock, id selfForBlock) { \
+    \
 } \
 \
 \
-static _DRYUI_blockForStyle_##styleName styleName = (_DRYUI_blockForStyle_##styleName) ^_DRYUI_blockReturnedByStyleBlock(id first, ...) { \
+static _DRYUI_blockForStyle_##styleName styleName = (_DRYUI_blockForStyle_##styleName) ^_DRYUI_blockReturnedByBlockForStyle_##styleName(id first, ...) { \
     NSMutableArray *argArray = [NSMutableArray array]; \
     va_list args; \
     va_start(args, first); \
@@ -384,7 +402,11 @@ static _DRYUI_blockForStyle_##styleName styleName = (_DRYUI_blockForStyle_##styl
     id eachObject; \
     while ((eachObject = va_arg(args, id))) [argArray addObject:eachObject]; \
     va_end(args); \
-    return ^NSArray*() { return argArray; };\
+    return ^_DRYUI_blockReturnedByBlockReturnedByBlockForStyle_##styleName(_DRYUI_STYLE_CLASS_NAME(styleName) *style) { \
+        return ^NSArray*(_DRYUI_STYLE_CLASS_NAME(styleName) *style) { \
+            return argArray; \
+        }; \
+    };\
 \
 }; \
 \
