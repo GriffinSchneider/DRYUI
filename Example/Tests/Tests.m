@@ -59,6 +59,19 @@ dryui_private_style(StyleButton, UIButton) {
     dryui_parentStyle(Style3);
 };
 
+dryui_private_style(StyleWithArgs, UILabel, NSString *, firstArg, NSInteger, secondArg) {
+    _.text = firstArg;
+    _.tag = secondArg;
+};
+
+dryui_private_style(ChildOfArgsWithoutArgs, UILabel) {
+    dryui_parentStyle(StyleWithArgs(@"coming from child", 11));
+};
+
+dryui_private_style(ChildOfArgsWithArgs, UILabel, NSString *, firstArg) {
+    dryui_parentStyle(StyleWithArgs(firstArg, 22));
+};
+
 @implementation DRYUITests
 
 - (void)setUp {
@@ -77,6 +90,7 @@ dryui_private_style(StyleButton, UIButton) {
     __block UIButton *g, *gg;
     
     __block UIButton *h = [UIButton new];
+    __block UILabel *i;
     UIButton *hh = h;
     
     UIView *other;
@@ -105,6 +119,7 @@ dryui_private_style(StyleButton, UIButton) {
             add_subview(d) {
                 [_ make];
                 XCTAssertEqual(_.superview, superview, @"superview should be bound to view.superview");
+                add_subview(i, StyleWithArgs(@"asdf", 22)) {};
                 add_subview(e) {
                     [_ make];
                     XCTAssertNotNil(b, @"b should already be assigned when this block is run");
@@ -134,9 +149,10 @@ dryui_private_style(StyleButton, UIButton) {
     
     XCTAssertEqual(c.subviews.count, 1, @"c should have 1 subview");
     XCTAssertEqual(c.subviews[0], d, @"c's subview should be d");
-    XCTAssertEqual(d.subviews.count, 3, @"d should have 3 subviews");
+    XCTAssertEqual(d.subviews.count, 4, @"d should have 3 subviews");
     XCTAssertEqual([topLevel viewWithTag:2].superview, b, @"the view with tag 2 should be a subview of b");
     XCTAssertEqual([topLevel viewWithTag:3].superview, d, @"the view with tag 3 should be a subview of d");
+    XCTAssertEqual([topLevel viewWithTag:22].superview, d, @"the view with tag 22 should be a subview of d");
     
     // Assertions about layout constraints
     XCTAssertTrue(a.translatesAutoresizingMaskIntoConstraints, @"views that don't use _.make shouldn't set translatesAutoresizingMaskIntoConstraints to NO");
@@ -169,6 +185,35 @@ dryui_private_style(StyleButton, UIButton) {
     XCTAssertEqual(c.backgroundColor, [UIColor blueColor], @"c should be blue");
     XCTAssertEqual(g.backgroundColor, [UIColor orangeColor], @"g should be orange");
     XCTAssertEqual([g titleForState:UIControlStateNormal], @"button title");
+    XCTAssertEqualObjects(i.text, @"asdf");
+    XCTAssertEqual(i.tag, 22);
+}
+
+- (void)testDRYUIDynamicStyles {
+    
+    UIView *topLevel = [UIView new];
+    UILabel *shouldBeC = [UILabel new];
+    __block UILabel *shouldBeB = [UILabel new];
+    __block UILabel *a, *b, *c;
+    
+    build_subviews(topLevel) {
+        add_subview(a, StyleWithArgs(@"first label", 42)) {
+            add_subview(b, (shouldBeB = [UILabel new]), ChildOfArgsWithArgs(@"not the text"), ChildOfArgsWithoutArgs) {
+            };
+        };
+        add_subview(c, shouldBeC, StyleWithArgs(@"nope", 11111), ChildOfArgsWithoutArgs, ChildOfArgsWithArgs(@"third label")) {};
+    };
+    
+    XCTAssertEqualObjects(a.text, @"first label");
+    XCTAssertEqual(a.tag, 42);
+    
+    XCTAssertEqualObjects(b.text, @"coming from child");
+    XCTAssertEqual(b.tag, 11);
+    XCTAssertEqual(b, shouldBeB);
+    
+    XCTAssertEqualObjects(c.text, @"third label");
+    XCTAssertEqual(c.tag, 22);
+    XCTAssertEqual(c, shouldBeC);
 }
 
 @end
