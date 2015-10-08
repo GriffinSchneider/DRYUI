@@ -278,9 +278,9 @@ _DRYUI_GOTO_HELPER(variableName, \
 
 // Helper macros that generate static variable names that store all the actual style data
 #define _DRYUI_STYLE_CLASS_NAME(styleName) _DRYUI_Style_ ## styleName
-#define _DRYUI_INSTANCE_OF_CLASS_STYLE_NAME(styleName) _DRYUI_InstanceOfClassForStyle_ ## styleName
 #define _DRYUI_STYLE_APPLICATION_BLOCK_VARIABLE_NAME(styleName) _DRYUI_Style_ ## styleName ## _applicationBlock
 
+#define _DRYUI_NIL_CASTED_TO_INSTANCE_OF_STYLE_CLASS(styleName) ((_DRYUI_STYLE_CLASS_NAME(styleName)*)nil)
 
 #define _DRYUI_EXTRACT_VARIABLE_NAME(idx, something) metamacro_if_eq(metamacro_is_even(idx), 1)()(something)
 #define _DRYUI_EXTRACT_VARIABLE_NAMES(...) \
@@ -319,8 +319,7 @@ metamacro_if_eq(1, metamacro_argcount(args))(dryui_public_style1(args))(metamacr
 @end  \
 \
 typedef _dryui_style_block(_DRYUI_applicationBlockForStyle_##styleName , ##__VA_ARGS__ ); \
-static _DRYUI_STYLE_CLASS_NAME(styleName)* _DRYUI_INSTANCE_OF_CLASS_STYLE_NAME(styleName); \
-static _DRYUI_applicationBlockForStyle_##styleName _DRYUI_STYLE_APPLICATION_BLOCK_VARIABLE_NAME(styleName); \
+FOUNDATION_EXTERN _DRYUI_applicationBlockForStyle_##styleName _DRYUI_STYLE_APPLICATION_BLOCK_VARIABLE_NAME(styleName); \
 _DRYUI_TYPEDEFS(styleName, className , ##__VA_ARGS__ )\
 \
 
@@ -334,7 +333,7 @@ typedef void (^_DRYUI_blockThatGetsPassedByAddStyleToView_##styleName )(); \
 typedef void                                            (^_DRYUI_blockReturnedByBlockForStyle_##styleName)( _DRYUI_STYLE_CLASS_NAME(styleName)*, _DRYUI_blockThatGetsPassedByAddStyleToView_##styleName blockFromAddStyleToView); \
 typedef _DRYUI_blockReturnedByBlockForStyle_##styleName (^_DRYUI_blockForStyle_##styleName)(_DRYUI_STYLE_CLASS_NAME(styleName)*); \
 \
-static _DRYUI_blockForStyle_##styleName styleName; \
+FOUNDATION_EXTERN _DRYUI_blockForStyle_##styleName styleName; \
 \
 static inline id __attribute((overloadable, unused)) _dryui_returnGivenViewOrNil(_DRYUI_blockForStyle_##styleName notAView) { \
     return nil; \
@@ -343,7 +342,7 @@ static inline id __attribute((overloadable, unused)) _dryui_returnGivenStyleOrEm
     return style; \
 } \
 static inline void __attribute__((overloadable, unused)) _dryui_addStyleToView_internal(className *view, _DRYUI_blockReturnedByBlockForStyle_##styleName firstLevelBlock, id selfForBlock) { \
-    firstLevelBlock(_DRYUI_INSTANCE_OF_CLASS_STYLE_NAME(styleName), ^() { \
+    firstLevelBlock(_DRYUI_NIL_CASTED_TO_INSTANCE_OF_STYLE_CLASS(styleName), ^() { \
         _DRYUI_STYLE_APPLICATION_BLOCK_VARIABLE_NAME(styleName)(view, view.superview, selfForBlock); \
     }); \
 } \
@@ -371,7 +370,7 @@ typedef void                                                           (^_DRYUI_
 typedef _DRYUI_blockReturnedByBlockReturnedByBlockForStyle_##styleName (^_DRYUI_blockReturnedByBlockForStyle_##styleName)(_DRYUI_STYLE_CLASS_NAME(styleName)*); \
 typedef _DRYUI_blockReturnedByBlockForStyle_##styleName                (^_DRYUI_blockForStyle_##styleName)(_DRYUI_EXTRACT_ARGUMENTS( __VA_ARGS__)); \
 \
-static _DRYUI_blockForStyle_##styleName styleName; \
+FOUNDATION_EXTERN _DRYUI_blockForStyle_##styleName styleName; \
 \
 static inline id __attribute((overloadable, unused)) _dryui_returnGivenViewOrNil(_DRYUI_blockReturnedByBlockForStyle_##styleName notAView) { \
     return nil; \
@@ -380,7 +379,7 @@ static inline id  __attribute((overloadable, unused)) _dryui_returnGivenStyleOrE
     return style(nil); \
 } \
 static inline void __attribute__((overloadable, unused)) _dryui_addStyleToView_internal(className *view, _DRYUI_blockReturnedByBlockReturnedByBlockForStyle_##styleName secondLevelBlock, id selfForBlock) { \
-    secondLevelBlock(_DRYUI_INSTANCE_OF_CLASS_STYLE_NAME(styleName), ^(_DRYUI_EXTRACT_ARGUMENTS( __VA_ARGS__ )) { \
+    secondLevelBlock(_DRYUI_NIL_CASTED_TO_INSTANCE_OF_STYLE_CLASS(styleName), ^(_DRYUI_EXTRACT_ARGUMENTS( __VA_ARGS__ )) { \
         _DRYUI_STYLE_APPLICATION_BLOCK_VARIABLE_NAME(styleName)(view, view.superview, selfForBlock _DRYUI_COMMA_IF_ANY_ARGS( __VA_ARGS__ ) _DRYUI_EXTRACT_VARIABLE_NAMES( __VA_ARGS__ )); \
     }); \
 } \
@@ -454,17 +453,13 @@ metamacro_if_eq(1, metamacro_argcount(args))(dryui_style1(args))(metamacro_if_eq
 \
 \
 @implementation _DRYUI_STYLE_CLASS_NAME(styleName) \
-+ (void)load { \
-    objc_setAssociatedObject(styleName, &dryui_thingOnBlockKey, @(444), OBJC_ASSOCIATION_RETAIN); \
-    _DRYUI_INSTANCE_OF_CLASS_STYLE_NAME(styleName) = [self new]; \
-} \
 - (NSString *)name {return @ # styleName;} \
 - (NSString *)viewClassName {return @ # className;} \
 @end \
 \
 dryui_splitoutthing(styleName, className , ##__VA_ARGS__ ); \
 \
-static _DRYUI_applicationBlockForStyle_##styleName _DRYUI_STYLE_APPLICATION_BLOCK_VARIABLE_NAME(styleName) = ^(className *_, _DRYUI_VIEW *superview, id self _DRYUI_COMMA_IF_ANY_ARGS( __VA_ARGS__ ) _DRYUI_EXTRACT_ARGUMENTS( __VA_ARGS__ )) \
+_DRYUI_applicationBlockForStyle_##styleName _DRYUI_STYLE_APPLICATION_BLOCK_VARIABLE_NAME(styleName) = ^(className *_, _DRYUI_VIEW *superview, id self _DRYUI_COMMA_IF_ANY_ARGS( __VA_ARGS__ ) _DRYUI_EXTRACT_ARGUMENTS( __VA_ARGS__ )) \
 
 
 
@@ -474,7 +469,7 @@ static _DRYUI_applicationBlockForStyle_##styleName _DRYUI_STYLE_APPLICATION_BLOC
 
 #define dryui_splitoutthing_noargs(styleName, className) \
 \
-static _DRYUI_blockForStyle_##styleName styleName = ^_DRYUI_blockReturnedByBlockForStyle_##styleName(_DRYUI_STYLE_CLASS_NAME(styleName)* bogus) { \
+_DRYUI_blockForStyle_##styleName styleName = ^_DRYUI_blockReturnedByBlockForStyle_##styleName(_DRYUI_STYLE_CLASS_NAME(styleName)* bogus) { \
     return ^(_DRYUI_STYLE_CLASS_NAME(styleName) *style, _DRYUI_blockThatGetsPassedByAddStyleToView_##styleName blockFromAddStyleToView) { \
         return blockFromAddStyleToView(); \
     }; \
@@ -484,7 +479,7 @@ static _DRYUI_blockForStyle_##styleName styleName = ^_DRYUI_blockReturnedByBlock
 
 #define dryui_splitoutthing_someargs(styleName, className, ...) \
 \
-static _DRYUI_blockForStyle_##styleName styleName = ^_DRYUI_blockReturnedByBlockForStyle_##styleName( _DRYUI_EXTRACT_ARGUMENTS( __VA_ARGS__ ) ) { \
+_DRYUI_blockForStyle_##styleName styleName = ^_DRYUI_blockReturnedByBlockForStyle_##styleName( _DRYUI_EXTRACT_ARGUMENTS( __VA_ARGS__ ) ) { \
     return ^_DRYUI_blockReturnedByBlockReturnedByBlockForStyle_##styleName(_DRYUI_STYLE_CLASS_NAME(styleName)* bogus) { \
         return ^(_DRYUI_STYLE_CLASS_NAME(styleName) *style, _DRYUI_blockThatGetsPassedByAddStyleToView_##styleName blockFromAddStyleToView) { \
             return blockFromAddStyleToView(_DRYUI_EXTRACT_VARIABLE_NAMES( __VA_ARGS__ )); \
