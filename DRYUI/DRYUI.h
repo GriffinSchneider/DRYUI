@@ -35,9 +35,6 @@ typedef void (^DRYUIStyleBlock)(id _, _DRYUI_VIEW *superview, DRYUIParentStyleBl
 
 @property (nonatomic, strong, readonly) MASConstraintMaker *make;
 
-- (void)applyStyle:(DRYUIStyle *)style;
-- (void)applyStyle:(DRYUIStyle *)style withSelf:(id)self;
-
 - (void)_dryui_buildSubviews:(DRYUIViewAndSuperviewBlock)block;
 
 @property (nonatomic, strong) MASConstraintMaker *constraintMaker;
@@ -274,6 +271,9 @@ _DRYUI_GOTO_HELPER(variableName, \
 #pragma mark -
 #pragma mark Style Macros
 
+#define dryui_applyStyle(view, style, selfForStyle) _dryui_addStyleToView(view, style(nil), selfForStyle)
+
+
 // Helper macros that generate static variable names that store all the actual style data
 #define _DRYUI_STYLE_CLASS_NAME(styleName) _DRYUI_Style_ ## styleName
 #define _DRYUI_INSTANCE_OF_CLASS_STYLE_NAME(styleName) _DRYUI_InstanceOfClassForStyle_ ## styleName
@@ -339,6 +339,7 @@ static inline id __attribute((overloadable, unused)) _dryui_returnGivenStyleOrEm
     return style; \
 } \
 static inline void __attribute__((overloadable, unused)) _dryui_addStyleToView(className *view, _DRYUI_blockReturnedByBlockForStyle_##styleName firstLevelBlock, id selfForBlock) { \
+    id oldConstraintMaker = view.constraintMaker; \
     view.constraintMaker = [[MASConstraintMaker alloc] initWithView:view]; \
     view.wrappedAddBlocks = [NSMutableArray array]; \
     \
@@ -347,7 +348,7 @@ static inline void __attribute__((overloadable, unused)) _dryui_addStyleToView(c
     }); \
     \
     [view.constraintMaker install]; \
-    view.constraintMaker = nil; \
+    view.constraintMaker = oldConstraintMaker; \
     [view runAllWrappedAddBlocks]; \
 } \
 static inline void __attribute__((overloadable, unused)) _dryui_addStyleToView_acceptView(className *view, _DRYUI_blockForStyle_##styleName firstLevelBlock, id selfForBlock) { \
@@ -367,6 +368,7 @@ static inline id  __attribute((overloadable, unused)) _dryui_returnGivenStyleOrE
     return style(nil); \
 } \
 static inline void __attribute__((overloadable, unused)) _dryui_addStyleToView(className *view, _DRYUI_blockReturnedByBlockReturnedByBlockForStyle_##styleName secondLevelBlock, id selfForBlock) { \
+    id oldConstraintMaker = view.constraintMaker; \
     view.constraintMaker = [[MASConstraintMaker alloc] initWithView:view]; \
     view.wrappedAddBlocks = [NSMutableArray array]; \
     \
@@ -375,7 +377,7 @@ static inline void __attribute__((overloadable, unused)) _dryui_addStyleToView(c
     }); \
     \
     [view.constraintMaker install]; \
-    view.constraintMaker = nil; \
+    view.constraintMaker = oldConstraintMaker; \
     [view runAllWrappedAddBlocks]; \
     \
 } \

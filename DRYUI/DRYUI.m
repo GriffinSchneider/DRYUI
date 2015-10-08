@@ -64,33 +64,6 @@ id _dryui_instantiate_from_encoding(char *encoding) {
     return instance;
 }
 
-
-void _dryui_applyStyle(_DRYUI_VIEW *view, DRYUIStyle *style, id selfForBlock) {
-    // TODO
-//    if (style == DRYUIEmptyStyle) {
-//        return;
-//    }
-    
-    NSCAssert([view isKindOfClass:NSClassFromString([style viewClassName])],
-              @"Attempted to apply style %@ to a view of class %@, which isn't a subclass of %@.",
-              style.name,
-              NSStringFromClass([view class]),
-              style.viewClassName);
-    
-    view.constraintMaker = [[MASConstraintMaker alloc] initWithView:view];
-    view.wrappedAddBlocks = [NSMutableArray array];
-    
-    // TODO
-//    style.applicationBlock(view, view.superview, ^(DRYUIStyle *parent_style) {
-//        _dryui_applyStyle(view, parent_style, selfForBlock);
-//    }, selfForBlock);
-//    
-    [view.constraintMaker install];
-    view.constraintMaker = nil;
-    [view runAllWrappedAddBlocks];
-}
-
-
 void _dryui_addViewFromBuildSubviews(_DRYUI_VIEW *view, _DRYUI_VIEW *superview, DRYUIViewAndSuperviewBlock block) {
     [superview addSubview:view];
     
@@ -116,14 +89,6 @@ void _dryui_addViewFromBuildSubviews(_DRYUI_VIEW *view, _DRYUI_VIEW *superview, 
 
 - (void)_dryui_buildSubviews:(DRYUIViewAndSuperviewBlock)block {
     [self runAddBlock:block];
-}
-
-- (void)applyStyle:(DRYUIStyle *)style {
-    _dryui_applyStyle(self, style, nil);
-}
-
-- (void)applyStyle:(DRYUIStyle *)style withSelf:(id)selfArg {
-    _dryui_applyStyle(self, style, selfArg);
 }
 
 #define _DRYUI_VIEW_STRING _DRYUI_VIEW_STRING_HELPER(_DRYUI_VIEW)
