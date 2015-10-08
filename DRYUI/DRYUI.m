@@ -25,8 +25,6 @@ _DRYUI_VIEW *_dryui_current_toplevel_view = nil;
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 @interface _DRYUI_VIEW (DRYUI_Private)
 
-@property (nonatomic, strong) MASConstraintMaker *constraintMaker;
-@property (nonatomic, strong) NSMutableArray *wrappedAddBlocks;
 
 @end
 
@@ -34,7 +32,6 @@ _DRYUI_VIEW *_dryui_current_toplevel_view = nil;
 
 static const char dryui_constraintMakerId = 0;
 static const char dryui_wrappedAddBlocksId = 0;
-static const char dryui_stylesId = 0;
 
 typedef void (^eins)(id o);
 typedef void (^zwei)(id o, id t);
@@ -55,13 +52,6 @@ typedef void (^zwei)(id o, id t);
 }
 - (void)setWrappedAddBlocks:(NSMutableArray *)wrappedAddBlocks {
     objc_setAssociatedObject(self, &dryui_wrappedAddBlocksId, wrappedAddBlocks, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
-}
-
-- (NSMutableArray *)styles {
-    return objc_getAssociatedObject(self, &dryui_stylesId);
-}
-- (void)setStyles:(NSMutableArray *)styles {
-    objc_setAssociatedObject(self, &dryui_stylesId, styles, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
 }
 
 - (void)runAllWrappedAddBlocks {
@@ -130,20 +120,6 @@ void _dryui_applyStyle(_DRYUI_VIEW *view, DRYUIStyle *style, id selfForBlock) {
 }
 
 
-void _dryui_addStyleToView_internal(_DRYUI_VIEW *view, DRYUIStyle *style, id selfForBlock) {
-    // TODO
-//    if (style == DRYUIEmptyStyle) {
-//        return;
-//    }
-    
-    if (!view.styles) {
-        view.styles = [NSMutableArray new];
-    }
-    [((NSMutableArray *)view.styles) addObject:style];
-    
-    _dryui_applyStyle(view, style, selfForBlock);
-}
-
 void _dryui_addViewFromBuildSubviews(_DRYUI_VIEW *view, _DRYUI_VIEW *superview, DRYUIViewAndSuperviewBlock block) {
     [superview addSubview:view];
     
@@ -166,8 +142,6 @@ void _dryui_addViewFromBuildSubviews(_DRYUI_VIEW *view, _DRYUI_VIEW *superview, 
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 @implementation _DRYUI_VIEW (DRYUI)
-
-@dynamic styles;
 
 - (void)_dryui_buildSubviews:(DRYUIViewAndSuperviewBlock)block {
     [self runAddBlock:block];
