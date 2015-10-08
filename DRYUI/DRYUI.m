@@ -8,53 +8,23 @@
 #import "DRYUI.h"
 #import <objc/runtime.h>
 
-dryui_style(DRYUIEmptyStyle) {
+dryui_style(DRYUIEmptyStyle, _DRYUI_VIEW) {
+};
+
+dryui_style(DRYUIEmptyStyleWithArg, _DRYUI_VIEW, id, bogusArg) {
 };
 
 _DRYUI_VIEW *_dryui_current_view = nil;
 _DRYUI_VIEW *_dryui_current_toplevel_view = nil;
 
+
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 @interface _DRYUI_VIEW (DRYUI_Private)
-
-@property (nonatomic, strong) MASConstraintMaker *constraintMaker;
-@property (nonatomic, strong) NSMutableArray *wrappedAddBlocks;
 
 @end
 
 @implementation _DRYUI_VIEW (DRYUI_Private)
 
-static const char dryui_constraintMakerId = 0;
-static const char dryui_wrappedAddBlocksId = 0;
-static const char dryui_stylesId = 0;
-
-- (MASConstraintMaker *)constraintMaker {
-    return objc_getAssociatedObject(self, &dryui_constraintMakerId);
-}
-- (void)setConstraintMaker:(MASConstraintMaker *)constraintMaker {
-    objc_setAssociatedObject(self, &dryui_constraintMakerId, constraintMaker, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
-}
-
-- (NSMutableArray *)wrappedAddBlocks {
-    return objc_getAssociatedObject(self, &dryui_wrappedAddBlocksId);
-}
-- (void)setWrappedAddBlocks:(NSMutableArray *)wrappedAddBlocks {
-    objc_setAssociatedObject(self, &dryui_wrappedAddBlocksId, wrappedAddBlocks, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
-}
-
-- (NSMutableArray *)styles {
-    return objc_getAssociatedObject(self, &dryui_stylesId);
-}
-- (void)setStyles:(NSMutableArray *)styles {
-    objc_setAssociatedObject(self, &dryui_stylesId, styles, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
-}
-
-- (void)runAllWrappedAddBlocks {
-    for (void(^block)() in self.wrappedAddBlocks) {
-        block();
-    }
-    self.wrappedAddBlocks = nil;
-}
 
 - (void)runAddBlock:(DRYUIViewAndSuperviewBlock)block {
     self.constraintMaker = [[MASConstraintMaker alloc] initWithView:self];
@@ -88,63 +58,6 @@ id _dryui_instantiate_from_encoding(char *encoding) {
     return instance;
 }
 
-id __attribute((overloadable)) _dryui_returnGivenViewOrNil(DRYUIStyle *notAView) {
-    return nil;
-}
-
-id __attribute((overloadable)) _dryui_returnGivenViewOrNil(_DRYUI_VIEW *view) {
-    return view;
-}
-
-DRYUIStyle * __attribute((overloadable)) _dryui_returnGivenStyleOrEmptyStyle(DRYUIStyle *style) {
-    return style;
-}
-
-DRYUIStyle * __attribute((overloadable)) _dryui_returnGivenStyleOrEmptyStyle(_DRYUI_VIEW *notAStyle) {
-    return DRYUIEmptyStyle;
-}
-
-void __attribute__((overloadable)) _dryui_addStyleToView_acceptView(_DRYUI_VIEW *view, _DRYUI_VIEW *notAStyle, id selfForBlock) {
-    
-}
-
-void _dryui_applyStyle(_DRYUI_VIEW *view, DRYUIStyle *style, id selfForBlock) {
-    if (style == DRYUIEmptyStyle) {
-        return;
-    }
-    
-    NSCAssert([view isKindOfClass:NSClassFromString([style viewClassName])],
-              @"Attempted to apply style %@ to a view of class %@, which isn't a subclass of %@.",
-              style.name,
-              NSStringFromClass([view class]),
-              style.viewClassName);
-    
-    view.constraintMaker = [[MASConstraintMaker alloc] initWithView:view];
-    view.wrappedAddBlocks = [NSMutableArray array];
-    
-    style.applicationBlock(view, view.superview, ^(DRYUIStyle *parent_style) {
-        _dryui_applyStyle(view, parent_style, selfForBlock);
-    }, selfForBlock);
-    
-    [view.constraintMaker install];
-    view.constraintMaker = nil;
-    [view runAllWrappedAddBlocks];
-}
-
-
-void _dryui_addStyleToView_internal(_DRYUI_VIEW *view, DRYUIStyle *style, id selfForBlock) {
-    if (style == DRYUIEmptyStyle) {
-        return;
-    }
-    
-    if (!view.styles) {
-        view.styles = [NSMutableArray new];
-    }
-    [((NSMutableArray *)view.styles) addObject:style];
-    
-    _dryui_applyStyle(view, style, selfForBlock);
-}
-
 void _dryui_addViewFromBuildSubviews(_DRYUI_VIEW *view, _DRYUI_VIEW *superview, DRYUIViewAndSuperviewBlock block) {
     [superview addSubview:view];
     
@@ -165,21 +78,15 @@ void _dryui_addViewFromBuildSubviews(_DRYUI_VIEW *view, _DRYUI_VIEW *superview, 
 }
 
 
+static const char dryui_constraintMakerId = 0;
+static const char dryui_wrappedAddBlocksId = 0;
+static const char dryui_stylesId = 0;
+
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 @implementation _DRYUI_VIEW (DRYUI)
 
-@dynamic styles;
-
 - (void)_dryui_buildSubviews:(DRYUIViewAndSuperviewBlock)block {
     [self runAddBlock:block];
-}
-
-- (void)applyStyle:(DRYUIStyle *)style {
-    _dryui_applyStyle(self, style, nil);
-}
-
-- (void)applyStyle:(DRYUIStyle *)style withSelf:(id)selfArg {
-    _dryui_applyStyle(self, style, selfArg);
 }
 
 #define _DRYUI_VIEW_STRING _DRYUI_VIEW_STRING_HELPER(_DRYUI_VIEW)
@@ -190,6 +97,38 @@ void _dryui_addViewFromBuildSubviews(_DRYUI_VIEW *view, _DRYUI_VIEW *superview, 
     [self setTranslatesAutoresizingMaskIntoConstraints:NO];
     return self.constraintMaker;
 }
+
+- (void)runAllWrappedAddBlocks {
+    for (void(^block)() in self.wrappedAddBlocks) {
+        block();
+    }
+    self.wrappedAddBlocks = nil;
+}
+
+- (NSMutableArray *)styles {
+    NSMutableArray *retVal = objc_getAssociatedObject(self, &dryui_stylesId);
+    if (!retVal) {
+        retVal = [NSMutableArray array];
+        objc_setAssociatedObject(self, &dryui_stylesId, retVal, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+    }
+    return retVal;
+}
+
+- (MASConstraintMaker *)constraintMaker {
+    return objc_getAssociatedObject(self, &dryui_constraintMakerId);
+}
+- (void)setConstraintMaker:(MASConstraintMaker *)constraintMaker {
+    objc_setAssociatedObject(self, &dryui_constraintMakerId, constraintMaker, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+}
+
+- (NSMutableArray *)wrappedAddBlocks {
+    return objc_getAssociatedObject(self, &dryui_wrappedAddBlocksId);
+}
+- (void)setWrappedAddBlocks:(NSMutableArray *)wrappedAddBlocks {
+    objc_setAssociatedObject(self, &dryui_wrappedAddBlocksId, wrappedAddBlocks, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+}
+
+
 
 
 @end

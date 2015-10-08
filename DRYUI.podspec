@@ -1,6 +1,6 @@
 Pod::Spec.new do |s|
   s.name             = "DRYUI"
-  s.version          = "0.3.3"
+  s.version          = "0.4.0"
   s.summary          = "A tiny library that provides a better API for building and styling view hierarchies in code."
   s.description      = %{
     DRYUI is a tiny library that provides a better API for building and styling view hierarchies in code.
@@ -16,9 +16,10 @@ Pod::Spec.new do |s|
   s.ios.frameworks = 'Foundation', 'UIKit'
   s.osx.frameworks = 'Foundation', 'AppKit'
 
-  s.ios.deployment_target = '6.0'
+  s.ios.deployment_target = '7.0'
   s.osx.deployment_target = '10.7'
   s.requires_arc = true
 
   s.dependency 'Masonry'
+  s.dependency 'libextobjc'
 end
