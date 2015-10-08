@@ -35,28 +35,28 @@ dryui_private_style(Style0) {
 };
 
 dryui_private_style(Style1) {
-    parent_style(Style0);
+    dryui_parentStyle(Style0);
     if (!superview) wasSuperviewEverNil = YES;
     _.backgroundColor = [UIColor blueColor];
 };
 
 dryui_private_style(Style2) {
-    parent_style(Style1);
+    dryui_parentStyle(Style1);
     if (!superview) wasSuperviewEverNil = YES;
     _.backgroundColor = [UIColor greenColor];
 };
 
 dryui_private_style(Style3) {
-    parent_style(Style2);
+    dryui_parentStyle(Style2);
     if (!superview) wasSuperviewEverNil = YES;
     _.backgroundColor = [UIColor orangeColor];
 };
 
 dryui_private_style(StyleButton, UIButton) {
-    parent_style(Style0);
+    dryui_parentStyle(Style0);
     [_ setTitle:@"button title" forState:UIControlStateNormal];
-    parent_style(Style1);
-    parent_style(Style3);
+    dryui_parentStyle(Style1);
+    dryui_parentStyle(Style3);
 };
 
 @implementation DRYUITests
@@ -157,9 +157,9 @@ dryui_private_style(StyleButton, UIButton) {
     XCTAssertEqualObjects(c.styles, (@[Style0, Style1]), @"c's styles should equal [Style0, Style1]");
     XCTAssertEqualObjects(g.styles, (@[Style1, StyleButton]), @"g's styles should equal [StyleButton, Style1]");
     
-    XCTAssertNil(d.styles, @"d shouldn't have any styles");
-    XCTAssertNil(e.styles, @"d shouldn't have any styles");
-    XCTAssertNil(self.f.styles, @"d shouldn't have any styles");
+    XCTAssertEqual(d.styles.count, 0, @"d shouldn't have any styles");
+    XCTAssertEqual(e.styles.count, 0, @"d shouldn't have any styles");
+    XCTAssertEqual(self.f.styles.count, 0, @"d shouldn't have any styles");
     
     
     // Assertions about style application

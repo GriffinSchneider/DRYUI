@@ -29,8 +29,6 @@ _DRYUI_VIEW *_dryui_current_toplevel_view = nil;
 
 @implementation _DRYUI_VIEW (DRYUI_Private)
 
-static const char dryui_constraintMakerId = 0;
-static const char dryui_wrappedAddBlocksId = 0;
 
 - (void)runAddBlock:(DRYUIViewAndSuperviewBlock)block {
     self.constraintMaker = [[MASConstraintMaker alloc] initWithView:self];
@@ -84,6 +82,10 @@ void _dryui_addViewFromBuildSubviews(_DRYUI_VIEW *view, _DRYUI_VIEW *superview, 
 }
 
 
+static const char dryui_constraintMakerId = 0;
+static const char dryui_wrappedAddBlocksId = 0;
+static const char dryui_stylesId = 0;
+
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 @implementation _DRYUI_VIEW (DRYUI)
 
@@ -107,6 +109,14 @@ void _dryui_addViewFromBuildSubviews(_DRYUI_VIEW *view, _DRYUI_VIEW *superview, 
     self.wrappedAddBlocks = nil;
 }
 
+- (NSMutableArray *)styles {
+    NSMutableArray *retVal = objc_getAssociatedObject(self, &dryui_stylesId);
+    if (!retVal) {
+        retVal = [NSMutableArray array];
+        objc_setAssociatedObject(self, &dryui_stylesId, retVal, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+    }
+    return retVal;
+}
 
 - (MASConstraintMaker *)constraintMaker {
     return objc_getAssociatedObject(self, &dryui_constraintMakerId);
