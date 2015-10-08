@@ -9,6 +9,10 @@
 #import "FAHAppDelegate.h"
 #import "FAHViewController.h"
 
+dryui_style(Red, UIView) {
+    _.backgroundColor = [UIColor redColor];
+};
+
 @implementation FAHAppDelegate
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions

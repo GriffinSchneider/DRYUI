@@ -7,6 +7,9 @@
 //
 
 #import <UIKit/UIKit.h>
+#import <DRYUI/DRYUI.h>
+
+dryui_public_style(Red, UIView);
 
 @interface FAHAppDelegate : UIResponder <UIApplicationDelegate>
 

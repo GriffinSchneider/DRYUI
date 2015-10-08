@@ -8,10 +8,8 @@
 
 #import "FAHViewController.h"
 #import <DRYUI/DRYUI.h>
+#import "FAHAppDelegate.h"
 
-dryui_private_style(Red, UIView) {
-    _.backgroundColor = [UIColor redColor];
-};
 dryui_private_style(Green, UIView) {
     _.backgroundColor = [UIColor greenColor];
 };
