@@ -25,41 +25,12 @@ _DRYUI_VIEW *_dryui_current_toplevel_view = nil;
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 @interface _DRYUI_VIEW (DRYUI_Private)
 
-
 @end
 
 @implementation _DRYUI_VIEW (DRYUI_Private)
 
 static const char dryui_constraintMakerId = 0;
 static const char dryui_wrappedAddBlocksId = 0;
-
-typedef void (^eins)(id o);
-typedef void (^zwei)(id o, id t);
-
-- (MASConstraintMaker *)constraintMaker {
-    zwei block = ^(id o, id t){};
-    _Generic( block,
-             __strong eins: ((eins)block)(nil),
-             __strong zwei: ((zwei)block)(nil, nil));
-    return objc_getAssociatedObject(self, &dryui_constraintMakerId);
-}
-- (void)setConstraintMaker:(MASConstraintMaker *)constraintMaker {
-    objc_setAssociatedObject(self, &dryui_constraintMakerId, constraintMaker, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
-}
-
-- (NSMutableArray *)wrappedAddBlocks {
-    return objc_getAssociatedObject(self, &dryui_wrappedAddBlocksId);
-}
-- (void)setWrappedAddBlocks:(NSMutableArray *)wrappedAddBlocks {
-    objc_setAssociatedObject(self, &dryui_wrappedAddBlocksId, wrappedAddBlocks, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
-}
-
-- (void)runAllWrappedAddBlocks {
-    for (void(^block)() in self.wrappedAddBlocks) {
-        block();
-    }
-    self.wrappedAddBlocks = nil;
-}
 
 - (void)runAddBlock:(DRYUIViewAndSuperviewBlock)block {
     self.constraintMaker = [[MASConstraintMaker alloc] initWithView:self];
@@ -163,6 +134,30 @@ void _dryui_addViewFromBuildSubviews(_DRYUI_VIEW *view, _DRYUI_VIEW *superview, 
     [self setTranslatesAutoresizingMaskIntoConstraints:NO];
     return self.constraintMaker;
 }
+
+- (void)runAllWrappedAddBlocks {
+    for (void(^block)() in self.wrappedAddBlocks) {
+        block();
+    }
+    self.wrappedAddBlocks = nil;
+}
+
+
+- (MASConstraintMaker *)constraintMaker {
+    return objc_getAssociatedObject(self, &dryui_constraintMakerId);
+}
+- (void)setConstraintMaker:(MASConstraintMaker *)constraintMaker {
+    objc_setAssociatedObject(self, &dryui_constraintMakerId, constraintMaker, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+}
+
+- (NSMutableArray *)wrappedAddBlocks {
+    return objc_getAssociatedObject(self, &dryui_wrappedAddBlocksId);
+}
+- (void)setWrappedAddBlocks:(NSMutableArray *)wrappedAddBlocks {
+    objc_setAssociatedObject(self, &dryui_wrappedAddBlocksId, wrappedAddBlocks, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+}
+
+
 
 
 @end

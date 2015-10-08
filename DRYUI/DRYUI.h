@@ -34,7 +34,6 @@ typedef void (^DRYUIStyleBlock)(id _, _DRYUI_VIEW *superview, DRYUIParentStyleBl
 
 
 @property (nonatomic, strong, readonly) MASConstraintMaker *make;
-@property (nonatomic, strong, readonly) NSArray *styles;
 
 - (void)applyStyle:(DRYUIStyle *)style;
 - (void)applyStyle:(DRYUIStyle *)style withSelf:(id)self;
@@ -333,13 +332,13 @@ static _DRYUI_blockForStyle_##styleName styleName; \
 typedef void (^_DRYUI_blockThatGetsPassedByAddStyleToView_##styleName )(); \
 typedef void                                            (^_DRYUI_blockReturnedByBlockForStyle_##styleName)( _DRYUI_STYLE_CLASS_NAME(styleName)*, _DRYUI_blockThatGetsPassedByAddStyleToView_##styleName blockFromAddStyleToView); \
 typedef _DRYUI_blockReturnedByBlockForStyle_##styleName (^_DRYUI_blockForStyle_##styleName)(); \
-static inline id __attribute((overloadable)) _dryui_returnGivenViewOrNil(_DRYUI_blockForStyle_##styleName notAView) { \
+static inline id __attribute((overloadable, unused)) _dryui_returnGivenViewOrNil(_DRYUI_blockForStyle_##styleName notAView) { \
     return nil; \
 } \
-static inline id __attribute((overloadable)) _dryui_returnGivenStyleOrEmptyStyle(_DRYUI_blockForStyle_##styleName style) { \
+static inline id __attribute((overloadable, unused)) _dryui_returnGivenStyleOrEmptyStyle(_DRYUI_blockForStyle_##styleName style) { \
     return style; \
 } \
-static inline void __attribute__((overloadable)) _dryui_addStyleToView(className *view, _DRYUI_blockReturnedByBlockForStyle_##styleName firstLevelBlock, id selfForBlock) { \
+static inline void __attribute__((overloadable, unused)) _dryui_addStyleToView(className *view, _DRYUI_blockReturnedByBlockForStyle_##styleName firstLevelBlock, id selfForBlock) { \
     view.constraintMaker = [[MASConstraintMaker alloc] initWithView:view]; \
     view.wrappedAddBlocks = [NSMutableArray array]; \
     \
@@ -351,7 +350,7 @@ static inline void __attribute__((overloadable)) _dryui_addStyleToView(className
     view.constraintMaker = nil; \
     [view runAllWrappedAddBlocks]; \
 } \
-static inline void __attribute__((overloadable)) _dryui_addStyleToView_acceptView(className *view, _DRYUI_blockForStyle_##styleName firstLevelBlock, id selfForBlock) { \
+static inline void __attribute__((overloadable, unused)) _dryui_addStyleToView_acceptView(className *view, _DRYUI_blockForStyle_##styleName firstLevelBlock, id selfForBlock) { \
     _dryui_addStyleToView(view, firstLevelBlock(), selfForBlock);\
 } \
 
@@ -361,13 +360,13 @@ typedef void (^_DRYUI_blockThatGetsPassedByAddStyleToView_##styleName )(_DRYUI_E
 typedef void                                                           (^_DRYUI_blockReturnedByBlockReturnedByBlockForStyle_##styleName)( _DRYUI_STYLE_CLASS_NAME(styleName)*, _DRYUI_blockThatGetsPassedByAddStyleToView_##styleName blockFromAddStyleToView); \
 typedef _DRYUI_blockReturnedByBlockReturnedByBlockForStyle_##styleName (^_DRYUI_blockReturnedByBlockForStyle_##styleName)(); \
 typedef _DRYUI_blockReturnedByBlockForStyle_##styleName                (^_DRYUI_blockForStyle_##styleName)(_DRYUI_EXTRACT_ARGUMENTS( __VA_ARGS__)); \
-static inline id __attribute((overloadable)) _dryui_returnGivenViewOrNil(_DRYUI_blockReturnedByBlockForStyle_##styleName notAView) { \
+static inline id __attribute((overloadable, unused)) _dryui_returnGivenViewOrNil(_DRYUI_blockReturnedByBlockForStyle_##styleName notAView) { \
     return nil; \
 } \
-static inline id  __attribute((overloadable)) _dryui_returnGivenStyleOrEmptyStyle(_DRYUI_blockReturnedByBlockForStyle_##styleName style) { \
+static inline id  __attribute((overloadable, unused)) _dryui_returnGivenStyleOrEmptyStyle(_DRYUI_blockReturnedByBlockForStyle_##styleName style) { \
     return style(); \
 } \
-static inline void __attribute__((overloadable)) _dryui_addStyleToView(className *view, _DRYUI_blockReturnedByBlockReturnedByBlockForStyle_##styleName secondLevelBlock, id selfForBlock) { \
+static inline void __attribute__((overloadable, unused)) _dryui_addStyleToView(className *view, _DRYUI_blockReturnedByBlockReturnedByBlockForStyle_##styleName secondLevelBlock, id selfForBlock) { \
     view.constraintMaker = [[MASConstraintMaker alloc] initWithView:view]; \
     view.wrappedAddBlocks = [NSMutableArray array]; \
     \
@@ -380,20 +379,20 @@ static inline void __attribute__((overloadable)) _dryui_addStyleToView(className
     [view runAllWrappedAddBlocks]; \
     \
 } \
-static inline void __attribute__((overloadable)) _dryui_addStyleToView_acceptView(className *view, _DRYUI_blockReturnedByBlockForStyle_##styleName secondLevelBlock, id selfForBlock) { \
+static inline void __attribute__((overloadable, unused)) _dryui_addStyleToView_acceptView(className *view, _DRYUI_blockReturnedByBlockForStyle_##styleName secondLevelBlock, id selfForBlock) { \
     _dryui_addStyleToView(view, secondLevelBlock(), selfForBlock); \
 } \
 
 
-static inline id __attribute((overloadable)) _dryui_returnGivenViewOrNil(_DRYUI_VIEW *view) {
+static inline id __attribute((overloadable, unused)) _dryui_returnGivenViewOrNil(_DRYUI_VIEW *view) {
     return view;
 }
 
-static inline void __attribute__((overloadable)) _dryui_addStyleToView_acceptView(_DRYUI_VIEW *view, _DRYUI_VIEW *notAStyle, id selfForBlock) {
+static inline void __attribute__((overloadable, unused)) _dryui_addStyleToView_acceptView(_DRYUI_VIEW *view, _DRYUI_VIEW *notAStyle, id selfForBlock) {
     
 }
 
-static inline id __attribute((overloadable)) _dryui_returnGivenStyleOrEmptyStyle(_DRYUI_VIEW *notAStyle) {
+static inline id __attribute((overloadable, unused)) _dryui_returnGivenStyleOrEmptyStyle(_DRYUI_VIEW *notAStyle) {
     return nil;
 }
 
