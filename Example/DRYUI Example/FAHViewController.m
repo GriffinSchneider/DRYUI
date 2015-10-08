@@ -27,28 +27,12 @@ dryui_private_style(Orange, UIView) {
 
 @end
 
-//typedef UIView* WILLIT;
-//
-//typedef void (^firstType)(UIView *, ...);
-//typedef void (^secondType)();
-//
-//__attribute__((overloadable)) void  testyfunc(firstType arg) {
-//    
-//}
-//__attribute__((overloadable)) void testyfunc(secondType arg) {
-//    
-//}
-
 
 @implementation FAHViewController
-    
+
 - (void)loadView {
-    
-//    testyfunc(^(UIView *arg) {
-//
-//    });
-    
     [super loadView];
+    
     UIEdgeInsets insets = UIEdgeInsetsMake(30, 30, 30, 30);
     
     build_subviews(self.view) {

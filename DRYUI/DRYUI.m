@@ -11,8 +11,11 @@
 dryui_style(DRYUIEmptyStyle, _DRYUI_VIEW) {
 };
 
+dryui_style(DRYUIEmptyStyleWithArg, _DRYUI_VIEW, id, bogusArg) {
+};
 
-dryui_private_style(TestStyle, _DRYUI_VIEW, NSString *, stringArg) {
+
+dryui_private_style(TestStyle, _DRYUI_VIEW, NSString *, stringArg, id, idArg, UIView *, viewArg) {
 };
 
 _DRYUI_VIEW *_dryui_current_view = nil;
@@ -33,7 +36,14 @@ static const char dryui_constraintMakerId = 0;
 static const char dryui_wrappedAddBlocksId = 0;
 static const char dryui_stylesId = 0;
 
+typedef void (^eins)(id o);
+typedef void (^zwei)(id o, id t);
+
 - (MASConstraintMaker *)constraintMaker {
+    zwei block = ^(id o, id t){};
+    _Generic( block,
+             __strong eins: ((eins)block)(nil),
+             __strong zwei: ((zwei)block)(nil, nil));
     return objc_getAssociatedObject(self, &dryui_constraintMakerId);
 }
 - (void)setConstraintMaker:(MASConstraintMaker *)constraintMaker {
@@ -93,26 +103,6 @@ id _dryui_instantiate_from_encoding(char *encoding) {
     return instance;
 }
 
-id __attribute((overloadable)) _dryui_returnGivenViewOrNil(DRYUIStyle *notAView) {
-    return nil;
-}
-
-id __attribute((overloadable)) _dryui_returnGivenViewOrNil(_DRYUI_VIEW *view) {
-    return view;
-}
-
-DRYUIStyle * __attribute((overloadable)) _dryui_returnGivenStyleOrEmptyStyle(DRYUIStyle *style) {
-    return style;
-}
-
-DRYUIStyle * __attribute((overloadable)) _dryui_returnGivenStyleOrEmptyStyle(_DRYUI_VIEW *notAStyle) {
-    // TODO
-//    return DRYUIEmptyStyle;
-}
-
-void __attribute__((overloadable)) _dryui_addStyleToView_acceptView(_DRYUI_VIEW *view, _DRYUI_VIEW *notAStyle, id selfForBlock) {
-    
-}
 
 void _dryui_applyStyle(_DRYUI_VIEW *view, DRYUIStyle *style, id selfForBlock) {
     // TODO
