@@ -1,6 +1,6 @@
 Pod::Spec.new do |s|
   s.name             = "DRYUI"
-  s.version          = "0.4.1"
+  s.version          = "0.5.0"
   s.summary          = "A tiny library that provides a better API for building and styling view hierarchies in code."
   s.description      = %{
     DRYUI is a tiny library that provides a better API for building and styling view hierarchies in code.
