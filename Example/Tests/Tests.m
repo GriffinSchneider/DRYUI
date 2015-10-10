@@ -11,77 +11,76 @@
 #import <DRYUI/DRYUI.h>
 
 #define BIG_STYLE_LIST \
-Style0, Style1, Style2, Style3, Style3, Style3, \
-Style3, Style3, Style3, Style3, Style3, Style3, \
-Style3, Style3, Style3, Style3, Style3, Style3, \
-Style3, Style3, Style3, Style3, Style3, Style3, \
-Style3, Style3, Style3, Style3, Style3, Style3, \
-Style3 \
+Style0, Style1, Style2, Style3, Style3, \
+Style3, Style3, Style3, Style3, Style3, \
+Style3, Style3, Style3, Style3, Style3, \
+Style3, Style3, Style3, Style3
 
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
 @interface DRYUITests : XCTestCase
 
 @property UIView *f;
 
 @end
 
-
-// Can't use XCTAssert without `self`, so we have to save booleans from
-// these blocks and assert later instead of asserting in the blocks themselves
-static BOOL wasSuperviewEverNil = NO;
+////////////////////////////////////////////////////////////////////////////////////////////////////
+@implementation DRYUITests
 
 dryui_private_style(Style0) {
-    if (!superview) wasSuperviewEverNil = YES;
+    XCTAssertNotNil(superview);
     _.backgroundColor = [UIColor redColor];
 };
 
 dryui_private_style(Style1) {
-    dryui_parentStyle(Style0);
-    if (!superview) wasSuperviewEverNil = YES;
+    dryui_parent_style(Style0);
+    XCTAssertNotNil(superview);
     _.backgroundColor = [UIColor blueColor];
 };
 
 dryui_private_style(Style2) {
-    dryui_parentStyle(Style1);
-    if (!superview) wasSuperviewEverNil = YES;
+    dryui_parent_style(Style1);
+    XCTAssertNotNil(superview);
     _.backgroundColor = [UIColor greenColor];
 };
 
 dryui_private_style(Style3) {
-    dryui_parentStyle(Style2);
-    if (!superview) wasSuperviewEverNil = YES;
+    dryui_parent_style(Style2);
+    XCTAssertNotNil(superview);
     _.backgroundColor = [UIColor orangeColor];
 };
 
 dryui_private_style(StyleButton, UIButton) {
-    dryui_parentStyle(Style0);
+    dryui_parent_style(Style0);
     [_ setTitle:@"button title" forState:UIControlStateNormal];
-    dryui_parentStyle(Style1);
-    dryui_parentStyle(Style3);
+    dryui_parent_style(Style1);
+    dryui_parent_style(Style3);
 };
 
-dryui_private_style(StyleWithArgs, UILabel, NSString *, firstArg, NSInteger, secondArg) {
+dryui_private_style(StyleWithArgs, UILabel, (NSString *)firstArg, (NSInteger)secondArg) {
     _.text = firstArg;
     _.tag = secondArg;
 };
 
 dryui_private_style(ChildOfArgsWithoutArgs, UILabel) {
-    dryui_parentStyle(StyleWithArgs(@"coming from child", 11));
+    dryui_parent_style(StyleWithArgs(@"coming from child", 11));
 };
 
-dryui_private_style(ChildOfArgsWithArgs, UILabel, NSString *, firstArg) {
-    dryui_parentStyle(StyleWithArgs(firstArg, 22));
+dryui_private_style(ChildOfArgsWithArgs, UILabel, (NSString *)firstArg) {
+    dryui_parent_style(StyleWithArgs(firstArg, 22));
 };
 
-@implementation DRYUITests
+dryui_private_style(StyleWithSameArgTypes1, UIView, (NSNumber *)arg) {
+    _.tag = 1;
+};
 
-- (void)setUp {
-    [super setUp];
-}
+dryui_private_style(StyleWithSameArgTypes2, UIView, (NSNumber *)arg) {
+    _.tag = 2;
+};
 
-- (void)tearDown {
-    [super tearDown];
-}
-
+dryui_private_style(StyleWithSameArgTypes3, UIView, (NSNumber *)arg) {
+    _.tag = 3;
+};
 
 - (void)testDRYUI {
 
@@ -167,19 +166,18 @@ dryui_private_style(ChildOfArgsWithArgs, UILabel, NSString *, firstArg) {
     
     // Assertions about style association
     NSArray *styles = @[BIG_STYLE_LIST];
-    XCTAssertEqualObjects(a.styles, styles, @"a's styles should equal the BIG_STYLE_LIST");
+    XCTAssertEqualObjects(a.dryuiStyles, styles, @"a's styles should equal the BIG_STYLE_LIST");
     
-    XCTAssertEqualObjects(b.styles, @[Style3], @"b's styles should equal [Style3]");
-    XCTAssertEqualObjects(c.styles, (@[Style0, Style1]), @"c's styles should equal [Style0, Style1]");
-    XCTAssertEqualObjects(g.styles, (@[Style1, StyleButton]), @"g's styles should equal [StyleButton, Style1]");
+    XCTAssertEqualObjects(b.dryuiStyles, @[Style3], @"b's styles should equal [Style3]");
+    XCTAssertEqualObjects(c.dryuiStyles, (@[Style0, Style1]), @"c's styles should equal [Style0, Style1]");
+    XCTAssertEqualObjects(g.dryuiStyles, (@[Style1, StyleButton]), @"g's styles should equal [StyleButton, Style1]");
     
-    XCTAssertEqual(d.styles.count, 0, @"d shouldn't have any styles");
-    XCTAssertEqual(e.styles.count, 0, @"d shouldn't have any styles");
-    XCTAssertEqual(self.f.styles.count, 0, @"d shouldn't have any styles");
+    XCTAssertEqual(d.dryuiStyles.count, 0, @"d shouldn't have any styles");
+    XCTAssertEqual(e.dryuiStyles.count, 0, @"d shouldn't have any styles");
+    XCTAssertEqual(self.f.dryuiStyles.count, 0, @"d shouldn't have any styles");
     
     
     // Assertions about style application
-    XCTAssertFalse(wasSuperviewEverNil, @"superview should never be nil when applying a style");
     XCTAssertEqual(a.backgroundColor, [UIColor orangeColor], @"a should be orange");
     XCTAssertEqual(b.backgroundColor, [UIColor purpleColor], @"b should be purple");
     XCTAssertEqual(c.backgroundColor, [UIColor blueColor], @"c should be blue");
@@ -194,7 +192,7 @@ dryui_private_style(ChildOfArgsWithArgs, UILabel, NSString *, firstArg) {
     UIView *topLevel = [UIView new];
     UILabel *shouldBeC = [UILabel new];
     __block UILabel *shouldBeB = [UILabel new];
-    __block UILabel *a, *b, *c;
+    __block UILabel *a, *b, *c, *d, *e, *f;
     
     build_subviews(topLevel) {
         add_subview(a, StyleWithArgs(@"first label", 42)) {
@@ -202,6 +200,9 @@ dryui_private_style(ChildOfArgsWithArgs, UILabel, NSString *, firstArg) {
             };
         };
         add_subview(c, shouldBeC, StyleWithArgs(@"nope", 11111), ChildOfArgsWithoutArgs, ChildOfArgsWithArgs(@"third label")) {};
+        add_subview(d, StyleWithSameArgTypes1(@1)) {};
+        add_subview(e, StyleWithSameArgTypes2(@2)) {};
+        add_subview(f, StyleWithSameArgTypes3(@3)) {};
     };
     
     XCTAssertEqualObjects(a.text, @"first label");
@@ -214,6 +215,31 @@ dryui_private_style(ChildOfArgsWithArgs, UILabel, NSString *, firstArg) {
     XCTAssertEqualObjects(c.text, @"third label");
     XCTAssertEqual(c.tag, 22);
     XCTAssertEqual(c, shouldBeC);
+    
+    XCTAssertEqual(d.tag, 1);
+    XCTAssertEqual(e.tag, 2);
+    XCTAssertEqual(f.tag, 3);
+    
+}
+
+- (void)testApplyStyles {
+    
+    UIView *superview = [UIView new];
+    
+    UIView *view1 = [UIView new];
+    [superview addSubview:view1];
+    
+    UILabel *view2 = [UILabel new];
+    [superview addSubview:view2];
+    
+    dryui_apply_style(view1, Style0);
+    dryui_apply_styles(view2, Style1, Style2, ChildOfArgsWithArgs(@"testApplyStyles"));
+    
+    XCTAssertEqualObjects(view1.backgroundColor, [UIColor redColor]);
+    
+    XCTAssertEqualObjects(view2.backgroundColor, [UIColor greenColor]);
+    XCTAssertEqualObjects(view2.text, @"testApplyStyles");
+    XCTAssertEqual(view2.tag, 22);
 }
 
 @end
