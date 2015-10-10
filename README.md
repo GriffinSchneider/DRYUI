@@ -84,7 +84,6 @@ dryui_private_style(RedView) {
     _.backgroundColor = [UIColor redColor];
 };
 ```
-Declaring a style creates a new Objective-C class, so you can't do it inside of an existing `@implementation` or `@interface`.
 
 ####Styling for specific classes
 By default, style blocks assume they're being applied to `UIViews`. If you want to style a subclass of `UIView`, just add the class name as the second argument to `dryui_style`, `dryui_public_style`, or `dryui_private_style`:
@@ -102,17 +101,48 @@ dryui_style(RedView) {
     _.backgroundColor = [UIColor redColor];
 };
 dryui_style(RedAndWhiteLabel, UILabel) {
-    parent_style(RedView);
+    dryui_parent_style(RedView);
     _.textColor = [UIColor whiteColor];
 };
 // Now, applying the RedAndWhiteLabel style to a UILabel will give it a red background and white text.
 ```
 
+
+####Dynamic styles
+You can declare styles that take arguments, which you pass when the style is applied. The syntax looks like this:
+```obj-c
+dryui_style(ColorView, UIView, (UIColor *)colorArgument) {
+    _.backgroundColor = colorArgument;
+};
+```
+and then, to apply the style with arguments:
+```obj-c
+build_subviews(self.view) {
+    UIView *add_subview(thisViewIsBlue, ColorView([UIColor blueColor])) {
+        // thisViewIsBlue is now blue.
+    };
+};
+```
+Note that you must include the class that the style applies to, even if it's `UIView`.
+
+Arguments are passed similarly when adding a parent style, or anywhere else the style is used:
+```objc
+dryui_style(TextAndBackgroundColor, UILabel, (UIColor *)textColor, (UIColor *)backgroundColor) {
+    dryui_parent_style(ColorView(backgroundColor));
+    _.textColor = textColor;
+};
+```
+
+
 ####Styles without `build_subviews`
-To apply a style outside of the context of `build_subviews`/`add_subview`, you can simply call `applyStyle:` on the view you want to style:
+To apply a style outside of the context of `build_subviews`/`add_subview`, you can simply call `dryui_apply_style` or `dryui_apply_styles` with the view and styles you wish to apply:
 ```obj-c
 UIView *view = [UIView new];
-[view applyStyle:RedView];
+dryui_apply_style(view, RedView);
+```
+```obj-c
+UIView *view = [UIView new];
+dryui_apply_styles(view, RedView, ColorView([UIColor redColor]));
 ```
 
 
@@ -122,7 +152,7 @@ UIView *view = [UIView new];
 
 `add_subview` can optionally take an instance of `UIView` as its second argument. If you call `add_subview` this way, then that instance will be assigned to the variable instead of the defualt `[[<variable type> alloc] init]` that happens otherwise.
 
-After the first (and optional second) argument, a list of `DRYUIStyle`s can be passed to `add_subview` to apply all the given styles to the view.
+After the first (and optional second) argument, a list of styles can be passed to `add_subview` to apply all the given styles to the view.
 
 Here are some examples:
 ```obj-c
