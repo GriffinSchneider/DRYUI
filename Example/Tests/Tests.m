@@ -222,4 +222,24 @@ dryui_private_style(StyleWithSameArgTypes3, UIView, (NSNumber *)arg) {
     
 }
 
+- (void)testApplyStyles {
+    
+    UIView *superview = [UIView new];
+    
+    UIView *view1 = [UIView new];
+    [superview addSubview:view1];
+    
+    UILabel *view2 = [UILabel new];
+    [superview addSubview:view2];
+    
+    dryui_apply_style(view1, Style0);
+    dryui_apply_styles(view2, Style1, Style2, ChildOfArgsWithArgs(@"testApplyStyles"));
+    
+    XCTAssertEqualObjects(view1.backgroundColor, [UIColor redColor]);
+    
+    XCTAssertEqualObjects(view2.backgroundColor, [UIColor greenColor]);
+    XCTAssertEqualObjects(view2.text, @"testApplyStyles");
+    XCTAssertEqual(view2.tag, 22);
+}
+
 @end

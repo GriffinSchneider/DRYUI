@@ -31,8 +31,10 @@
 #define dryui_public_style(args...) _dryui_public_style(args)
 #define dryui_private_style(args...) _dryui_private_style(args)
 
-#define dryui_apply_style(view, style, selfForStyle) _dryui_add_style_to_view(view, style(nil), selfForStyle)
 #define dryui_parent_style(style) _dryui_add_style_to_view_internal(_, style(nil), self)
+
+#define dryui_apply_style(view, style) _dryui_apply_style(view, style)
+#define dryui_apply_styles(view, styles...) _dryui_apply_styles(view, styles)
 
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -148,11 +150,9 @@ FOUNDATION_EXTERN void _dryui_add_view_from_build_subviews(_DRYUI_VIEW *view, _D
     _dryui_add_subview_helper_1(variableName, ;, ;)
 #define _dryui_add_subview2(variableName, styleOrView) \
     _dryui_add_subview_helper_2(variableName, styleOrView, ;)
-#define _dryui_add_subviewMore_iter(idx, variableName, style) \
-    _dryui_add_style_to_view(variableName, style(nil), self);
 #define _dryui_add_subviewMore(variableName, styleOrView, styles...) \
     _dryui_add_subview_helper_2(variableName, styleOrView, \
-                                metamacro_foreach_cxt(_dryui_add_subviewMore_iter, , variableName, styles))
+                                dryui_apply_styles(variableName, styles))
 
 
 // This macro passes through the first argument and codeAfterVariableAssignment to _dryui_add_subview_helper_1,
@@ -441,3 +441,15 @@ _dryui_returnGivenStyleOrNil(_DRYUI_VIEW *notAStyle) {
             }; \
         }; \
     }; \
+
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Implementations of dryui_apply_style and dryui_apply_style
+#define _dryui_apply_style(view, style) \
+    dryui_apply_styles(view, style)
+
+#define _dryui_apply_styles(view, styles...) \
+    metamacro_foreach_cxt_recursive(_dryui_apply_styles_iter, , view, styles)
+
+#define _dryui_apply_styles_iter(idx, view, style) \
+    _dryui_add_style_to_view(view, style(nil), self);
