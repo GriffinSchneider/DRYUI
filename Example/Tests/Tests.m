@@ -16,37 +16,37 @@ Style3, Style3, Style3, Style3, Style3, \
 Style3, Style3, Style3, Style3, Style3, \
 Style3, Style3, Style3, Style3
 
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
 @interface DRYUITests : XCTestCase
 
 @property UIView *f;
 
 @end
 
-
-// Can't use XCTAssert without `self`, so we have to save booleans from
-// these blocks and assert later instead of asserting in the blocks themselves
-static BOOL wasSuperviewEverNil = NO;
+////////////////////////////////////////////////////////////////////////////////////////////////////
+@implementation DRYUITests
 
 dryui_private_style(Style0) {
-    if (!superview) wasSuperviewEverNil = YES;
+    XCTAssertNotNil(superview);
     _.backgroundColor = [UIColor redColor];
 };
 
 dryui_private_style(Style1) {
     dryui_parent_style(Style0);
-    if (!superview) wasSuperviewEverNil = YES;
+    XCTAssertNotNil(superview);
     _.backgroundColor = [UIColor blueColor];
 };
 
 dryui_private_style(Style2) {
     dryui_parent_style(Style1);
-    if (!superview) wasSuperviewEverNil = YES;
+    XCTAssertNotNil(superview);
     _.backgroundColor = [UIColor greenColor];
 };
 
 dryui_private_style(Style3) {
     dryui_parent_style(Style2);
-    if (!superview) wasSuperviewEverNil = YES;
+    XCTAssertNotNil(superview);
     _.backgroundColor = [UIColor orangeColor];
 };
 
@@ -81,17 +81,6 @@ dryui_private_style(StyleWithSameArgTypes2, UIView, (NSNumber *)arg) {
 dryui_private_style(StyleWithSameArgTypes3, UIView, (NSNumber *)arg) {
     _.tag = 3;
 };
-
-@implementation DRYUITests
-
-- (void)setUp {
-    [super setUp];
-}
-
-- (void)tearDown {
-    [super tearDown];
-}
-
 
 - (void)testDRYUI {
 
@@ -189,7 +178,6 @@ dryui_private_style(StyleWithSameArgTypes3, UIView, (NSNumber *)arg) {
     
     
     // Assertions about style application
-    XCTAssertFalse(wasSuperviewEverNil, @"superview should never be nil when applying a style");
     XCTAssertEqual(a.backgroundColor, [UIColor orangeColor], @"a should be orange");
     XCTAssertEqual(b.backgroundColor, [UIColor purpleColor], @"b should be purple");
     XCTAssertEqual(c.backgroundColor, [UIColor blueColor], @"c should be blue");

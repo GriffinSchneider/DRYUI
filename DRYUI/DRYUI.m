@@ -12,11 +12,6 @@ _DRYUI_VIEW *_dryui_current_view = nil;
 _DRYUI_VIEW *_dryui_current_toplevel_view = nil;
 
 
-////////////////////////////////////////////////////////////////////////////////////////////////////
-@implementation DRYUIStyle
-@end
-
-
 static const char dryui_constraintMakerId = 0;
 static const char dryui_wrappedAddBlocksId = 0;
 static const char dryui_stylesId = 0;
