@@ -23,6 +23,11 @@
 
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
+#define metamacro_if_any_args(...) \
+    metamacro_if_eq(1, metamacro_argcount(metamacro_if_any_args_bogus_arg , ##__VA_ARGS__ ))
+
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
 #define metamacro_foreach_sep_macro(MACRO, SEP, ...) \
     metamacro_foreach_sep_macro_cxt(metamacro_foreach_iter, SEP, MACRO, __VA_ARGS__)
 

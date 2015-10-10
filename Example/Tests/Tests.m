@@ -33,28 +33,28 @@ dryui_private_style(Style0) {
 };
 
 dryui_private_style(Style1) {
-    dryui_parentStyle(Style0);
+    dryui_parent_style(Style0);
     if (!superview) wasSuperviewEverNil = YES;
     _.backgroundColor = [UIColor blueColor];
 };
 
 dryui_private_style(Style2) {
-    dryui_parentStyle(Style1);
+    dryui_parent_style(Style1);
     if (!superview) wasSuperviewEverNil = YES;
     _.backgroundColor = [UIColor greenColor];
 };
 
 dryui_private_style(Style3) {
-    dryui_parentStyle(Style2);
+    dryui_parent_style(Style2);
     if (!superview) wasSuperviewEverNil = YES;
     _.backgroundColor = [UIColor orangeColor];
 };
 
 dryui_private_style(StyleButton, UIButton) {
-    dryui_parentStyle(Style0);
+    dryui_parent_style(Style0);
     [_ setTitle:@"button title" forState:UIControlStateNormal];
-    dryui_parentStyle(Style1);
-    dryui_parentStyle(Style3);
+    dryui_parent_style(Style1);
+    dryui_parent_style(Style3);
 };
 
 dryui_private_style(StyleWithArgs, UILabel, (NSString *)firstArg, (NSInteger)secondArg) {
@@ -63,11 +63,23 @@ dryui_private_style(StyleWithArgs, UILabel, (NSString *)firstArg, (NSInteger)sec
 };
 
 dryui_private_style(ChildOfArgsWithoutArgs, UILabel) {
-    dryui_parentStyle(StyleWithArgs(@"coming from child", 11));
+    dryui_parent_style(StyleWithArgs(@"coming from child", 11));
 };
 
 dryui_private_style(ChildOfArgsWithArgs, UILabel, (NSString *)firstArg) {
-    dryui_parentStyle(StyleWithArgs(firstArg, 22));
+    dryui_parent_style(StyleWithArgs(firstArg, 22));
+};
+
+dryui_private_style(StyleWithSameArgTypes1, UIView, (NSNumber *)arg) {
+    _.tag = 1;
+};
+
+dryui_private_style(StyleWithSameArgTypes2, UIView, (NSNumber *)arg) {
+    _.tag = 2;
+};
+
+dryui_private_style(StyleWithSameArgTypes3, UIView, (NSNumber *)arg) {
+    _.tag = 3;
 };
 
 @implementation DRYUITests
@@ -192,7 +204,7 @@ dryui_private_style(ChildOfArgsWithArgs, UILabel, (NSString *)firstArg) {
     UIView *topLevel = [UIView new];
     UILabel *shouldBeC = [UILabel new];
     __block UILabel *shouldBeB = [UILabel new];
-    __block UILabel *a, *b, *c;
+    __block UILabel *a, *b, *c, *d, *e, *f;
     
     build_subviews(topLevel) {
         add_subview(a, StyleWithArgs(@"first label", 42)) {
@@ -200,6 +212,9 @@ dryui_private_style(ChildOfArgsWithArgs, UILabel, (NSString *)firstArg) {
             };
         };
         add_subview(c, shouldBeC, StyleWithArgs(@"nope", 11111), ChildOfArgsWithoutArgs, ChildOfArgsWithArgs(@"third label")) {};
+        add_subview(d, StyleWithSameArgTypes1(@1)) {};
+        add_subview(e, StyleWithSameArgTypes2(@2)) {};
+        add_subview(f, StyleWithSameArgTypes3(@3)) {};
     };
     
     XCTAssertEqualObjects(a.text, @"first label");
@@ -212,6 +227,11 @@ dryui_private_style(ChildOfArgsWithArgs, UILabel, (NSString *)firstArg) {
     XCTAssertEqualObjects(c.text, @"third label");
     XCTAssertEqual(c.tag, 22);
     XCTAssertEqual(c, shouldBeC);
+    
+    XCTAssertEqual(d.tag, 1);
+    XCTAssertEqual(e.tag, 2);
+    XCTAssertEqual(f.tag, 3);
+    
 }
 
 @end

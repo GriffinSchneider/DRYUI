@@ -52,7 +52,7 @@ id _dryui_instantiate_from_encoding(char *encoding) {
     return instance;
 }
 
-void _dryui_addViewFromBuildSubviews(_DRYUI_VIEW *view, _DRYUI_VIEW *superview, DRYUIViewAndSuperviewBlock block) {
+void _dryui_add_view_from_build_subviews(_DRYUI_VIEW *view, _DRYUI_VIEW *superview, DRYUIViewAndSuperviewBlock block) {
     [superview addSubview:view];
     
     // Don't actually need to weakify this reference since the block will get released
@@ -79,15 +79,12 @@ static const char dryui_stylesId = 0;
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 @implementation _DRYUI_VIEW (DRYUI)
 
-- (void)_dryui_buildSubviews:(DRYUIViewAndSuperviewBlock)block {
+- (void)_dryui_build_subviews:(DRYUIViewAndSuperviewBlock)block {
     [self runAddBlock:block];
 }
 
-#define _DRYUI_VIEW_STRING _DRYUI_VIEW_STRING_HELPER(_DRYUI_VIEW)
-#define _DRYUI_VIEW_STRING_HELPER(x) __DRYUI_VIEW_STRING_HELPER(x)
-#define __DRYUI_VIEW_STRING_HELPER(x) @#x
 - (MASConstraintMaker *)make {
-    NSAssert(self.constraintMaker != nil, @"%@.make should only be used inside a call to buildSubviews.", _DRYUI_VIEW_STRING);
+    NSAssert(self.constraintMaker != nil, @"%@.make should only be used inside a call to buildSubviews.", @ metamacro_stringify(_DRYUI_VIEW));
     [self setTranslatesAutoresizingMaskIntoConstraints:NO];
     return self.constraintMaker;
 }
