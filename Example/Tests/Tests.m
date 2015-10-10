@@ -177,15 +177,15 @@ dryui_private_style(StyleWithSameArgTypes3, UIView, (NSNumber *)arg) {
     
     // Assertions about style association
     NSArray *styles = @[BIG_STYLE_LIST];
-    XCTAssertEqualObjects(a.styles, styles, @"a's styles should equal the BIG_STYLE_LIST");
+    XCTAssertEqualObjects(a.dryuiStyles, styles, @"a's styles should equal the BIG_STYLE_LIST");
     
-    XCTAssertEqualObjects(b.styles, @[Style3], @"b's styles should equal [Style3]");
-    XCTAssertEqualObjects(c.styles, (@[Style0, Style1]), @"c's styles should equal [Style0, Style1]");
-    XCTAssertEqualObjects(g.styles, (@[Style1, StyleButton]), @"g's styles should equal [StyleButton, Style1]");
+    XCTAssertEqualObjects(b.dryuiStyles, @[Style3], @"b's styles should equal [Style3]");
+    XCTAssertEqualObjects(c.dryuiStyles, (@[Style0, Style1]), @"c's styles should equal [Style0, Style1]");
+    XCTAssertEqualObjects(g.dryuiStyles, (@[Style1, StyleButton]), @"g's styles should equal [StyleButton, Style1]");
     
-    XCTAssertEqual(d.styles.count, 0, @"d shouldn't have any styles");
-    XCTAssertEqual(e.styles.count, 0, @"d shouldn't have any styles");
-    XCTAssertEqual(self.f.styles.count, 0, @"d shouldn't have any styles");
+    XCTAssertEqual(d.dryuiStyles.count, 0, @"d shouldn't have any styles");
+    XCTAssertEqual(e.dryuiStyles.count, 0, @"d shouldn't have any styles");
+    XCTAssertEqual(self.f.dryuiStyles.count, 0, @"d shouldn't have any styles");
     
     
     // Assertions about style application

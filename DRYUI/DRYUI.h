@@ -17,8 +17,8 @@
 #import <Foundation/Foundation.h>
 #import <Masonry/Masonry.h>
 #import <libextobjc/metamacros.h>
-#import <objc/runtime.h>
 #import "DRYUIMetamacros.h"
+
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 #pragma mark - Hierarchy Building Macros
@@ -44,21 +44,25 @@
 
 typedef void (^DRYUIViewAndSuperviewBlock)(id _, _DRYUI_VIEW *superview);
 
+
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-@interface _DRYUI_VIEW (DRYUI)
-
-
-@property (nonatomic, strong, readonly) MASConstraintMaker *make;
-@property (nonatomic, strong, readonly) NSArray *styles;
+@protocol DRYUIViewAdditions<NSObject>
 
 - (void)_dryui_build_subviews:(DRYUIViewAndSuperviewBlock)block;
 
-@property (nonatomic, strong) MASConstraintMaker *constraintMaker;
-@property (nonatomic, strong) NSMutableArray *wrappedAddBlocks;
-- (void)runAllWrappedAddBlocks;
+@property (nonatomic, strong) MASConstraintMaker *_dryuiConstraintMaker;
+@property (nonatomic, strong) NSMutableArray *_dryuiWrappedAddBlocks;
+- (void)_dryuiRunAllWrappedAddBlocks;
 
 @end
 
+////////////////////////////////////////////////////////////////////////////////////////////////////
+@interface _DRYUI_VIEW (DRYUIAdditions)
+
+@property (nonatomic, strong, readonly) MASConstraintMaker *make;
+@property (nonatomic, strong, readonly) NSArray *dryuiStyles;
+
+@end
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 @interface DRYUIStyle : NSObject
@@ -73,8 +77,8 @@ typedef void (^DRYUIViewAndSuperviewBlock)(id _, _DRYUI_VIEW *superview);
 
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-FOUNDATION_EXTERN _DRYUI_VIEW *_dryui_current_view;
-FOUNDATION_EXTERN _DRYUI_VIEW *_dryui_current_toplevel_view;
+FOUNDATION_EXTERN _DRYUI_VIEW<DRYUIViewAdditions> *_dryui_current_view;
+FOUNDATION_EXTERN _DRYUI_VIEW<DRYUIViewAdditions> *_dryui_current_toplevel_view;
 
 FOUNDATION_EXTERN id _dryui_instantiate_from_encoding(char *);
 FOUNDATION_EXTERN void _dryui_add_view_from_build_subviews(_DRYUI_VIEW *view, _DRYUI_VIEW *superview, DRYUIViewAndSuperviewBlock block);
@@ -113,8 +117,8 @@ FOUNDATION_EXTERN void _dryui_add_view_from_build_subviews(_DRYUI_VIEW *view, _D
                 // execution will jump back up to the while(1) and then into body_after_statement_after_macro.
 
 #define _dryui_build_subviews(viewArg) \
-    _DRYUI_VIEW *_dryui_var_previous_toplevel_view = _dryui_current_toplevel_view; \
-    _dryui_current_toplevel_view = [viewArg _dryui_selfOrInstanceOfSelf]; \
+    _DRYUI_VIEW<DRYUIViewAdditions> *_dryui_var_previous_toplevel_view = _dryui_current_toplevel_view; \
+    _dryui_current_toplevel_view = _dryui_cast_for_additions([viewArg _dryui_selfOrInstanceOfSelf]); \
     _dryui_goto_helper(viewArg, \
         [_dryui_current_toplevel_view _dryui_build_subviews:_dryui_var_view_and_superview_block]; \
         _dryui_current_toplevel_view = _dryui_var_previous_toplevel_view; \
@@ -168,7 +172,7 @@ FOUNDATION_EXTERN void _dryui_add_view_from_build_subviews(_DRYUI_VIEW *view, _D
         variableName = _dryui_var_passed_instance_or_nil ?: _dryui_instantiate_from_encoding(@encode(typeof(*(variableName)))); \
     } \
     NSAssert(_dryui_current_toplevel_view, @"Calls to DRYUI must be inside a call to DRYUI_TOPLEVEL."); \
-    _dryui_current_view = variableName; \
+    _dryui_current_view = _dryui_cast_for_additions(variableName); \
     _dryui_goto_helper(variableName, \
         _dryui_add_view_from_build_subviews(_dryui_current_view, _, _dryui_var_view_and_superview_block); \
         ({ codeAfterVariableAssignment }); \
@@ -194,6 +198,9 @@ static inline id __attribute((overloadable, unused)) _dryui_returnGivenStyleOrNi
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 #pragma mark - Style Macro Implementation
+
+#define _dryui_cast_for_additions(view) \
+    ((_DRYUI_VIEW<DRYUIViewAdditions> *) view)
 
 // Private styles are just the public style declaration and then the style implementation
 #define _dryui_private_style(args...) \
@@ -272,16 +279,17 @@ static inline id __attribute((overloadable, unused)) _dryui_returnGivenStyleOrNi
         }); \
     } \
     static inline void __attribute__((overloadable, unused)) _dryui_add_style_to_view(className *view, _DRYUI_blockForAddStyleToView_##styleName firstLevelBlock, id selfForBlock) { \
-        id oldConstraintMaker = view.constraintMaker; \
-        view.constraintMaker = [[MASConstraintMaker alloc] initWithView:view]; \
-        view.wrappedAddBlocks = [NSMutableArray array]; \
+        _DRYUI_VIEW<DRYUIViewAdditions> *castedView = _dryui_cast_for_additions(view); \
+        id oldConstraintMaker = castedView._dryuiConstraintMaker; \
+        castedView._dryuiConstraintMaker = [[MASConstraintMaker alloc] initWithView:view]; \
+        castedView._dryuiWrappedAddBlocks = [NSMutableArray array]; \
         \
         _dryui_add_style_to_view_internal(view, firstLevelBlock, selfForBlock); \
         \
-        [view.constraintMaker install]; \
-        view.constraintMaker = oldConstraintMaker; \
-        [view runAllWrappedAddBlocks]; \
-        [((NSMutableArray *)view.styles) addObject:styleName]; \
+        [castedView._dryuiConstraintMaker install]; \
+        castedView._dryuiConstraintMaker = oldConstraintMaker; \
+        [castedView _dryuiRunAllWrappedAddBlocks]; \
+        [((NSMutableArray *)castedView.dryuiStyles) addObject:styleName]; \
         \
     } \
     metamacro_if_any_args(styleArgs)( \
