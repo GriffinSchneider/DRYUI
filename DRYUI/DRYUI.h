@@ -261,16 +261,19 @@ _dryui_returnGivenStyleOrNil(_DRYUI_VIEW *notAStyle) {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Implementation of dryui_public_style
 //
-// Styles make heavy use of __attribute__((overloadable)) to get type safety for style application. Every style
-// declares additional overloaded versions of the _dryui_add_style_to_view and _dryui_add_style_to_view_acceptView
-// functions that take the UIView subclass that the style applies to as the first argument, and an instance of the
-// style's class as the second argument. This means that, for example, if you declare a style named 'ButtonStyle'
-// that applies only to 'UIButton*', then there is no version of _dryui_add_style_to_view that takes a 'UIView*' and
-// a 'ButtonStyle', which will cause a compiler warning if you try to apply 'ButtonStyle' to a UIView!
+// Styles make heavy use of __attribute__((overloadable)) to get type safety for style application.
+// Every style declares additional overloaded versions of the _dryui_add_style_to_view and
+//  _dryui_add_style_to_view_acceptView functions that take the UIView subclass that the style
+// applies to as the first argument, and an instance of the style's struct as the second argument.
+// This means that, for example, if you declare a style named 'ButtonStyle' that applies only to
+// 'UIButton*', then there is no version of _dryui_add_style_to_view that takes a 'UIView*' and
+// a 'ButtonStyle', which will cause a compiler warning if you try to apply 'ButtonStyle' to a
+// UIView!
 //
-// The _dryui_add_style_to_view_acceptView function is a hack to support the case where the second argument to add_subview
-// is a UIView instance - this function has 1 additional overloaded version where the first and second arguments are
-// UIViews, so that you won't get a compiler warning about there being a UIView where we expect a style.
+// The _dryui_add_style_to_view_acceptView function is a hack to support the case where the second
+// argument to add_subview is a UIView instance - this function has 1 additional overloaded version
+// where the first and second arguments are UIViews, so that you won't get a compiler warning about
+// there being a UIView where we expect a style.
 #define _dryui_public_style(args...) \
     metamacro_if_eq(1, metamacro_argcount(args)) ( \
         _dryui_public_style1(args) \
@@ -385,11 +388,11 @@ _dryui_returnGivenStyleOrNil(_DRYUI_VIEW *notAStyle) {
 // Implementation of dryui_style
 //
 // A style is really just a block. If it's a style without arguments, then the style itself is a
-// block that takes one argument, an instance of the class's struct. If the style does have arguments,
+// block that takes one argument, an instance of the style's struct. If the style does have arguments,
 // then the style is a block that takes the styles arguments and returns a block that takes an
-// instance of the class's struct.
+// instance of the style's struct.
 //
-// The reason the blocks have an instance of the class struct as an argument is for overloaded method
+// The reason the blocks have an instance of the style struct as an argument is for overloaded method
 // selection - the compiler chooses which overloaded method to use based on the actual types of the
 // arguments - typedef'ed aliases aren't enough to change which method is used.
 #define _dryui_style(args...) \
