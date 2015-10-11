@@ -23,8 +23,8 @@
 
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-#define metamacro_if_any_args(...) \
-    metamacro_if_eq(1, metamacro_argcount(metamacro_if_any_args_bogus_arg , ##__VA_ARGS__ ))
+#define metamacro_if_no_args(...) \
+    metamacro_if_eq(1, metamacro_argcount(metamacro_if_no_args_bogus_arg , ##__VA_ARGS__ ))
 
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -51,7 +51,7 @@
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Iterators to transform the foreach_cxt macros into macros without the cxt.
-#define metamacro_for_iter(INDEX, MACRO, ARG) MACRO(INDEX, ARG)
+#define metamacro_for_iter(INDEX, MACRO) MACRO(INDEX)
 #define metamacro_foreach_iter(INDEX, MACRO, ARG) MACRO(INDEX, ARG)
 #define metamacro_foreach_recursive_iter(INDEX, MACRO, ARG) MACRO(INDEX, ARG)
 

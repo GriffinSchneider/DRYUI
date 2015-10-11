@@ -235,7 +235,7 @@ _dryui_returnGivenStyleOrNil(_DRYUI_VIEW *notAStyle) {
 #define _dryui_extract_variable_name(idx, argWithType) \
     _dryui_remove_arg_type argWithType
 #define _dryui_extract_variable_names(argsWithTypes...) \
-    metamacro_if_any_args(argsWithTypes) ( \
+    metamacro_if_no_args(argsWithTypes) ( \
         /* nothing */ \
     ) ( \
         metamacro_foreach_sep_macro(_dryui_extract_variable_name, metamacro_comma_sep , ##argsWithTypes ) \
@@ -251,7 +251,7 @@ _dryui_returnGivenStyleOrNil(_DRYUI_VIEW *notAStyle) {
 #define _dryui_remove_parens_from_arg_type_iter(idx, argWithType) \
     _dryui_remove_parens_from_arg_type argWithType
 #define _dryui_extract_arguments(argsWithTypes...) \
-    metamacro_if_any_args(argsWithTypes) ( \
+    metamacro_if_no_args(argsWithTypes) ( \
         /* nothing */ \
     ) ( \
         metamacro_foreach_sep_macro(_dryui_remove_parens_from_arg_type_iter, metamacro_comma_sep , ##argsWithTypes ) \
@@ -295,7 +295,7 @@ _dryui_returnGivenStyleOrNil(_DRYUI_VIEW *notAStyle) {
         (_dryui_extract_arguments(styleArgs)); \
     typedef void (^_DRYUI_blockForAddStyleToView_##styleName) \
         (_dryui_style_struct_name(styleName)*, _DRYUI_blockThatGetsPassedByAddStyleToView_##styleName blockFromAddStyleToView); \
-    metamacro_if_any_args(styleArgs) ( \
+    metamacro_if_no_args(styleArgs) ( \
         _dryui_typedefs_no_args(styleName, className) \
     ) ( \
         _dryui_typedefs_some_args(styleName, className , ##styleArgs ) \
@@ -329,7 +329,7 @@ _dryui_returnGivenStyleOrNil(_DRYUI_VIEW *notAStyle) {
         [((NSMutableArray *)castedView.dryuiStyles) addObject:styleName]; \
         \
     } \
-    metamacro_if_any_args(styleArgs)( \
+    metamacro_if_no_args(styleArgs)( \
         _dryui_declare_addStyleToView_acceptView_no_args(styleName, className) \
     ) ( \
         _dryui_declare_addStyleToView_acceptView_some_args(styleName, className , ##styleArgs ) \
@@ -348,7 +348,7 @@ _dryui_returnGivenStyleOrNil(_DRYUI_VIEW *notAStyle) {
     \
 
 #define _dryui_return_type_for_block_for_style(styleName, className, styleArgs...) \
-    metamacro_if_any_args(styleArgs) ( \
+    metamacro_if_no_args(styleArgs) ( \
         _DRYUI_blockForAddStyleToView_##styleName \
     ) ( \
         _DRYUI_blockReturnedByBlockForStyle_##styleName \
@@ -419,7 +419,7 @@ _dryui_returnGivenStyleOrNil(_DRYUI_VIEW *notAStyle) {
 
 
 #define _dryui_block_for_style(styleName, className, styleArgs...) \
-    metamacro_if_any_args(styleArgs) ( \
+    metamacro_if_no_args(styleArgs) ( \
         _dryui_block_for_style_no_args(styleName, className) \
     ) ( \
         _dryui_block_for_style_some_args(styleName, className , ##styleArgs ) \
