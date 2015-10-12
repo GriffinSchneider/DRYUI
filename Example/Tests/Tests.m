@@ -101,10 +101,11 @@ dryui_private_style(StyleWithSameArgTypes3, UIView, (NSNumber *)arg) {
         XCTAssertEqual(_dryui_current_toplevel_view, topLevel);
         
         _.make.edges.equalTo(_);
+        __block BOOL didBlockRun = NO;
         add_subview(a, BIG_STYLE_LIST) {
-            XCTAssertNotNil(b, @"b should already be assigned when this block is run");
-            XCTAssertNotNil(c, @"c should already be assigned when this block is run");
+            didBlockRun = YES;
         };
+        XCTAssertTrue(didBlockRun, @"Block should run before execution gets here.");
         add_subview(b, Style3) {
             [_ make];
             XCTAssertEqual(_.superview, superview, @"superview should be bound to view.superview");
@@ -123,8 +124,6 @@ dryui_private_style(StyleWithSameArgTypes3, UIView, (NSNumber *)arg) {
                     [_ make];
                     XCTAssertNotNil(b, @"b should already be assigned when this block is run");
                     XCTAssertNotNil(c, @"c should already be assigned when this block is run");
-                    XCTAssertNotNil(self.f, @"self.f should already be assigned when this block is run");
-                    XCTAssertNotNil(g, @"g should already be assigned when this block is run");
                 };
                 add_subview(self.f){};
                 add_subview(g, ({gg = [UIButton buttonWithType:UIButtonTypeSystem];}), Style1, StyleButton) {
