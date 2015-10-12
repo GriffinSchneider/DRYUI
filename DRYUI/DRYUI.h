@@ -61,10 +61,9 @@ typedef void (^DRYUIViewAndSuperviewBlock)(id _, _DRYUI_VIEW *superview);
 @protocol DRYUIViewAdditions<NSObject>
 
 - (void)_dryui_build_subviews:(DRYUIViewAndSuperviewBlock)block;
+- (void)_dryui_runAddBlock:(DRYUIViewAndSuperviewBlock)block;
 
 @property (nonatomic, strong) MASConstraintMaker *_dryuiConstraintMaker;
-@property (nonatomic, strong) NSMutableArray *_dryuiWrappedAddBlocks;
-- (void)_dryuiRunAllWrappedAddBlocks;
 
 @end
 
@@ -83,7 +82,6 @@ FOUNDATION_EXTERN _DRYUI_VIEW<DRYUIViewAdditions> *_dryui_current_view;
 FOUNDATION_EXTERN _DRYUI_VIEW<DRYUIViewAdditions> *_dryui_current_toplevel_view;
 
 FOUNDATION_EXTERN id _dryui_instantiate_from_encoding(char *);
-FOUNDATION_EXTERN void _dryui_add_view_from_build_subviews(_DRYUI_VIEW *view, _DRYUI_VIEW *superview, DRYUIViewAndSuperviewBlock block);
 
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -181,8 +179,9 @@ FOUNDATION_EXTERN void _dryui_add_view_from_build_subviews(_DRYUI_VIEW *view, _D
     NSAssert(_dryui_current_toplevel_view, @"Calls to DRYUI must be inside a call to DRYUI_TOPLEVEL."); \
     _dryui_current_view = _dryui_cast_for_additions(variableName); \
     _dryui_goto_helper(variableName, \
-        _dryui_add_view_from_build_subviews(_dryui_current_view, _, _dryui_var_view_and_superview_block); \
+        [_ addSubview:_dryui_current_view]; \
         ({ codeAfterVariableAssignment }); \
+        [_dryui_current_view _dryui_runAddBlock:_dryui_var_view_and_superview_block]; \
         _dryui_current_view = nil; \
     ) \
 
@@ -235,7 +234,7 @@ _dryui_returnGivenStyleOrNil(_DRYUI_VIEW *notAStyle) {
 #define _dryui_extract_variable_name(idx, argWithType) \
     _dryui_remove_arg_type argWithType
 #define _dryui_extract_variable_names(argsWithTypes...) \
-    metamacro_if_any_args(argsWithTypes) ( \
+    metamacro_if_no_args(argsWithTypes) ( \
         /* nothing */ \
     ) ( \
         metamacro_foreach_sep_macro(_dryui_extract_variable_name, metamacro_comma_sep , ##argsWithTypes ) \
@@ -251,7 +250,7 @@ _dryui_returnGivenStyleOrNil(_DRYUI_VIEW *notAStyle) {
 #define _dryui_remove_parens_from_arg_type_iter(idx, argWithType) \
     _dryui_remove_parens_from_arg_type argWithType
 #define _dryui_extract_arguments(argsWithTypes...) \
-    metamacro_if_any_args(argsWithTypes) ( \
+    metamacro_if_no_args(argsWithTypes) ( \
         /* nothing */ \
     ) ( \
         metamacro_foreach_sep_macro(_dryui_remove_parens_from_arg_type_iter, metamacro_comma_sep , ##argsWithTypes ) \
@@ -295,7 +294,7 @@ _dryui_returnGivenStyleOrNil(_DRYUI_VIEW *notAStyle) {
         (_dryui_extract_arguments(styleArgs)); \
     typedef void (^_DRYUI_blockForAddStyleToView_##styleName) \
         (_dryui_style_struct_name(styleName)*, _DRYUI_blockThatGetsPassedByAddStyleToView_##styleName blockFromAddStyleToView); \
-    metamacro_if_any_args(styleArgs) ( \
+    metamacro_if_no_args(styleArgs) ( \
         _dryui_typedefs_no_args(styleName, className) \
     ) ( \
         _dryui_typedefs_some_args(styleName, className , ##styleArgs ) \
@@ -319,17 +318,15 @@ _dryui_returnGivenStyleOrNil(_DRYUI_VIEW *notAStyle) {
         _DRYUI_VIEW<DRYUIViewAdditions> *castedView = _dryui_cast_for_additions(view); \
         id oldConstraintMaker = castedView._dryuiConstraintMaker; \
         castedView._dryuiConstraintMaker = [[MASConstraintMaker alloc] initWithView:view]; \
-        castedView._dryuiWrappedAddBlocks = [NSMutableArray array]; \
         \
         _dryui_add_style_to_view_internal(view, firstLevelBlock, selfForBlock); \
         \
         [castedView._dryuiConstraintMaker install]; \
         castedView._dryuiConstraintMaker = oldConstraintMaker; \
-        [castedView _dryuiRunAllWrappedAddBlocks]; \
         [((NSMutableArray *)castedView.dryuiStyles) addObject:styleName]; \
         \
     } \
-    metamacro_if_any_args(styleArgs)( \
+    metamacro_if_no_args(styleArgs)( \
         _dryui_declare_addStyleToView_acceptView_no_args(styleName, className) \
     ) ( \
         _dryui_declare_addStyleToView_acceptView_some_args(styleName, className , ##styleArgs ) \
@@ -348,7 +345,7 @@ _dryui_returnGivenStyleOrNil(_DRYUI_VIEW *notAStyle) {
     \
 
 #define _dryui_return_type_for_block_for_style(styleName, className, styleArgs...) \
-    metamacro_if_any_args(styleArgs) ( \
+    metamacro_if_no_args(styleArgs) ( \
         _DRYUI_blockForAddStyleToView_##styleName \
     ) ( \
         _DRYUI_blockReturnedByBlockForStyle_##styleName \
@@ -419,7 +416,7 @@ _dryui_returnGivenStyleOrNil(_DRYUI_VIEW *notAStyle) {
 
 
 #define _dryui_block_for_style(styleName, className, styleArgs...) \
-    metamacro_if_any_args(styleArgs) ( \
+    metamacro_if_no_args(styleArgs) ( \
         _dryui_block_for_style_no_args(styleName, className) \
     ) ( \
         _dryui_block_for_style_some_args(styleName, className , ##styleArgs ) \

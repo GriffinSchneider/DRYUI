@@ -196,24 +196,8 @@ Each call to `add_subview` will add the given view  as a subview to the view pas
 recent nested call of `build_subviews` or `add_subview`. The order of views will be determined by
 the order of their `add_subview` calls.
 
-Calls to `add_subview` must be inside a call to `build_subviews`. `build_subviews` won't add the given view as a subview to anything, since it's not nested within another call.
+Calls to `add_subview` must be inside a call to `build_subviews`. `build_subviews` won't add the given view as a subview to anything.
 
 Within the block after the `add_subview` macro, `_` refers to the given view, and `superview`
 refers to that view's superview. `_.make` is set to a `MASConstraintMaker` for the given view, similar
 to the block passed to [Masonry](https://github.com/Masonry/Masonry)'s `mas_makeConstraints:` method.
-
-The after-`add_subview`-block will only be called once everything else in the enclosing block has run, so
-all views assigned at the same level of the hierarchy can reference one another. For example:
-```obj-c
-build_subviews(self) {
-    __block UIView *one, *two;
-    add_subview(one) {
-        // Even though two is assigned below, it will not be nil here!
-        _.make.left.equalTo(two);
-    };
-    add_subview(two) {
-        // one won't be nil here either.
-        _.make.top.equalTo(one);
-    };
-};
-```

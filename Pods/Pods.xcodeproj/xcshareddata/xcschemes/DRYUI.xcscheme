@@ -14,7 +14,7 @@
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "3F676D1050AE99EAA4658D91"
+               BlueprintIdentifier = "D800196EC23EFCDD3DC9D401"
                BuildableName = "libDRYUI.a"
                BlueprintName = "DRYUI"
                ReferencedContainer = "container:Pods.xcodeproj">
