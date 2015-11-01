@@ -98,7 +98,6 @@ dryui_private_style(StyleWithSameArgTypes3, UIView, (NSNumber *)arg) {
         
         build_subviews(other) {};
         XCTAssertEqual(_, topLevel);
-        XCTAssertEqual(_dryui_current_toplevel_view, topLevel);
         
         _.make.edges.equalTo(_);
         __block BOOL didBlockRun = NO;
