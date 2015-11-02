@@ -50,9 +50,8 @@
 // Everything below here is an implementation detail, and subject to change in a minor version.   //
 // Don't write code that depends on anything below this line.                                     //
 ////////////////////////////////////////////////////////////////////////////////////////////////////
+#pragma mark - Implementation Details
 
-
-typedef void (^DRYUIViewAndSuperviewBlock)(id _, _DRYUI_VIEW *superview);
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // The methods in this protocol are actually implemented via a category on UIView, but we don't
@@ -60,26 +59,12 @@ typedef void (^DRYUIViewAndSuperviewBlock)(id _, _DRYUI_VIEW *superview);
 // we need to use something declared here.
 @protocol DRYUIViewAdditions<NSObject>
 
-- (void)_dryui_build_subviews:(DRYUIViewAndSuperviewBlock)block;
-- (void)_dryui_runAddBlock:(DRYUIViewAndSuperviewBlock)block;
-
 @property (nonatomic, strong) MASConstraintMaker *_dryuiConstraintMaker;
 
 @end
 
 #define _dryui_cast_for_additions(view) ((_DRYUI_VIEW<DRYUIViewAdditions> *) view)
 
-
-////////////////////////////////////////////////////////////////////////////////////////////////////
-@interface NSObject (DRYUI)
-+ (instancetype)_dryui_selfOrInstanceOfSelf;
-- (instancetype)_dryui_selfOrInstanceOfSelf;
-@end
-
-
-////////////////////////////////////////////////////////////////////////////////////////////////////
-FOUNDATION_EXTERN _DRYUI_VIEW<DRYUIViewAdditions> *_dryui_current_view;
-FOUNDATION_EXTERN _DRYUI_VIEW<DRYUIViewAdditions> *_dryui_current_toplevel_view;
 
 FOUNDATION_EXTERN id _dryui_instantiate_from_encoding(char *);
 
@@ -96,36 +81,40 @@ FOUNDATION_EXTERN id _dryui_instantiate_from_encoding(char *);
 #define _dryui_goto_label metamacro_concat(_dryui_goto_label_, __LINE__)
 
 
-// body_after_statement_after_macro will get run *after* the statement formed by the end of this macro and whatever
-// the user puts after the macro within {}.
-// When body_after_statement_after_macro runs, this macro will have definied a variable with a name created by
-// _dryui_var_view_and_superview_block, to which will be assigned a block of type DRYUIViewAndSuperviewBlock
-// containing the code that came after the macro.
-#define _dryui_goto_helper(viewArg, body_after_statement_after_macro) \
-    DRYUIViewAndSuperviewBlock _dryui_var_view_and_superview_block; \
-    if (1) { \
+// This is used to implement add_subview and build_subviews - we want to have nice syntax where
+// the user puts a body of code in curly braces after the macro, but we need to run some code after
+// their code runs. We also want to declare some variables that are only visible inside the user's
+// body. So, we use multiple for loops that each run their bodies only once. Each for can declare
+// a new variable, and we leave off the braces so all the fors are nested inside one another. One
+// of the loop's conditions is a statement expression that we use to run the before/after code
+//
+// spot1 and spot2 are spots where additional code is inserted to implement add_subview.
+#define _dryui_create_view_helper(viewArg, spot1, spot2) \
+    spot1 \
+    for (typeof(viewArg) _ __attribute__((unused)) = viewArg; ({ \
         NSAssert([NSThread isMainThread], @"DRYUI should only be used from the main thread!"); \
-        goto _dryui_goto_label; \
-    } else \
-        while (1) \
-            if (1) { \
-                body_after_statement_after_macro \
-                _dryui_var_view_and_superview_block = nil; \
-                break; \
-            } else \
-                _dryui_goto_label: _dryui_var_view_and_superview_block = \
-                ^(typeof([viewArg _dryui_selfOrInstanceOfSelf]) _, _DRYUI_VIEW *superview) \
-                // We couldn't get execution here without GOTOing here, but once we do and this
-                // statement finishes, execution will jump back up to the while(1) and then into
-                // body_after_statement_after_macro.
+        static BOOL thing = false; \
+        thing = !thing; \
+        _DRYUI_VIEW<DRYUIViewAdditions> *casted = _dryui_cast_for_additions(_); \
+        if (thing) { \
+            /* Stuff in here runs before the user-provided code */ \
+            casted._dryuiConstraintMaker = [[MASConstraintMaker alloc] initWithView:_]; \
+            spot2 \
+        } else { \
+            /* Stuff in here runs after the user-provided code */ \
+            [casted._dryuiConstraintMaker install]; \
+            casted._dryuiConstraintMaker = nil; \
+        } \
+        thing; \
+    });) \
+    for (_DRYUI_VIEW *superview __attribute__((unused)) = _.superview; ({ \
+        static BOOL thing = false; \
+        thing = !thing; \
+    });) \
+
 
 #define _dryui_build_subviews(viewArg) \
-    _DRYUI_VIEW<DRYUIViewAdditions> *_dryui_var_previous_toplevel_view = _dryui_current_toplevel_view; \
-    _dryui_current_toplevel_view = _dryui_cast_for_additions([viewArg _dryui_selfOrInstanceOfSelf]); \
-    _dryui_goto_helper(viewArg, \
-        [_dryui_current_toplevel_view _dryui_build_subviews:_dryui_var_view_and_superview_block]; \
-        _dryui_current_toplevel_view = _dryui_var_previous_toplevel_view; \
-    )
+    _dryui_create_view_helper(viewArg, ;, ;)
 
 
 #define _dryui_add_subview(args...) \
@@ -176,13 +165,15 @@ FOUNDATION_EXTERN id _dryui_instantiate_from_encoding(char *);
     if (!variableName) { \
         variableName = _dryui_var_passed_instance_or_nil ?: _dryui_instantiate_from_encoding(@encode(typeof(*(variableName)))); \
     } \
-    NSAssert(_dryui_current_toplevel_view, @"Calls to DRYUI must be inside a call to DRYUI_TOPLEVEL."); \
-    _dryui_current_view = _dryui_cast_for_additions(variableName); \
-    _dryui_goto_helper(variableName, \
-        [_ addSubview:_dryui_current_view]; \
+    _dryui_create_view_helper(variableName, \
+        for (_DRYUI_VIEW *_dryui_previous_view = _; ({ \
+            static BOOL thing = false; \
+            thing = !thing; \
+            thing; \
+        });) \
+    , \
+        [_dryui_previous_view addSubview:_]; \
         ({ codeAfterVariableAssignment }); \
-        [_dryui_current_view _dryui_runAddBlock:_dryui_var_view_and_superview_block]; \
-        _dryui_current_view = nil; \
     ) \
 
 

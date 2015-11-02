@@ -1,5 +1,5 @@
 PODS:
-  - DRYUI (0.6.0):
+  - DRYUI (0.6.1):
     - libextobjc
     - Masonry
   - libextobjc (0.4.1):
@@ -47,8 +47,8 @@ EXTERNAL SOURCES:
     :path: ./
 
 SPEC CHECKSUMS:
-  DRYUI: 291be58d92d2d6185e1d1df7bca35439d76859d2
+  DRYUI: eeecb5a5e6332f332bf7a8049b2b2b1b5e4d15eb
   libextobjc: a650fc1bf489a3d3a9bc2e621efa3e1006fc5471
   Masonry: ff105a956abcd19a618b2028b121cb638d7a8e2f
 
-COCOAPODS: 0.38.2
+COCOAPODS: 0.39.0
