@@ -28,25 +28,25 @@ Style3, Style3, Style3, Style3
 @implementation DRYUITests
 
 dryui_private_style(Style0) {
-    XCTAssertNotNil(superview);
+    NSCAssert(superview, @"supreview should not be nil");
     _.backgroundColor = [UIColor redColor];
 };
 
 dryui_private_style(Style1) {
     dryui_parent_style(Style0);
-    XCTAssertNotNil(superview);
+    NSCAssert(superview, @"supreview should not be nil");
     _.backgroundColor = [UIColor blueColor];
 };
 
 dryui_private_style(Style2) {
     dryui_parent_style(Style1);
-    XCTAssertNotNil(superview);
+    NSCAssert(superview, @"supreview should not be nil");
     _.backgroundColor = [UIColor greenColor];
 };
 
 dryui_private_style(Style3) {
     dryui_parent_style(Style2);
-    XCTAssertNotNil(superview);
+    NSCAssert(superview, @"supreview should not be nil");
     _.backgroundColor = [UIColor orangeColor];
 };
 

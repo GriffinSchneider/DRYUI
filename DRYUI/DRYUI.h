@@ -31,7 +31,7 @@
 #define dryui_public_style(args...) _dryui_public_style(args)
 #define dryui_private_style(args...) _dryui_private_style(args)
 
-#define dryui_parent_style(style) _dryui_add_style_to_view_internal(_, style(nil), self)
+#define dryui_parent_style(style) _dryui_add_style_to_view_internal(_, style(nil))
 
 #define dryui_apply_style(view, style) _dryui_apply_style(view, style)
 #define dryui_apply_styles(view, styles...) _dryui_apply_styles(view, styles)
@@ -154,7 +154,7 @@ FOUNDATION_EXTERN id _dryui_instantiate_from_encoding(char *);
         typeof(styleOrView) _dryui_var_saved_style_or_view = styleOrView; \
         _dryui_var_passed_instance_or_nil = _dryui_returnGivenViewOrNil(_dryui_var_saved_style_or_view); \
     , \
-        _dryui_add_style_to_view_acceptView(variableName, _dryui_var_saved_style_or_view, self); \
+        _dryui_add_style_to_view_acceptView(variableName, _dryui_var_saved_style_or_view); \
         codeAfterVariableAssignment \
     )
 
@@ -183,7 +183,7 @@ _dryui_returnGivenViewOrNil(_DRYUI_VIEW *view) {
 }
 
 static inline void __attribute__((overloadable, unused))
-_dryui_add_style_to_view_acceptView(_DRYUI_VIEW *view, _DRYUI_VIEW *notAStyle, id selfForBlock) {
+_dryui_add_style_to_view_acceptView(_DRYUI_VIEW *view, _DRYUI_VIEW *notAStyle) {
     
 }
 
@@ -280,7 +280,7 @@ _dryui_returnGivenStyleOrNil(_DRYUI_VIEW *notAStyle) {
 #define _dryui_public_styleMore(styleName, className, styleArgs...) \
     _dryui_style_struct_name(styleName) {}; \
     typedef void (^_DRYUI_applicationBlockForStyle_##styleName) \
-        (id _, _DRYUI_VIEW *superview, id self metamacro_comma_if_any_args(styleArgs) _dryui_extract_arguments(styleArgs)); \
+        (id _, _DRYUI_VIEW *superview metamacro_comma_if_any_args(styleArgs) _dryui_extract_arguments(styleArgs)); \
     typedef void (^_DRYUI_blockThatGetsPassedByAddStyleToView_##styleName) \
         (_dryui_extract_arguments(styleArgs)); \
     typedef void (^_DRYUI_blockForAddStyleToView_##styleName) \
@@ -293,24 +293,23 @@ _dryui_returnGivenStyleOrNil(_DRYUI_VIEW *notAStyle) {
     FOUNDATION_EXTERN _DRYUI_applicationBlockForStyle_##styleName _dryui_style_application_block_variable_name(styleName); \
     FOUNDATION_EXTERN _DRYUI_blockForStyle_##styleName styleName; \
     static inline void __attribute__((overloadable, unused))  \
-    _dryui_add_style_to_view_internal(className *view, _DRYUI_blockForAddStyleToView_##styleName firstLevelBlock, id selfForBlock) { \
+    _dryui_add_style_to_view_internal(className *view, _DRYUI_blockForAddStyleToView_##styleName firstLevelBlock) { \
         firstLevelBlock(_dryui_nil_casted_to_instance_of_style_struct(styleName), ^(_dryui_extract_arguments(styleArgs)) { \
             _dryui_style_application_block_variable_name(styleName) ( \
                 view, \
-               view.superview, \
-               selfForBlock \
+               view.superview \
                metamacro_comma_if_any_args(styleArgs) \
                _dryui_extract_variable_names(styleArgs) \
             ); \
         }); \
     } \
     static inline void __attribute__((overloadable, unused)) \
-    _dryui_add_style_to_view(className *view, _DRYUI_blockForAddStyleToView_##styleName firstLevelBlock, id selfForBlock) { \
+    _dryui_add_style_to_view(className *view, _DRYUI_blockForAddStyleToView_##styleName firstLevelBlock) { \
         _DRYUI_VIEW<DRYUIViewAdditions> *castedView = _dryui_cast_for_additions(view); \
         id oldConstraintMaker = castedView._dryuiConstraintMaker; \
         castedView._dryuiConstraintMaker = [[MASConstraintMaker alloc] initWithView:view]; \
         \
-        _dryui_add_style_to_view_internal(view, firstLevelBlock, selfForBlock); \
+        _dryui_add_style_to_view_internal(view, firstLevelBlock); \
         \
         [castedView._dryuiConstraintMaker install]; \
         castedView._dryuiConstraintMaker = oldConstraintMaker; \
@@ -345,8 +344,8 @@ _dryui_returnGivenStyleOrNil(_DRYUI_VIEW *notAStyle) {
 
 #define _dryui_declare_addStyleToView_acceptView_no_args(styleName, className) \
     static inline void __attribute__((overloadable, unused)) \
-    _dryui_add_style_to_view_acceptView(className *view, _DRYUI_blockForStyle_##styleName firstLevelBlock, id selfForBlock) { \
-        _dryui_add_style_to_view(view, firstLevelBlock(nil), selfForBlock);\
+    _dryui_add_style_to_view_acceptView(className *view, _DRYUI_blockForStyle_##styleName firstLevelBlock) { \
+        _dryui_add_style_to_view(view, firstLevelBlock(nil));\
     } \
     static inline id __attribute((overloadable, unused)) \
     _dryui_returnGivenViewOrNil(_DRYUI_blockForStyle_##styleName notAView) { \
@@ -359,8 +358,8 @@ _dryui_returnGivenStyleOrNil(_DRYUI_VIEW *notAStyle) {
 
 #define _dryui_declare_addStyleToView_acceptView_some_args(styleName, className, ...) \
     static inline void __attribute__((overloadable, unused))  \
-    _dryui_add_style_to_view_acceptView(className *view, _DRYUI_blockReturnedByBlockForStyle_##styleName secondLevelBlock, id selfForBlock) { \
-        _dryui_add_style_to_view(view, secondLevelBlock(nil), selfForBlock); \
+    _dryui_add_style_to_view_acceptView(className *view, _DRYUI_blockReturnedByBlockForStyle_##styleName secondLevelBlock) { \
+        _dryui_add_style_to_view(view, secondLevelBlock(nil)); \
     } \
     static inline id __attribute((overloadable, unused))  \
     _dryui_returnGivenViewOrNil(_DRYUI_blockReturnedByBlockForStyle_##styleName notAView) { \
@@ -400,8 +399,7 @@ _dryui_returnGivenStyleOrNil(_DRYUI_VIEW *notAStyle) {
     _dryui_block_for_style(styleName, className , ##styleArgs ); \
     _DRYUI_applicationBlockForStyle_##styleName _dryui_style_application_block_variable_name(styleName) = \
     ^(className *_,  \
-      _DRYUI_VIEW *superview, \
-      id self  \
+      _DRYUI_VIEW *superview \
       metamacro_comma_if_any_args(styleArgs) \
       _dryui_extract_arguments(styleArgs)) \
 
@@ -443,4 +441,4 @@ _dryui_returnGivenStyleOrNil(_DRYUI_VIEW *notAStyle) {
     metamacro_foreach_cxt_recursive(_dryui_apply_styles_iter, , view, styles)
 
 #define _dryui_apply_styles_iter(idx, view, style) \
-    _dryui_add_style_to_view(view, style(nil), self);
+    _dryui_add_style_to_view(view, style(nil));
