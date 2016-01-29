@@ -9,7 +9,7 @@
 #ifndef DRYUIMetamacros_h
 #define DRYUIMetamacros_h
 
-#import <libextobjc/metamacros.h>
+#import "libextobjc-metamacros.h"
 
 
 // Expands to a comma (,) if there are any arguments. Otherwise, expands to nothing.
