@@ -33,9 +33,6 @@
   "dependencies": {
     "Masonry": [
 
-    ],
-    "libextobjc": [
-
     ]
   }
 }

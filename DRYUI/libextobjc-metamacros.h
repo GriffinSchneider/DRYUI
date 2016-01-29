@@ -1,4 +1,20 @@
 /**
+ * DRYUI Note:
+ *
+ * This file is copied from https://github.com/jspahrsummers/libextobjc to work around
+ * a CocoaPods bug.
+ *
+ * Without this copy, DRYUI would have to depend on libextobjc, and it's not possible
+ * to use both libextobjc and ReactiveCocoa through CocoaPods, which means anyone who
+ * used this couldn't use RAC. This occurs because RAC has copies of some libextobjc
+ * headers with the same filename, but all the contents renamed. When installed with
+ * CocoaPods, sometimes RAC's #import picks up the libextobjc header, where everything
+ * has an unexpected name, and the compile fails.
+ *
+ * It's dumb.
+ */
+
+/**
  * Macros for metaprogramming
  * ExtendedC
  *
