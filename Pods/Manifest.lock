@@ -1,5 +1,5 @@
 PODS:
-  - DRYUI (0.7.0):
+  - DRYUI (0.8.0):
     - Masonry
   - Masonry (0.6.4)
 
@@ -11,7 +11,7 @@ EXTERNAL SOURCES:
     :path: ./
 
 SPEC CHECKSUMS:
-  DRYUI: 6aa300b484316154a87b8fe9f9b716c2a0a16cc1
+  DRYUI: 53e2afe831500d17a12f6c9e3e7f137a15ff4061
   Masonry: 281802d04d787ea2973179ee8bcb50500579ede2
 
 COCOAPODS: 0.39.0
