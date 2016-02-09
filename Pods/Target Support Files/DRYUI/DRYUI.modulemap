@@ -1,0 +1,6 @@
+framework module DRYUI {
+  umbrella header "DRYUI-umbrella.h"
+
+  export *
+  module * { export * }
+}

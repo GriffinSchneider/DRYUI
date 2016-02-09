@@ -7,7 +7,13 @@
 //
 
 #import <UIKit/UIKit.h>
+#import <DRYUI/DRYUI.h>
+
+dryui_public_style(Green, UIView);
+dryui_public_style(Blue, UIView);
+dryui_public_style(Orange, UIButton);
 
 @interface FAHViewController : UIViewController
+
 
 @end

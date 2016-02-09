@@ -9,14 +9,15 @@
 #import "FAHViewController.h"
 #import <DRYUI/DRYUI.h>
 #import "FAHAppDelegate.h"
+#import "DRYUI_Example-swift.h"
 
-dryui_private_style(Green, UIView) {
+dryui_style(Green, UIView) {
     _.backgroundColor = [UIColor greenColor];
 };
-dryui_private_style(Blue, UIView) {
+dryui_style(Blue, UIView) {
     _.backgroundColor = [UIColor blueColor];
 };
-dryui_private_style(Orange, UIView) {
+dryui_style(Orange, UIButton) {
     _.backgroundColor = [UIColor orangeColor];
 };
 
@@ -41,9 +42,12 @@ dryui_private_style(Orange, UIView) {
                 _.make.edges.equalTo(_.superview).with.insets(insets);
                 UIView* add_subview(view3, Blue) {
                     _.make.edges.equalTo(_.superview).with.insets(insets);
-                    UIView* add_subview(view4, Orange) {
+                    UILabel* add_subview(view4, [SwiftStyles aStyle:@"thing"], Blue) {
                         _.make.edges.equalTo(_.superview).with.insets(insets);
                     };
+                    UILabel *add_subview(view5, ^(UIView *_) {
+                        
+                    });
                 };
             };
         };

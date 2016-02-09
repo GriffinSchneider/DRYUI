@@ -1,6 +1,8 @@
 workspace 'DRYUI'
 
-platform :ios, '7.0'
+use_frameworks!
+
+platform :ios, '8.0'
 
 xcodeproj 'Example/DRYUI Example'
 target 'DRYUI Example', :exclusive => true do
