@@ -1,5 +1,6 @@
 import SnapKit
 
+
 public extension UIView {
     
     public func addSubview<SubviewType:UIView>(subviewBlocks: (SubviewType) -> Void ...) -> SubviewType {
@@ -29,7 +30,7 @@ public extension UIView {
     private func addSubviewInternal<SubviewType:UIView>(subview: SubviewType, _ subviewBlocks: [(SubviewType) -> Void], _ lastBlock: (SubviewType, ConstraintMaker) -> Void) -> SubviewType {
         self.addSubview(subview)
         subviewBlocks.forEach{ $0(subview) }
-        snp_makeConstraints { lastBlock(subview, $0) }
+        subview.snp_makeConstraints { lastBlock(subview, $0) }
         return subview
     }
 }

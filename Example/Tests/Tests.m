@@ -10,9 +10,10 @@
 #import <XCTest/XCTest.h>
 #import <DRYUI/DRYUI.h>
 #import <Masonry/Masonry.h>
+#import "Tests-swift.h"
 
 #define BIG_STYLE_LIST \
-Style0, Style1, Style2, Style3, Style3, \
+[CommonStyles Red], Style1, Style2, Style3, Style3, \
 Style3, Style3, Style3, Style3, Style3, \
 Style3, Style3, Style3, Style3, Style3, \
 Style3, Style3, Style3, Style3
@@ -28,13 +29,8 @@ Style3, Style3, Style3, Style3
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 @implementation DRYUITests
 
-dryui_private_style(Style0) {
-    NSCAssert(_.superview, @"supreview should not be nil");
-    _.backgroundColor = [UIColor redColor];
-};
-
 dryui_private_style(Style1) {
-    dryui_parent_style(Style0);
+    dryui_parent_style([CommonStyles Red]);
     NSCAssert(_.superview, @"supreview should not be nil");
     _.backgroundColor = [UIColor blueColor];
 };
@@ -52,7 +48,7 @@ dryui_private_style(Style3) {
 };
 
 dryui_private_style(StyleButton, UIButton) {
-    dryui_parent_style(Style0);
+    dryui_parent_style([CommonStyles Red]);
     [_ setTitle:@"button title" forState:UIControlStateNormal];
     dryui_parent_style(Style1);
     dryui_parent_style(Style3);
@@ -112,7 +108,7 @@ dryui_private_style(StyleWithSameArgTypes3, UIView, (NSNumber *)arg) {
                 _.tag = 2;
             };
         };
-        add_subview(c, Style0, Style1) {
+        add_subview(c, [CommonStyles Red], Style1) {
             make.edges.equalTo(_.superview);
             add_subview(d) {
             make.height.equalTo(_.superview);
@@ -215,7 +211,7 @@ dryui_private_style(StyleWithSameArgTypes3, UIView, (NSNumber *)arg) {
     UILabel *view2 = [UILabel new];
     [superview addSubview:view2];
     
-    dryui_apply_style(view1, Style0);
+    dryui_apply_style(view1, [CommonStyles Red]);
     dryui_apply_styles(view2, Style1, Style2, ChildOfArgsWithArgs(@"testApplyStyles"));
     
     XCTAssertEqualObjects(view1.backgroundColor, [UIColor redColor]);

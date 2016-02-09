@@ -7,6 +7,9 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		2BD205731C6A780900965B42 /* Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2BD205721C6A780900965B42 /* Tests.swift */; };
+		2BD205761C6A791300965B42 /* CommonStyles.m in Sources */ = {isa = PBXBuildFile; fileRef = 2BD205751C6A791300965B42 /* CommonStyles.m */; };
+		2BD205781C6A792B00965B42 /* CommonStyles.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2BD205771C6A792B00965B42 /* CommonStyles.swift */; };
 		301FD51C3EDC66FC802399C9 /* Pods_DRYUI_Example.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3332F5650113517672FAB50C /* Pods_DRYUI_Example.framework */; };
 		5DD65E3D1B0933200076BF95 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 5DD65E341B0933200076BF95 /* InfoPlist.strings */; };
 		5DD65E3E1B0933200076BF95 /* FAHAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 5DD65E371B0933200076BF95 /* FAHAppDelegate.m */; };
@@ -36,6 +39,11 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		2BD205711C6A780800965B42 /* Tests-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Tests-Bridging-Header.h"; sourceTree = "<group>"; };
+		2BD205721C6A780900965B42 /* Tests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Tests.swift; sourceTree = "<group>"; };
+		2BD205741C6A791300965B42 /* CommonStyles.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CommonStyles.h; sourceTree = "<group>"; };
+		2BD205751C6A791300965B42 /* CommonStyles.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CommonStyles.m; sourceTree = "<group>"; };
+		2BD205771C6A792B00965B42 /* CommonStyles.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CommonStyles.swift; sourceTree = "<group>"; };
 		3332F5650113517672FAB50C /* Pods_DRYUI_Example.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_DRYUI_Example.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		39D67863D9624AA33506B84D /* Pods-Tests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Tests.release.xcconfig"; path = "../Pods/Target Support Files/Pods-Tests/Pods-Tests.release.xcconfig"; sourceTree = "<group>"; };
 		3ABB9301F31F45131D783CFF /* Pods-DRYUI Example.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-DRYUI Example.release.xcconfig"; path = "../Pods/Target Support Files/Pods-DRYUI Example/Pods-DRYUI Example.release.xcconfig"; sourceTree = "<group>"; };
@@ -146,7 +154,12 @@
 			isa = PBXGroup;
 			children = (
 				6003F5BB195388D20070C39A /* Tests.m */,
+				2BD205721C6A780900965B42 /* Tests.swift */,
+				2BD205741C6A791300965B42 /* CommonStyles.h */,
+				2BD205751C6A791300965B42 /* CommonStyles.m */,
+				2BD205771C6A792B00965B42 /* CommonStyles.swift */,
 				6003F5B6195388D20070C39A /* Supporting Files */,
+				2BD205711C6A780800965B42 /* Tests-Bridging-Header.h */,
 			);
 			path = Tests;
 			sourceTree = "<group>";
@@ -381,6 +394,9 @@
 			buildActionMask = 2147483647;
 			files = (
 				6003F5BC195388D20070C39A /* Tests.m in Sources */,
+				2BD205731C6A780900965B42 /* Tests.swift in Sources */,
+				2BD205781C6A792B00965B42 /* CommonStyles.swift in Sources */,
+				2BD205761C6A791300965B42 /* CommonStyles.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -546,6 +562,7 @@
 			baseConfigurationReference = EFBBAA8A94C889CCF4E21AF7 /* Pods-Tests.debug.xcconfig */;
 			buildSettings = {
 				BUNDLE_LOADER = "$(BUILT_PRODUCTS_DIR)/DRYUI Example.app/DRYUI Example";
+				CLANG_ENABLE_MODULES = YES;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(SDKROOT)/Developer/Library/Frameworks",
 					"$(inherited)",
@@ -558,6 +575,7 @@
 					"$(inherited)",
 				);
 				INFOPLIST_FILE = "Tests/Tests-Info.plist";
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				OTHER_CFLAGS = (
 					"$(inherited)",
 					"-isystem",
@@ -569,6 +587,8 @@
 					"-fdiagnostics-show-option",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_OBJC_BRIDGING_HEADER = "Tests/Tests-Bridging-Header.h";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				TEST_HOST = "$(BUNDLE_LOADER)";
 				WRAPPER_EXTENSION = xctest;
 			};
@@ -579,6 +599,7 @@
 			baseConfigurationReference = 39D67863D9624AA33506B84D /* Pods-Tests.release.xcconfig */;
 			buildSettings = {
 				BUNDLE_LOADER = "$(BUILT_PRODUCTS_DIR)/DRYUI Example.app/DRYUI Example";
+				CLANG_ENABLE_MODULES = YES;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(SDKROOT)/Developer/Library/Frameworks",
 					"$(inherited)",
@@ -587,6 +608,7 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Tests/Tests-Prefix.pch";
 				INFOPLIST_FILE = "Tests/Tests-Info.plist";
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				OTHER_CFLAGS = (
 					"$(inherited)",
 					"-isystem",
@@ -598,6 +620,7 @@
 					"-fdiagnostics-show-option",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_OBJC_BRIDGING_HEADER = "Tests/Tests-Bridging-Header.h";
 				TEST_HOST = "$(BUNDLE_LOADER)";
 				WRAPPER_EXTENSION = xctest;
 			};
