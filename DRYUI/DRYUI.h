@@ -71,12 +71,10 @@ FOUNDATION_EXTERN id _dryui_instantiate_from_encoding(char *);
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 #pragma mark -
 
-// Define some macros that will generate 'unique' variable names using __LINE__.
-// The names will be unique as long as the DRYUI macros aren't used twice on the same line.
-#define _dryui_var_passed_instance_or_nil metamacro_concat(_dryui_passed_instance_or_nil_, __LINE__)
-#define _dryui_var_view_and_superview_block metamacro_concat(_dryui_view_and_superview_block_, __LINE__)
-#define _dryui_var_previous_toplevel_view metamacro_concat(_dryui_previous_toplevel_view_, __LINE__)
+// Macros that generate unique variable names
 #define _dryui_goto_label metamacro_concat(_dryui_goto_label_, __LINE__)
+#define _dryui_inner_block_type(styleName) metamacro_concat(_DRYUI_InnerBlockType_, styleName)
+#define _dryui_block_type(styleName) metamacro_concat(styleName, BlockType)
 
 
 // This is used to implement add_subview and build_subviews - we want to have nice syntax where
@@ -134,9 +132,8 @@ FOUNDATION_EXTERN id _dryui_instantiate_from_encoding(char *);
 
 #define _dryui_add_subview_helper_1(variableName, codeAfterVariableAssignment) \
     variableName ; \
-    typeof(variableName) _dryui_var_passed_instance_or_nil = nil; \
     if (!variableName) { \
-        variableName = _dryui_var_passed_instance_or_nil ?: _dryui_instantiate_from_encoding(@encode(typeof(*(variableName)))); \
+        variableName = _dryui_instantiate_from_encoding(@encode(typeof(*(variableName)))); \
     } \
     _dryui_create_view_helper(variableName, \
         for (_DRYUI_VIEW *_dryui_previous_view = _; ({ \
@@ -206,13 +203,13 @@ FOUNDATION_EXTERN id _dryui_instantiate_from_encoding(char *);
 
 #define _dryui_public_style1(styleName) _dryui_public_style2(styleName, _DRYUI_VIEW)
 #define _dryui_public_style2(styleName, className) \
-    typedef void (^metamacro_concat(styleName, BlockType)) (className *_); \
-    FOUNDATION_EXTERN metamacro_concat(styleName, BlockType) styleName;
+    typedef void (^_dryui_block_type(styleName)) (className *_); \
+    FOUNDATION_EXTERN _dryui_block_type(styleName) styleName;
 
 #define _dryui_public_styleMore(styleName, className, styleArgs...) \
-    typedef void (^metamacro_concat(styleName, InnerBlockType)) (className *_); \
-    typedef metamacro_concat(styleName, InnerBlockType) (^metamacro_concat(styleName, BlockType)) (_dryui_extract_arguments(styleArgs)); \
-    FOUNDATION_EXTERN metamacro_concat(styleName, BlockType) styleName;
+    typedef void (^_dryui_inner_block_type(styleName)) (className *_); \
+    typedef _dryui_inner_block_type(styleName) (^_dryui_block_type(styleName)) (_dryui_extract_arguments(styleArgs)); \
+    FOUNDATION_EXTERN _dryui_block_type(styleName) styleName;
 
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -234,12 +231,12 @@ FOUNDATION_EXTERN id _dryui_instantiate_from_encoding(char *);
 
 #define _dryui_style1(styleName) _dryui_style2(styleName, _DRYUI_VIEW)
 #define _dryui_style2(styleName, className) \
-    metamacro_concat(styleName, BlockType) styleName = ^(className *_)
+    _dryui_block_type(styleName) styleName = ^(className *_)
 
 #define _dryui_styleMore(styleName, className, styleArgs...) \
     typedef void (^metamacro_concat(styleName, BlockThatYouWrite)) (className *_, _dryui_extract_arguments(styleArgs)); \
     static metamacro_concat(styleName, BlockThatYouWrite) metamacro_concat(_dryui_blockYouWrite_, styleName); \
-    metamacro_concat(styleName, BlockType) styleName = ^(_dryui_extract_arguments(styleArgs)) { \
+    _dryui_block_type(styleName) styleName = ^(_dryui_extract_arguments(styleArgs)) { \
         return ^(className *_) { \
             metamacro_concat(_dryui_blockYouWrite_, styleName)(_, _dryui_extract_variable_names(styleArgs)); \
         }; \
