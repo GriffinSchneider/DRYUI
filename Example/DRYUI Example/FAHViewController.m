@@ -8,6 +8,7 @@
 
 #import "FAHViewController.h"
 #import <DRYUI/DRYUI.h>
+#import <Masonry/Masonry.h>
 #import "FAHAppDelegate.h"
 #import "DRYUI_Example-swift.h"
 
@@ -37,13 +38,13 @@ dryui_style(Orange, UIButton) {
     build_subviews(self.view) {
         _.backgroundColor = [UIColor whiteColor];
         UIView* add_subview(view1, Red) {
-            _.make.edges.equalTo(_.superview).with.insets(insets);
+            make.edges.equalTo(_.superview).with.insets(insets);
             UIView* add_subview(view2, Green) {
-                _.make.edges.equalTo(_.superview).with.insets(insets);
+                make.edges.equalTo(_.superview).with.insets(insets);
                 UIView* add_subview(view3, Blue) {
-                    _.make.edges.equalTo(_.superview).with.insets(insets);
+                    make.edges.equalTo(_.superview).with.insets(insets);
                     UILabel* add_subview(view4, [SwiftStyles aStyle:@"thing"], Blue) {
-                        _.make.edges.equalTo(_.superview).with.insets(insets);
+                        make.edges.equalTo(_.superview).with.insets(insets);
                     };
                     UILabel *add_subview(view5, ^(UIView *_) {
                         

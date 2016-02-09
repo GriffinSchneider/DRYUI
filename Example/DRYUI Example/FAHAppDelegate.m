@@ -19,8 +19,8 @@ dryui_style(Red, UIView) {
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
     self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
-    self.window.rootViewController = [SwiftViewController new];
-//    self.window.rootViewController = [FAHViewController new];
+//    self.window.rootViewController = [SwiftViewController new];
+    self.window.rootViewController = [FAHViewController new];
     [self.window makeKeyAndVisible];
     
     return YES;

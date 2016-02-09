@@ -16,9 +16,10 @@ Pod::Spec.new do |s|
   s.ios.frameworks = 'Foundation', 'UIKit'
   s.osx.frameworks = 'Foundation', 'AppKit'
 
-  s.ios.deployment_target = '7.0'
-  s.osx.deployment_target = '10.7'
+  s.ios.deployment_target = '8.0'
+  s.osx.deployment_target = '10.8'
   s.requires_arc = true
 
   s.dependency 'Masonry'
+  s.dependency 'SnapKi'
 end

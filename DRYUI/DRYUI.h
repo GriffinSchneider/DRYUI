@@ -15,7 +15,6 @@
 #endif
 
 #import <Foundation/Foundation.h>
-#import <Masonry/Masonry.h>
 #import "libextobjc-metamacros.h"
 #import "DRYUIMetamacros.h"
 
@@ -38,31 +37,10 @@
 
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-@interface _DRYUI_VIEW (DRYUIAdditions)
-
-@property (nonatomic, strong, readonly) MASConstraintMaker *make;
-
-@end
-
-
-////////////////////////////////////////////////////////////////////////////////////////////////////
 // Everything below here is an implementation detail, and subject to change in a minor version.   //
 // Don't write code that depends on anything below this line.                                     //
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 #pragma mark - Implementation Details
-
-
-////////////////////////////////////////////////////////////////////////////////////////////////////
-// The methods in this protocol are actually implemented via a category on UIView, but we don't
-// want them to be exposed everywhere. So, our macros cast views to have this protocol when
-// we need to use something declared here.
-@protocol DRYUIViewAdditions<NSObject>
-
-@property (nonatomic, strong) MASConstraintMaker *_dryuiConstraintMaker;
-
-@end
-
-#define _dryui_cast_for_additions(view) ((_DRYUI_VIEW<DRYUIViewAdditions> *) view)
 
 
 FOUNDATION_EXTERN id _dryui_instantiate_from_encoding(char *);
@@ -88,18 +66,22 @@ FOUNDATION_EXTERN id _dryui_instantiate_from_encoding(char *);
 #define _dryui_create_view_helper(viewArg, spot1, spot2) \
     spot1 \
     for (typeof(viewArg) _ __attribute__((unused)) = viewArg; ({ \
+        static BOOL thing = false; \
+        thing = !thing; \
+    });) \
+    for (MASConstraintMaker* make __attribute__((unused)) = [[MASConstraintMaker alloc] initWithView:_]; ({ \
         NSAssert([NSThread isMainThread], @"DRYUI should only be used from the main thread!"); \
         static BOOL thing = false; \
         thing = !thing; \
-        _DRYUI_VIEW<DRYUIViewAdditions> *casted = _dryui_cast_for_additions(_); \
         if (thing) { \
             /* Stuff in here runs before the user-provided code */ \
-            casted._dryuiConstraintMaker = [[MASConstraintMaker alloc] initWithView:_]; \
             spot2 \
         } else { \
             /* Stuff in here runs after the user-provided code */ \
-            [casted._dryuiConstraintMaker install]; \
-            casted._dryuiConstraintMaker = nil; \
+            NSArray *installed = [make install]; \
+            if (installed && installed.count) { \
+                _.translatesAutoresizingMaskIntoConstraints = NO; \
+            } \
         } \
         thing; \
     });) \

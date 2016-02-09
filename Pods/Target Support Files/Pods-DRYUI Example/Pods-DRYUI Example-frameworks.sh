@@ -86,8 +86,10 @@ strip_invalid_archs() {
 if [[ "$CONFIGURATION" == "Debug" ]]; then
   install_framework "Pods-DRYUI Example/DRYUI.framework"
   install_framework "Pods-DRYUI Example/Masonry.framework"
+  install_framework "Pods-DRYUI Example/SnapKit.framework"
 fi
 if [[ "$CONFIGURATION" == "Release" ]]; then
   install_framework "Pods-DRYUI Example/DRYUI.framework"
   install_framework "Pods-DRYUI Example/Masonry.framework"
+  install_framework "Pods-DRYUI Example/SnapKit.framework"
 fi

@@ -9,6 +9,7 @@
 #import <UIKit/UIKit.h>
 #import <XCTest/XCTest.h>
 #import <DRYUI/DRYUI.h>
+#import <Masonry/Masonry.h>
 
 #define BIG_STYLE_LIST \
 Style0, Style1, Style2, Style3, Style3, \
@@ -83,7 +84,6 @@ dryui_private_style(StyleWithSameArgTypes3, UIView, (NSNumber *)arg) {
 };
 
 - (void)testDRYUI {
-
     UIView *topLevel = [UIView new];
     __block UIView *a, *b, *c, *d, *e;
     __block UIButton *g, *gg;
@@ -99,14 +99,13 @@ dryui_private_style(StyleWithSameArgTypes3, UIView, (NSNumber *)arg) {
         build_subviews(other) {};
         XCTAssertEqual(_, topLevel);
         
-        _.make.edges.equalTo(_);
+        make.edges.equalTo(_);
         __block BOOL didBlockRun = NO;
         add_subview(a, BIG_STYLE_LIST) {
             didBlockRun = YES;
         };
         XCTAssertTrue(didBlockRun, @"Block should run before execution gets here.");
         add_subview(b, Style3) {
-            [_ make];
             XCTAssertEqual(_.superview, superview, @"superview should be bound to view.superview");
             _.backgroundColor = [UIColor purpleColor];
             UIView* add_subview(x) {
@@ -114,13 +113,13 @@ dryui_private_style(StyleWithSameArgTypes3, UIView, (NSNumber *)arg) {
             };
         };
         add_subview(c, Style0, Style1) {
-            [_ make];
+            make.edges.equalTo(_.superview);
             add_subview(d) {
-                [_ make];
+            make.height.equalTo(_.superview);
                 XCTAssertEqual(_.superview, superview, @"superview should be bound to view.superview");
                 add_subview(i, StyleWithArgs(@"asdf", 22)) {};
                 add_subview(e) {
-                    [_ make];
+                    make.left.equalTo(_.superview);
                     XCTAssertNotNil(b, @"b should already be assigned when this block is run");
                     XCTAssertNotNil(c, @"c should already be assigned when this block is run");
                 };
@@ -128,7 +127,7 @@ dryui_private_style(StyleWithSameArgTypes3, UIView, (NSNumber *)arg) {
                 g = ({gg = [UIButton buttonWithType:UIButtonTypeSystem];});
                 add_subview(g, Style1, StyleButton) {
                     XCTAssertEqual(_, gg);
-                    [_ make];
+                    make.bottom.equalTo(_.superview);
                     _.tag = 3;
                 };
             };
@@ -154,9 +153,9 @@ dryui_private_style(StyleWithSameArgTypes3, UIView, (NSNumber *)arg) {
     
     // Assertions about layout constraints
     XCTAssertTrue(a.translatesAutoresizingMaskIntoConstraints, @"views that don't use _.make shouldn't set translatesAutoresizingMaskIntoConstraints to NO");
+    XCTAssertTrue(b.translatesAutoresizingMaskIntoConstraints, @"views that don't use _.make shouldn't set translatesAutoresizingMaskIntoConstraints to NO");
     XCTAssertTrue(self.f.translatesAutoresizingMaskIntoConstraints, @"views that don't use _.make shouldn't set translatesAutoresizingMaskIntoConstraints to NO");
     
-    XCTAssertFalse(b.translatesAutoresizingMaskIntoConstraints, @"views that use _.make should set translatesAutoresizingMaskIntoConstraints to NO");
     XCTAssertFalse(c.translatesAutoresizingMaskIntoConstraints, @"views that use _.make should set translatesAutoresizingMaskIntoConstraints to NO");
     XCTAssertFalse(d.translatesAutoresizingMaskIntoConstraints, @"views that use _.make should set translatesAutoresizingMaskIntoConstraints to NO");
     XCTAssertFalse(e.translatesAutoresizingMaskIntoConstraints, @"views that use _.make should set translatesAutoresizingMaskIntoConstraints to NO");
@@ -173,7 +172,6 @@ dryui_private_style(StyleWithSameArgTypes3, UIView, (NSNumber *)arg) {
 }
 
 - (void)testDRYUIDynamicStyles {
-    
     UIView *topLevel = [UIView new];
     UILabel *shouldBeC = [UILabel new];
     __block UILabel *shouldBeB = [UILabel new];
@@ -206,11 +204,9 @@ dryui_private_style(StyleWithSameArgTypes3, UIView, (NSNumber *)arg) {
     XCTAssertEqual(d.tag, 1);
     XCTAssertEqual(e.tag, 2);
     XCTAssertEqual(f.tag, 3);
-    
 }
 
 - (void)testApplyStyles {
-    
     UIView *superview = [UIView new];
     
     UIView *view1 = [UIView new];

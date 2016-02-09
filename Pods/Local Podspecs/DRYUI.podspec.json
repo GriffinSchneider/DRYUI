@@ -26,12 +26,15 @@
     ]
   },
   "platforms": {
-    "ios": "7.0",
-    "osx": "10.7"
+    "ios": "8.0",
+    "osx": "10.8"
   },
   "requires_arc": true,
   "dependencies": {
     "Masonry": [
+
+    ],
+    "SnapKit": [
 
     ]
   }
