@@ -28,25 +28,25 @@ Style3, Style3, Style3, Style3
 @implementation DRYUITests
 
 dryui_private_style(Style0) {
-    NSCAssert(superview, @"supreview should not be nil");
+    NSCAssert(_.superview, @"supreview should not be nil");
     _.backgroundColor = [UIColor redColor];
 };
 
 dryui_private_style(Style1) {
     dryui_parent_style(Style0);
-    NSCAssert(superview, @"supreview should not be nil");
+    NSCAssert(_.superview, @"supreview should not be nil");
     _.backgroundColor = [UIColor blueColor];
 };
 
 dryui_private_style(Style2) {
     dryui_parent_style(Style1);
-    NSCAssert(superview, @"supreview should not be nil");
+    NSCAssert(_.superview, @"supreview should not be nil");
     _.backgroundColor = [UIColor greenColor];
 };
 
 dryui_private_style(Style3) {
     dryui_parent_style(Style2);
-    NSCAssert(superview, @"supreview should not be nil");
+    NSCAssert(_.superview, @"supreview should not be nil");
     _.backgroundColor = [UIColor orangeColor];
 };
 
@@ -125,7 +125,8 @@ dryui_private_style(StyleWithSameArgTypes3, UIView, (NSNumber *)arg) {
                     XCTAssertNotNil(c, @"c should already be assigned when this block is run");
                 };
                 add_subview(self.f){};
-                add_subview(g, ({gg = [UIButton buttonWithType:UIButtonTypeSystem];}), Style1, StyleButton) {
+                g = ({gg = [UIButton buttonWithType:UIButtonTypeSystem];});
+                add_subview(g, Style1, StyleButton) {
                     XCTAssertEqual(_, gg);
                     [_ make];
                     _.tag = 3;
@@ -161,20 +162,6 @@ dryui_private_style(StyleWithSameArgTypes3, UIView, (NSNumber *)arg) {
     XCTAssertFalse(e.translatesAutoresizingMaskIntoConstraints, @"views that use _.make should set translatesAutoresizingMaskIntoConstraints to NO");
     XCTAssertFalse(g.translatesAutoresizingMaskIntoConstraints, @"views that use _.make should set translatesAutoresizingMaskIntoConstraints to NO");
     
-    
-    // Assertions about style association
-    NSArray *styles = @[BIG_STYLE_LIST];
-    XCTAssertEqualObjects(a.dryuiStyles, styles, @"a's styles should equal the BIG_STYLE_LIST");
-    
-    XCTAssertEqualObjects(b.dryuiStyles, @[Style3], @"b's styles should equal [Style3]");
-    XCTAssertEqualObjects(c.dryuiStyles, (@[Style0, Style1]), @"c's styles should equal [Style0, Style1]");
-    XCTAssertEqualObjects(g.dryuiStyles, (@[Style1, StyleButton]), @"g's styles should equal [StyleButton, Style1]");
-    
-    XCTAssertEqual(d.dryuiStyles.count, 0, @"d shouldn't have any styles");
-    XCTAssertEqual(e.dryuiStyles.count, 0, @"d shouldn't have any styles");
-    XCTAssertEqual(self.f.dryuiStyles.count, 0, @"d shouldn't have any styles");
-    
-    
     // Assertions about style application
     XCTAssertEqual(a.backgroundColor, [UIColor orangeColor], @"a should be orange");
     XCTAssertEqual(b.backgroundColor, [UIColor purpleColor], @"b should be purple");
@@ -194,10 +181,12 @@ dryui_private_style(StyleWithSameArgTypes3, UIView, (NSNumber *)arg) {
     
     build_subviews(topLevel) {
         add_subview(a, StyleWithArgs(@"first label", 42)) {
-            add_subview(b, (shouldBeB = [UILabel new]), ChildOfArgsWithArgs(@"not the text"), ChildOfArgsWithoutArgs) {
+            b = (shouldBeB = [UILabel new]);
+            add_subview(b, ChildOfArgsWithArgs(@"not the text"), ChildOfArgsWithoutArgs) {
             };
         };
-        add_subview(c, shouldBeC, StyleWithArgs(@"nope", 11111), ChildOfArgsWithoutArgs, ChildOfArgsWithArgs(@"third label")) {};
+        c = shouldBeC;
+        add_subview(c, StyleWithArgs(@"nope", 11111), ChildOfArgsWithoutArgs, ChildOfArgsWithArgs(@"third label")) {};
         add_subview(d, StyleWithSameArgTypes1(@1)) {};
         add_subview(e, StyleWithSameArgTypes2(@2)) {};
         add_subview(f, StyleWithSameArgTypes3(@3)) {};
