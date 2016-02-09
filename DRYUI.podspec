@@ -17,7 +17,7 @@ Pod::Spec.new do |s|
   s.osx.frameworks = 'Foundation', 'AppKit'
 
   s.ios.deployment_target = '8.0'
-  s.osx.deployment_target = '10.8'
+  s.osx.deployment_target = '10.10'
   s.requires_arc = true
 
   s.dependency 'Masonry'
