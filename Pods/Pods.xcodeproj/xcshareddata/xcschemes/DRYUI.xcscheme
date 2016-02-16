@@ -14,7 +14,7 @@
             buildForArchiving = "YES">
             <BuildableReference
                BuildableIdentifier = 'primary'
-               BlueprintIdentifier = '4522998282E7DB21534AD7A0'
+               BlueprintIdentifier = 'BB7349C35C68B3B4B100118F'
                BlueprintName = 'DRYUI'
                ReferencedContainer = 'container:Pods.xcodeproj'
                BuildableName = 'DRYUI.framework'>

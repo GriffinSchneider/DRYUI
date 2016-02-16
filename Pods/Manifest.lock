@@ -1,5 +1,5 @@
 PODS:
-  - DRYUI (0.9.0-alpha-1):
+  - DRYUI (0.9.0-alpha-2):
     - Masonry
     - SnapKit
   - Masonry (0.6.4)
@@ -13,7 +13,7 @@ EXTERNAL SOURCES:
     :path: ./
 
 SPEC CHECKSUMS:
-  DRYUI: b4f23bfe695a945d769e68f5bccf1f1a14689b49
+  DRYUI: da15fc9a9d303e8356d00f3891b0ccaa3c0ce8e5
   Masonry: 281802d04d787ea2973179ee8bcb50500579ede2
   SnapKit: eff58d6e3451bf2f482db2eccf86aecf371dc62d
 
