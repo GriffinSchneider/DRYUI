@@ -10,6 +10,7 @@ import SnapKit
 
 public extension View {
     
+    // MARK: Add a view with inferred type from blocks
     public func addSubview<SubviewType:View>(subviewBlocks: (SubviewType) -> Void ...) -> SubviewType {
         return addSubviewInternal(SubviewType(), subviewBlocks)
     }
@@ -18,6 +19,16 @@ public extension View {
         return addSubviewInternal(SubviewType(), subviewBlocks, lastBlock)
     }
     
+    // MARK: Add a view with type passed explicitly
+    public func addSubview<SubviewType:View>(subviewType: SubviewType.Type, _ subviewBlocks: (SubviewType) -> Void ...) -> SubviewType {
+        return addSubviewInternal(SubviewType(), subviewBlocks)
+    }
+    
+    public func addSubview<SubviewType:View>(subviewType: SubviewType.Type, _ subviewBlocks: (SubviewType) -> Void ..., _ lastBlock: (SubviewType, ConstraintMaker) -> Void) -> SubviewType {
+        return addSubviewInternal(SubviewType(), subviewBlocks, lastBlock)
+    }
+    
+    // MARK: Add a view with the view instance passed explicitly
     public func addSubview<SubviewType:View>(subview: SubviewType, _ subviewBlocks: (SubviewType) -> Void ...) -> SubviewType {
         return addSubviewInternal(subview, subviewBlocks)
     }
@@ -26,8 +37,8 @@ public extension View {
         return addSubviewInternal(subview, subviewBlocks, lastBlock)
     }
     
+    // MARK: Private methods
     // These 'internal' methods _should_ be just more overloads of addSubview, but doing it that way makes the compiler crash (XCode 7.2).
-    
     private func addSubviewInternal<SubviewType:View>(subview: SubviewType, _ subviewBlocks: [(SubviewType) -> Void]) -> SubviewType {
         self.addSubview(subview)
         subviewBlocks.forEach{ $0(subview) }
