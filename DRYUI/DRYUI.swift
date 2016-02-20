@@ -15,7 +15,7 @@ public extension View {
         return addSubviewInternal(SubviewType(), subviewBlocks)
     }
     
-    public func addSubview<SubviewType:View>(subviewBlocks: (SubviewType) -> Void ..., _ lastBlock: (SubviewType, ConstraintMaker) -> Void) -> SubviewType {
+    public func addSubview<SubviewType:View>(subviewBlocks: (SubviewType) -> Void ..., @noescape _ lastBlock: (SubviewType, ConstraintMaker) -> Void) -> SubviewType {
         return addSubviewInternal(SubviewType(), subviewBlocks, lastBlock)
     }
     
@@ -24,7 +24,7 @@ public extension View {
         return addSubviewInternal(SubviewType(), subviewBlocks)
     }
     
-    public func addSubview<SubviewType:View>(subviewType: SubviewType.Type, _ subviewBlocks: (SubviewType) -> Void ..., _ lastBlock: (SubviewType, ConstraintMaker) -> Void) -> SubviewType {
+    public func addSubview<SubviewType:View>(subviewType: SubviewType.Type, _ subviewBlocks: (SubviewType) -> Void ..., @noescape _ lastBlock: (SubviewType, ConstraintMaker) -> Void) -> SubviewType {
         return addSubviewInternal(SubviewType(), subviewBlocks, lastBlock)
     }
     
@@ -33,7 +33,7 @@ public extension View {
         return addSubviewInternal(subview, subviewBlocks)
     }
     
-    public func addSubview<SubviewType:View>(subview: SubviewType, _ subviewBlocks: (SubviewType) -> Void ..., _ lastBlock: (SubviewType, ConstraintMaker) -> Void) -> SubviewType {
+    public func addSubview<SubviewType:View>(subview: SubviewType, _ subviewBlocks: (SubviewType) -> Void ..., @noescape _ lastBlock: (SubviewType, ConstraintMaker) -> Void) -> SubviewType {
         return addSubviewInternal(subview, subviewBlocks, lastBlock)
     }
     
@@ -45,7 +45,7 @@ public extension View {
         return subview
     }
     
-    private func addSubviewInternal<SubviewType:View>(subview: SubviewType, _ subviewBlocks: [(SubviewType) -> Void], _ lastBlock: (SubviewType, ConstraintMaker) -> Void) -> SubviewType {
+    private func addSubviewInternal<SubviewType:View>(subview: SubviewType, _ subviewBlocks: [(SubviewType) -> Void], @noescape _ lastBlock: (SubviewType, ConstraintMaker) -> Void) -> SubviewType {
         self.addSubview(subview)
         subviewBlocks.forEach{ $0(subview) }
         subview.snp_makeConstraints { lastBlock(subview, $0) }
