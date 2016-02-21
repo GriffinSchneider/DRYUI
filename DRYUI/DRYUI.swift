@@ -8,7 +8,17 @@ import SnapKit
     public typealias View = NSView
 #endif
 
-public extension View {
+public protocol DRYUIAble {
+    func dryui_addSubview(view: UIView) -> Void
+}
+
+extension UIView: DRYUIAble {
+    public func dryui_addSubview(view: UIView) {
+        addSubview(view)
+    }
+}
+
+public extension DRYUIAble {
     
     // MARK: Add a view with inferred type from blocks
     public func addSubview<SubviewType:View>(subviewBlocks: (SubviewType) -> Void ...) -> SubviewType {
