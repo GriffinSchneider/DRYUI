@@ -17,19 +17,19 @@ Pod::Spec.new do |s|
 
   s.subspec 'objc' do |objc|
     objc.ios.deployment_target = '7.0'
-    objc.dependency 'DRYUI/something'
+    objc.dependency 'DRYUI/base'
   end
 
-  s.subspec 'something' do |some|
-    some.source_files = 'DRYUI/' + '*.{h,m}'
-    some.dependency 'Masonry'
+  s.subspec 'base' do |base|
+    base.source_files = 'DRYUI/' + '*.{h,m}'
+    base.dependency 'Masonry'
   end
 
   s.subspec 'swift' do |swift|
     swift.source_files ='DRYUI/' + '*.{swift}'
     swift.ios.deployment_target = '8.0'
     swift.dependency 'SnapKit'
-    swift.dependency 'DRYUI/something'
+    swift.dependency 'DRYUI/base'
   end
   
 end
