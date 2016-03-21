@@ -1,24 +1,35 @@
 Pod::Spec.new do |s|
   s.name             = "DRYUI"
-  s.version          = "0.8.0"
+  s.version          = "0.9.0"
   s.summary          = "A tiny library that provides a better API for building and styling view hierarchies in code."
   s.description      = %{
     DRYUI is a tiny library that provides a better API for building and styling view hierarchies in code.
-    DRYUI uses [Masonry](https://github.com/Masonry/Masonry) for Autolayout, and works on both iOS and OSX.
+    DRYUI uses [Masonry](https://github.com/Masonry/Masonry) for Autolayout.
   }
   s.homepage         = "https://github.com/GriffinSchneider/DRYUI"
   s.license          = 'MIT'
   s.author           = { "Griffin Schneider" => "griffinschneider@gmail.com" }
   s.source           = { :git => "https://github.com/GriffinSchneider/DRYUI.git", :tag => s.version.to_s }
-  
-  s.source_files = 'DRYUI/**'
-  
+    
   s.ios.frameworks = 'Foundation', 'UIKit'
-  s.osx.frameworks = 'Foundation', 'AppKit'
 
-  s.ios.deployment_target = '7.0'
-  s.osx.deployment_target = '10.7'
   s.requires_arc = true
 
-  s.dependency 'Masonry'
+  s.subspec 'objc' do |objc|
+    objc.ios.deployment_target = '7.0'
+    objc.dependency 'DRYUI/base'
+  end
+
+  s.subspec 'base' do |base|
+    base.source_files = 'DRYUI/' + '*.{h,m}'
+    base.dependency 'Masonry'
+  end
+
+  s.subspec 'swift' do |swift|
+    swift.source_files ='DRYUI/' + '*.{swift}'
+    swift.ios.deployment_target = '8.0'
+    swift.dependency 'SnapKit'
+    swift.dependency 'DRYUI/base'
+  end
+  
 end

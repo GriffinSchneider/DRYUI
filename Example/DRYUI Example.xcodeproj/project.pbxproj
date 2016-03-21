@@ -7,7 +7,10 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		4556CEC3EFB2534EE7FB48E6 /* libPods-Tests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = FA863CEF09D7E32E5B26046A /* libPods-Tests.a */; };
+		2BD205731C6A780900965B42 /* Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2BD205721C6A780900965B42 /* Tests.swift */; };
+		2BD205761C6A791300965B42 /* CommonStyles.m in Sources */ = {isa = PBXBuildFile; fileRef = 2BD205751C6A791300965B42 /* CommonStyles.m */; };
+		2BD205781C6A792B00965B42 /* CommonStyles.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2BD205771C6A792B00965B42 /* CommonStyles.swift */; };
+		301FD51C3EDC66FC802399C9 /* Pods_DRYUI_Example.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3332F5650113517672FAB50C /* Pods_DRYUI_Example.framework */; };
 		5DD65E3D1B0933200076BF95 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 5DD65E341B0933200076BF95 /* InfoPlist.strings */; };
 		5DD65E3E1B0933200076BF95 /* FAHAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 5DD65E371B0933200076BF95 /* FAHAppDelegate.m */; };
 		5DD65E3F1B0933200076BF95 /* FAHViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 5DD65E391B0933200076BF95 /* FAHViewController.m */; };
@@ -21,7 +24,8 @@
 		6003F5B2195388D20070C39A /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6003F591195388D20070C39A /* UIKit.framework */; };
 		6003F5BA195388D20070C39A /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 6003F5B8195388D20070C39A /* InfoPlist.strings */; };
 		6003F5BC195388D20070C39A /* Tests.m in Sources */ = {isa = PBXBuildFile; fileRef = 6003F5BB195388D20070C39A /* Tests.m */; };
-		DB66647B6882DB3719622E36 /* libPods-DRYUI Example.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 91031136D473BC28F77B44B4 /* libPods-DRYUI Example.a */; };
+		6DDE156DCEDA7E5B2772CAED /* Pods_Tests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 96223624729558AA3E1C0EEF /* Pods_Tests.framework */; };
+		852559BA1C69AFEA00C80F2D /* SwiftViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 852559B91C69AFEA00C80F2D /* SwiftViewController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -35,6 +39,12 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		2BD205711C6A780800965B42 /* Tests-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Tests-Bridging-Header.h"; sourceTree = "<group>"; };
+		2BD205721C6A780900965B42 /* Tests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Tests.swift; sourceTree = "<group>"; };
+		2BD205741C6A791300965B42 /* CommonStyles.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CommonStyles.h; sourceTree = "<group>"; };
+		2BD205751C6A791300965B42 /* CommonStyles.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CommonStyles.m; sourceTree = "<group>"; };
+		2BD205771C6A792B00965B42 /* CommonStyles.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CommonStyles.swift; sourceTree = "<group>"; };
+		3332F5650113517672FAB50C /* Pods_DRYUI_Example.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_DRYUI_Example.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		39D67863D9624AA33506B84D /* Pods-Tests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Tests.release.xcconfig"; path = "../Pods/Target Support Files/Pods-Tests/Pods-Tests.release.xcconfig"; sourceTree = "<group>"; };
 		3ABB9301F31F45131D783CFF /* Pods-DRYUI Example.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-DRYUI Example.release.xcconfig"; path = "../Pods/Target Support Files/Pods-DRYUI Example/Pods-DRYUI Example.release.xcconfig"; sourceTree = "<group>"; };
 		5DD65E321B0933200076BF95 /* DRYUI Example-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "DRYUI Example-Info.plist"; sourceTree = "<group>"; };
@@ -56,10 +66,11 @@
 		6003F5B9195388D20070C39A /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		6003F5BB195388D20070C39A /* Tests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = Tests.m; sourceTree = "<group>"; };
 		606FC2411953D9B200FFA9A0 /* Tests-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Tests-Prefix.pch"; sourceTree = "<group>"; };
-		91031136D473BC28F77B44B4 /* libPods-DRYUI Example.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-DRYUI Example.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		852559B81C69AFEA00C80F2D /* DRYUI Example-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "DRYUI Example-Bridging-Header.h"; sourceTree = "<group>"; };
+		852559B91C69AFEA00C80F2D /* SwiftViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SwiftViewController.swift; sourceTree = "<group>"; };
+		96223624729558AA3E1C0EEF /* Pods_Tests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Tests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		D8D8BB0C0855D12B3EDE2382 /* Pods-DRYUI Example.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-DRYUI Example.debug.xcconfig"; path = "../Pods/Target Support Files/Pods-DRYUI Example/Pods-DRYUI Example.debug.xcconfig"; sourceTree = "<group>"; };
 		EFBBAA8A94C889CCF4E21AF7 /* Pods-Tests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Tests.debug.xcconfig"; path = "../Pods/Target Support Files/Pods-Tests/Pods-Tests.debug.xcconfig"; sourceTree = "<group>"; };
-		FA863CEF09D7E32E5B26046A /* libPods-Tests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-Tests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -70,7 +81,7 @@
 				6003F590195388D20070C39A /* CoreGraphics.framework in Frameworks */,
 				6003F592195388D20070C39A /* UIKit.framework in Frameworks */,
 				6003F58E195388D20070C39A /* Foundation.framework in Frameworks */,
-				DB66647B6882DB3719622E36 /* libPods-DRYUI Example.a in Frameworks */,
+				301FD51C3EDC66FC802399C9 /* Pods_DRYUI_Example.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -81,7 +92,7 @@
 				6003F5B0195388D20070C39A /* XCTest.framework in Frameworks */,
 				6003F5B2195388D20070C39A /* UIKit.framework in Frameworks */,
 				6003F5B1195388D20070C39A /* Foundation.framework in Frameworks */,
-				4556CEC3EFB2534EE7FB48E6 /* libPods-Tests.a in Frameworks */,
+				6DDE156DCEDA7E5B2772CAED /* Pods_Tests.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -96,10 +107,12 @@
 				5DD65E341B0933200076BF95 /* InfoPlist.strings */,
 				5DD65E361B0933200076BF95 /* FAHAppDelegate.h */,
 				5DD65E371B0933200076BF95 /* FAHAppDelegate.m */,
+				852559B91C69AFEA00C80F2D /* SwiftViewController.swift */,
 				5DD65E381B0933200076BF95 /* FAHViewController.h */,
 				5DD65E391B0933200076BF95 /* FAHViewController.m */,
 				5DD65E3A1B0933200076BF95 /* Images.xcassets */,
 				5DD65E3B1B0933200076BF95 /* main.m */,
+				852559B81C69AFEA00C80F2D /* DRYUI Example-Bridging-Header.h */,
 			);
 			path = "DRYUI Example";
 			sourceTree = "<group>";
@@ -131,8 +144,8 @@
 				6003F58F195388D20070C39A /* CoreGraphics.framework */,
 				6003F591195388D20070C39A /* UIKit.framework */,
 				6003F5AF195388D20070C39A /* XCTest.framework */,
-				FA863CEF09D7E32E5B26046A /* libPods-Tests.a */,
-				91031136D473BC28F77B44B4 /* libPods-DRYUI Example.a */,
+				3332F5650113517672FAB50C /* Pods_DRYUI_Example.framework */,
+				96223624729558AA3E1C0EEF /* Pods_Tests.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -141,7 +154,12 @@
 			isa = PBXGroup;
 			children = (
 				6003F5BB195388D20070C39A /* Tests.m */,
+				2BD205721C6A780900965B42 /* Tests.swift */,
+				2BD205741C6A791300965B42 /* CommonStyles.h */,
+				2BD205751C6A791300965B42 /* CommonStyles.m */,
+				2BD205771C6A792B00965B42 /* CommonStyles.swift */,
 				6003F5B6195388D20070C39A /* Supporting Files */,
+				2BD205711C6A780800965B42 /* Tests-Bridging-Header.h */,
 			);
 			path = Tests;
 			sourceTree = "<group>";
@@ -218,6 +236,7 @@
 			isa = PBXProject;
 			attributes = {
 				CLASSPREFIX = FAH;
+				LastSwiftUpdateCheck = 0720;
 				LastUpgradeCheck = 0510;
 				ORGANIZATIONNAME = "Griffin Schneider";
 				TargetAttributes = {
@@ -363,6 +382,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				852559BA1C69AFEA00C80F2D /* SwiftViewController.swift in Sources */,
 				5DD65E3F1B0933200076BF95 /* FAHViewController.m in Sources */,
 				5DD65E411B0933200076BF95 /* main.m in Sources */,
 				5DD65E3E1B0933200076BF95 /* FAHAppDelegate.m in Sources */,
@@ -374,6 +394,9 @@
 			buildActionMask = 2147483647;
 			files = (
 				6003F5BC195388D20070C39A /* Tests.m in Sources */,
+				2BD205731C6A780900965B42 /* Tests.swift in Sources */,
+				2BD205781C6A792B00965B42 /* CommonStyles.swift in Sources */,
+				2BD205761C6A791300965B42 /* CommonStyles.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -439,7 +462,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 7.1;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -472,7 +495,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 7.1;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VALIDATE_PRODUCT = YES;
@@ -485,9 +508,11 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
+				CLANG_ENABLE_MODULES = YES;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "DRYUI Example/DRYUI Example-Prefix.pch";
 				INFOPLIST_FILE = "DRYUI Example/DRYUI Example-Info.plist";
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				OTHER_CFLAGS = (
 					"$(inherited)",
 					"-isystem",
@@ -499,6 +524,8 @@
 					"-fdiagnostics-show-option",
 				);
 				PRODUCT_NAME = "DRYUI Example";
+				SWIFT_OBJC_BRIDGING_HEADER = "DRYUI Example/DRYUI Example-Bridging-Header.h";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				WRAPPER_EXTENSION = app;
 			};
 			name = Debug;
@@ -509,9 +536,11 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
+				CLANG_ENABLE_MODULES = YES;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "DRYUI Example/DRYUI Example-Prefix.pch";
 				INFOPLIST_FILE = "DRYUI Example/DRYUI Example-Info.plist";
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				OTHER_CFLAGS = (
 					"$(inherited)",
 					"-isystem",
@@ -523,6 +552,7 @@
 					"-fdiagnostics-show-option",
 				);
 				PRODUCT_NAME = "DRYUI Example";
+				SWIFT_OBJC_BRIDGING_HEADER = "DRYUI Example/DRYUI Example-Bridging-Header.h";
 				WRAPPER_EXTENSION = app;
 			};
 			name = Release;
@@ -532,6 +562,7 @@
 			baseConfigurationReference = EFBBAA8A94C889CCF4E21AF7 /* Pods-Tests.debug.xcconfig */;
 			buildSettings = {
 				BUNDLE_LOADER = "$(BUILT_PRODUCTS_DIR)/DRYUI Example.app/DRYUI Example";
+				CLANG_ENABLE_MODULES = YES;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(SDKROOT)/Developer/Library/Frameworks",
 					"$(inherited)",
@@ -544,6 +575,7 @@
 					"$(inherited)",
 				);
 				INFOPLIST_FILE = "Tests/Tests-Info.plist";
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				OTHER_CFLAGS = (
 					"$(inherited)",
 					"-isystem",
@@ -555,6 +587,8 @@
 					"-fdiagnostics-show-option",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_OBJC_BRIDGING_HEADER = "Tests/Tests-Bridging-Header.h";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				TEST_HOST = "$(BUNDLE_LOADER)";
 				WRAPPER_EXTENSION = xctest;
 			};
@@ -565,6 +599,7 @@
 			baseConfigurationReference = 39D67863D9624AA33506B84D /* Pods-Tests.release.xcconfig */;
 			buildSettings = {
 				BUNDLE_LOADER = "$(BUILT_PRODUCTS_DIR)/DRYUI Example.app/DRYUI Example";
+				CLANG_ENABLE_MODULES = YES;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(SDKROOT)/Developer/Library/Frameworks",
 					"$(inherited)",
@@ -573,6 +608,7 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Tests/Tests-Prefix.pch";
 				INFOPLIST_FILE = "Tests/Tests-Info.plist";
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				OTHER_CFLAGS = (
 					"$(inherited)",
 					"-isystem",
@@ -584,6 +620,7 @@
 					"-fdiagnostics-show-option",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_OBJC_BRIDGING_HEADER = "Tests/Tests-Bridging-Header.h";
 				TEST_HOST = "$(BUNDLE_LOADER)";
 				WRAPPER_EXTENSION = xctest;
 			};
