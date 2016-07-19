@@ -38,10 +38,10 @@ view2.backgroundColor = [UIColor blueColor];
 build_subviews(self.view) {
     UIView *add_subview(view1) {
         _.backgroundColor = [UIColor redColor];
-        _.make.edges.equalTo(superview);
+        make.edges.equalTo(superview);
         UIView *add_subview(view2) {
             _.backgroundColor = [UIColor blueColor];
-            _.make.edges.equalTo(superview);
+            make.edges.equalTo(superview);
         };
     };
 };
@@ -199,5 +199,5 @@ the order of their `add_subview` calls.
 Calls to `add_subview` must be inside a call to `build_subviews`. `build_subviews` won't add the given view as a subview to anything.
 
 Within the block after the `add_subview` macro, `_` refers to the given view, and `superview`
-refers to that view's superview. `_.make` is set to a `MASConstraintMaker` for the given view, similar
+refers to that view's superview. `make` is set to a `MASConstraintMaker` for the given view, similar
 to the block passed to [Masonry](https://github.com/Masonry/Masonry)'s `mas_makeConstraints:` method.
