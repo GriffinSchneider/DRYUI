@@ -14,6 +14,9 @@ Pod::Spec.new do |s|
   s.ios.frameworks = 'Foundation', 'UIKit'
 
   s.requires_arc = true
+  
+  s.ios.deployment_target = '8.0'
+  s.osx.deployment_target = '10.10'
 
   s.subspec 'objc' do |objc|
     objc.ios.deployment_target = '7.0'
@@ -28,6 +31,7 @@ Pod::Spec.new do |s|
   s.subspec 'swift' do |swift|
     swift.source_files ='DRYUI/' + '*.{swift}'
     swift.ios.deployment_target = '8.0'
+    swift.osx.deployment_target = '10.10'
     swift.dependency 'SnapKit'
     swift.dependency 'DRYUI/base'
   end
