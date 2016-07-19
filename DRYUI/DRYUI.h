@@ -92,9 +92,14 @@ FOUNDATION_EXTERN id _dryui_instantiate_from_encoding(char *);
     });) \
 
 
-#define _dryui_build_subviews(viewArg) \
-    _dryui_create_view_helper(viewArg, ;, ;)
-
+#define _dryui_build_subviews(args...) \
+    metamacro_if_eq(1, metamacro_argcount(args)) ( \
+        _dryui_create_view_helper(args, ;, ;) \
+    ) ( \
+        _dryui_build_subviewsMore(args) \
+    )
+#define _dryui_build_subviewsMore(viewArg, styles...) \
+    _dryui_create_view_helper(viewArg, ;, dryui_apply_styles(viewArg, styles)) \
 
 #define _dryui_add_subview(args...) \
     _Pragma("clang diagnostic push") \

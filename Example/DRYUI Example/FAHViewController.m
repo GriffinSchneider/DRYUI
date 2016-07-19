@@ -35,8 +35,7 @@ dryui_style(Orange, UIButton) {
     
     UIEdgeInsets insets = UIEdgeInsetsMake(30, 30, 30, 30);
     
-    build_subviews(self.view) {
-        _.backgroundColor = [UIColor whiteColor];
+    build_subviews(self.view, Green) {
         UIView* add_subview(view1, Red) {
             make.edges.equalTo(_.superview).with.insets(insets);
             UIView* add_subview(view2, Green) {
