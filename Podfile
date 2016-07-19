@@ -5,11 +5,11 @@ use_frameworks!
 platform :ios, '8.0'
 
 xcodeproj 'Example/DRYUI Example'
-target 'DRYUI Example', :exclusive => true do
+target 'DRYUI Example' do
   pod 'DRYUI', :path => './'
 end
 
-target 'Tests', :exclusive => true do
+target 'Tests'  do
   pod 'DRYUI', :path => './'
 end
 
