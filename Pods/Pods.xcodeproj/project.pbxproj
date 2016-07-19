@@ -26,7 +26,7 @@
 		49E69902DAC64305285029EE790EA11B /* DRYUI-umbrella.h in Headers */ = {isa = PBXBuildFile; fileRef = 90BA5A9E523739B6656B5A4740584C6D /* DRYUI-umbrella.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		4EC50AB424ACBA36A956DD570E116499 /* View+SnapKit.swift in Sources */ = {isa = PBXBuildFile; fileRef = D43423FBEFF2DE3B35D504055B7FF3A6 /* View+SnapKit.swift */; };
 		4FB9C34BDE1661ED70BCFCDDE89C3907 /* View+MASAdditions.h in Headers */ = {isa = PBXBuildFile; fileRef = 22B563CBB6C6F005161482F9C77C854A /* View+MASAdditions.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		576737D77DBBC69123AB3233E98A9432 /* DRYUI.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3DEC745C8847EB43E2E2556F1F9A296 /* DRYUI.swift */; };
+		5244485CF6310086D70F8BD4C33E8409 /* DRYUI-dummy.m in Sources */ = {isa = PBXBuildFile; fileRef = 98DE9C756BE8E166F35864123D22CD34 /* DRYUI-dummy.m */; };
 		5D35540FBAFC8F960FA0E25548B0D507 /* ViewController+MASAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = CBD5EAAC8285406A6941361E4E075400 /* ViewController+MASAdditions.m */; };
 		618056CD2273939BFC617FF996DE89CE /* libextobjc-metamacros.h in Headers */ = {isa = PBXBuildFile; fileRef = 7FABD9547F3C0DBD6312B23D2548CD79 /* libextobjc-metamacros.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		678C56B3ABDDE99E1EC0E09D7D83EA19 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 817AA66364B4B39D649A46C6CD6663DB /* Foundation.framework */; };
@@ -36,10 +36,10 @@
 		6C322933E936BCAE20452EA1BC50FEFA /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 817AA66364B4B39D649A46C6CD6663DB /* Foundation.framework */; };
 		706D962A0FC9CD46FF024D9BAADD3A6D /* Masonry.h in Headers */ = {isa = PBXBuildFile; fileRef = 137FB6726D2F48CEDC771B814C828D14 /* Masonry.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		74E3148DEEB2263163B756D29A9C8F76 /* SnapKit.swift in Sources */ = {isa = PBXBuildFile; fileRef = F075A63E79CCF50BB852FAE1AE7411AE /* SnapKit.swift */; };
-		77080EBBD66FB4C1BC446C23F2E9A6EB /* DRYUI-dummy.m in Sources */ = {isa = PBXBuildFile; fileRef = 98DE9C756BE8E166F35864123D22CD34 /* DRYUI-dummy.m */; };
 		7F872316EF7F95CF8D07894E0F618DF4 /* Masonry-umbrella.h in Headers */ = {isa = PBXBuildFile; fileRef = 47E60B775378CF8C8A1C05AF91BF48CE /* Masonry-umbrella.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		801CC755EECFD28CBBD694D360CB0DCD /* Pods-Tests-dummy.m in Sources */ = {isa = PBXBuildFile; fileRef = 3328642273BC730713BCEC016AC5E0A4 /* Pods-Tests-dummy.m */; };
 		818118F4F5984FC20E90D73299F23540 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 817AA66364B4B39D649A46C6CD6663DB /* Foundation.framework */; };
+		81C9AC0515AC9E79CA8C92CA41072537 /* DRYUI.m in Sources */ = {isa = PBXBuildFile; fileRef = C772430CAA6975E906F7CEEB103B921F /* DRYUI.m */; };
 		849D11B9EE05478BC47FD35FE544DA5F /* MASCompositeConstraint.m in Sources */ = {isa = PBXBuildFile; fileRef = 3ED54A7E71DD8CE1F0153E6282896E7B /* MASCompositeConstraint.m */; };
 		88A9E117BF73F205E7DC49EA23052B68 /* MASViewConstraint.m in Sources */ = {isa = PBXBuildFile; fileRef = E08D98D8C93856854E532FD0A348FFB6 /* MASViewConstraint.m */; };
 		90425EDCBA0923347C1710CD06B38DF7 /* View+MASShorthandAdditions.h in Headers */ = {isa = PBXBuildFile; fileRef = CC55E48F4FD74307AEB9B669335BE074 /* View+MASShorthandAdditions.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -52,7 +52,6 @@
 		B6CA9DE98A77F57D07A7AFE833710A33 /* Masonry-dummy.m in Sources */ = {isa = PBXBuildFile; fileRef = F772CC851ACD01563CD6D8392EA12D28 /* Masonry-dummy.m */; };
 		B83745BFE3B41D150AC921DE406614C3 /* MASCompositeConstraint.h in Headers */ = {isa = PBXBuildFile; fileRef = B7DE88F2332C6924816C7A68B15A8210 /* MASCompositeConstraint.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		B9D83BA78CB75A196D6A2499EA31C72F /* MASConstraint.h in Headers */ = {isa = PBXBuildFile; fileRef = 89915B72E83A243BD14C5F0574427D58 /* MASConstraint.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		B9E5B8F810BCD72FE7657B7C11E8076F /* DRYUI.m in Sources */ = {isa = PBXBuildFile; fileRef = C772430CAA6975E906F7CEEB103B921F /* DRYUI.m */; settings = {COMPILER_FLAGS = "-DOS_OBJECT_USE_OBJC=0"; }; };
 		C098627D7A72A04958C0A86690004574 /* MASViewAttribute.m in Sources */ = {isa = PBXBuildFile; fileRef = 6E3831884B7775EA8ACACBD1EE516DCB /* MASViewAttribute.m */; };
 		C0FA2018F6E2FE35D869FB000C85A169 /* Debugging.swift in Sources */ = {isa = PBXBuildFile; fileRef = DE2B5C0952F31C6886DD1A88E4F3728C /* Debugging.swift */; };
 		C82C7D853233B0C6C691E15D2F4122B2 /* MASViewConstraint.h in Headers */ = {isa = PBXBuildFile; fileRef = 7A3B614799456A769995E2EDC49675C1 /* MASViewConstraint.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -62,6 +61,7 @@
 		CDE1E904E9E73CEEBBC0AD62CF606762 /* MASUtilities.h in Headers */ = {isa = PBXBuildFile; fileRef = FF7E97F52C07C41F7E661FE6B1888917 /* MASUtilities.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		CFCC5DA7C0FA0CFA42112B6D329B6CB4 /* ViewController+SnapKit.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB653B1E04E291EA9BF2C9BC5D2ABEBD /* ViewController+SnapKit.swift */; };
 		D53E0374AAA3A7463252B5E33FE9B3B1 /* Masonry.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1B907567286D5C894F717198ABC8EC79 /* Masonry.framework */; };
+		E5CAC4AE2F631F0C4B7EE0E48F5E530B /* DRYUI.swift in Sources */ = {isa = PBXBuildFile; fileRef = C3DEC745C8847EB43E2E2556F1F9A296 /* DRYUI.swift */; };
 		E5D0A9A205E80DEEC92522F649AD78F2 /* MASConstraintMaker.m in Sources */ = {isa = PBXBuildFile; fileRef = ED538DB987697C6890FEE30BDCF89C5C /* MASConstraintMaker.m */; };
 		EA6866F12AFC3A1029D94A1208AF02D9 /* MASConstraint+Private.h in Headers */ = {isa = PBXBuildFile; fileRef = A97AE0A23F62632A15D96EF80AF3E06E /* MASConstraint+Private.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		F1A370A9551CEBA5024A31CC50573F01 /* ConstraintItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89974638F33B28BC98269FA22390F6B0 /* ConstraintItem.swift */; };
@@ -584,7 +584,7 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 0ABAF0201B8449FE7ABF9C383B68CDF7 /* Build configuration list for PBXNativeTarget "DRYUI" */;
 			buildPhases = (
-				C1D83D63D6DC25A630B6D830E04C9989 /* Sources */,
+				FB4C695BF8E3CA23CF20A7856E5A5D37 /* Sources */,
 				DE989DBCF5E8539D6F4E8A3B4C8988BB /* Frameworks */,
 				0EAD6B10CCB98FCEAA9503FD9CBE9E7B /* Headers */,
 			);
@@ -758,13 +758,13 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		C1D83D63D6DC25A630B6D830E04C9989 /* Sources */ = {
+		FB4C695BF8E3CA23CF20A7856E5A5D37 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				77080EBBD66FB4C1BC446C23F2E9A6EB /* DRYUI-dummy.m in Sources */,
-				B9E5B8F810BCD72FE7657B7C11E8076F /* DRYUI.m in Sources */,
-				576737D77DBBC69123AB3233E98A9432 /* DRYUI.swift in Sources */,
+				5244485CF6310086D70F8BD4C33E8409 /* DRYUI-dummy.m in Sources */,
+				81C9AC0515AC9E79CA8C92CA41072537 /* DRYUI.m in Sources */,
+				E5CAC4AE2F631F0C4B7EE0E48F5E530B /* DRYUI.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
