@@ -32,6 +32,7 @@
 #define dryui_private_style(args...) _dryui_private_style(args)
 
 #define dryui_parent_style(style) _dryui_apply_style(_, style)
+#define dryui_parent_styles(styles...) _dryui_apply_styles(_, styles)
 
 #define dryui_apply_style(view, style) _dryui_apply_style(view, style)
 #define dryui_apply_styles(view, styles...) _dryui_apply_styles(view, styles)

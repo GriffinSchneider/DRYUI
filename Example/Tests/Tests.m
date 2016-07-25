@@ -50,8 +50,7 @@ dryui_private_style(Style3) {
 dryui_private_style(StyleButton, UIButton) {
     dryui_parent_style([CommonStyles Red]);
     [_ setTitle:@"button title" forState:UIControlStateNormal];
-    dryui_parent_style(Style1);
-    dryui_parent_style(Style3);
+    dryui_parent_styles(Style1, Style3);
 };
 
 dryui_private_style(StyleWithArgs, UILabel, (NSString *)firstArg, (NSInteger)secondArg) {
