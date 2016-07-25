@@ -72,7 +72,7 @@ FOUNDATION_EXTERN id _dryui_instantiate_from_encoding(char *);
         thing = !thing; \
     });) \
     for (MASConstraintMaker* make __attribute__((unused)) = [[MASConstraintMaker alloc] initWithView:_]; ({ \
-        NSAssert([NSThread isMainThread], @"DRYUI should only be used from the main thread!"); \
+        NSCAssert([NSThread isMainThread], @"DRYUI should only be used from the main thread!"); \
         static BOOL thing = false; \
         thing = !thing; \
         if (thing) { \
