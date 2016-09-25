@@ -1,6 +1,6 @@
 {
   "name": "DRYUI",
-  "version": "0.9.4",
+  "version": "1.0.0",
   "summary": "A tiny library that provides a better API for building and styling view hierarchies in code.",
   "description": "DRYUI is a tiny library that provides a better API for building and styling view hierarchies in code.\nDRYUI uses [Masonry](https://github.com/Masonry/Masonry) for Autolayout.",
   "homepage": "https://github.com/GriffinSchneider/DRYUI",
@@ -10,7 +10,7 @@
   },
   "source": {
     "git": "https://github.com/GriffinSchneider/DRYUI.git",
-    "tag": "0.9.4"
+    "tag": "1.0.0"
   },
   "ios": {
     "frameworks": [
@@ -21,7 +21,7 @@
   "requires_arc": true,
   "platforms": {
     "ios": "8.0",
-    "osx": "10.10"
+    "osx": "10.11"
   },
   "subspecs": [
     {
@@ -49,11 +49,11 @@
       "source_files": "DRYUI/*.{swift}",
       "platforms": {
         "ios": "8.0",
-        "osx": "10.10"
+        "osx": "10.11"
       },
       "dependencies": {
         "SnapKit": [
-
+          "~> 3.0"
         ],
         "DRYUI/base": [
 

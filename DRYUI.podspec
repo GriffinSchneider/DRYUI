@@ -1,6 +1,6 @@
 Pod::Spec.new do |s|
   s.name             = "DRYUI"
-  s.version          = "0.9.4"
+  s.version          = "1.0.0"
   s.summary          = "A tiny library that provides a better API for building and styling view hierarchies in code."
   s.description      = %{
     DRYUI is a tiny library that provides a better API for building and styling view hierarchies in code.
@@ -16,7 +16,7 @@ Pod::Spec.new do |s|
   s.requires_arc = true
   
   s.ios.deployment_target = '8.0'
-  s.osx.deployment_target = '10.10'
+  s.osx.deployment_target = '10.11'
 
   s.subspec 'objc' do |objc|
     objc.ios.deployment_target = '7.0'
@@ -31,8 +31,8 @@ Pod::Spec.new do |s|
   s.subspec 'swift' do |swift|
     swift.source_files ='DRYUI/' + '*.{swift}'
     swift.ios.deployment_target = '8.0'
-    swift.osx.deployment_target = '10.10'
-    swift.dependency 'SnapKit'
+    swift.osx.deployment_target = '10.11'
+    swift.dependency 'SnapKit', '~> 3.0'
     swift.dependency 'DRYUI/base'
   end
   

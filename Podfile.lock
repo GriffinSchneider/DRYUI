@@ -1,17 +1,17 @@
 PODS:
-  - DRYUI (0.9.4):
-    - DRYUI/base (= 0.9.4)
-    - DRYUI/objc (= 0.9.4)
-    - DRYUI/swift (= 0.9.4)
-  - DRYUI/base (0.9.4):
+  - DRYUI (1.0.0):
+    - DRYUI/base (= 1.0.0)
+    - DRYUI/objc (= 1.0.0)
+    - DRYUI/swift (= 1.0.0)
+  - DRYUI/base (1.0.0):
     - Masonry
-  - DRYUI/objc (0.9.4):
+  - DRYUI/objc (1.0.0):
     - DRYUI/base
-  - DRYUI/swift (0.9.4):
+  - DRYUI/swift (1.0.0):
     - DRYUI/base
-    - SnapKit
-  - Masonry (0.6.4)
-  - SnapKit (0.19.1)
+    - SnapKit (~> 3.0)
+  - Masonry (1.0.2)
+  - SnapKit (3.0.1)
 
 DEPENDENCIES:
   - DRYUI (from `./`)
@@ -21,10 +21,10 @@ EXTERNAL SOURCES:
     :path: ./
 
 SPEC CHECKSUMS:
-  DRYUI: a7affc1aaa30426f51ec096a05a7af9af40807d8
-  Masonry: 281802d04d787ea2973179ee8bcb50500579ede2
-  SnapKit: eff58d6e3451bf2f482db2eccf86aecf371dc62d
+  DRYUI: 76e2be5e6a1c9242c6b119d56c481bcf1cb757cc
+  Masonry: 7c429b56da9d4ee0bbb3ed77a5ea710d6a5df39e
+  SnapKit: f818b8326d45b4e1c777d0ab27b5c0a3624bfdeb
 
-PODFILE CHECKSUM: 65a9374b56453fef63a16b9f27278999948dcb06
+PODFILE CHECKSUM: 11be99775085884afae95273bd502457f103a628
 
-COCOAPODS: 1.0.1
+COCOAPODS: 1.1.0.rc.2

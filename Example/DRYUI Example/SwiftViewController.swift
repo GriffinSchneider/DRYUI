@@ -11,7 +11,7 @@ import DRYUI
 import SnapKit
 
 @objc class SwiftStyles: NSObject {
-    static func aStyle(title: String) -> (v: UILabel) -> Void {
+    static func aStyle(_ title: String) -> (_ v: UILabel) -> Void {
         return {v in v.text = title}
     }
 }
