@@ -192,11 +192,11 @@ FOUNDATION_EXTERN id _dryui_instantiate_from_encoding(char *);
 
 #define _dryui_public_style1(styleName) _dryui_public_style2(styleName, _DRYUI_VIEW)
 #define _dryui_public_style2(styleName, className) \
-    typedef void (^_dryui_block_type(styleName)) (className *_); \
+    typedef void (^_dryui_block_type(styleName)) (className *_ _Nonnull); \
     FOUNDATION_EXTERN _dryui_block_type(styleName) styleName;
 
 #define _dryui_public_styleMore(styleName, className, styleArgs...) \
-    typedef void (^_dryui_inner_block_type(styleName)) (className *_); \
+    typedef void (^_dryui_inner_block_type(styleName)) (className *_ _Nonnull); \
     typedef _dryui_inner_block_type(styleName) (^_dryui_block_type(styleName)) (_dryui_extract_arguments(styleArgs)); \
     FOUNDATION_EXTERN _dryui_block_type(styleName) styleName;
 
@@ -220,17 +220,17 @@ FOUNDATION_EXTERN id _dryui_instantiate_from_encoding(char *);
 
 #define _dryui_style1(styleName) _dryui_style2(styleName, _DRYUI_VIEW)
 #define _dryui_style2(styleName, className) \
-    _dryui_block_type(styleName) styleName = ^(className *_)
+    _dryui_block_type(styleName) styleName = ^(className *_ _Nonnull)
 
 #define _dryui_styleMore(styleName, className, styleArgs...) \
-    typedef void (^metamacro_concat(styleName, BlockThatYouWrite)) (className *_, _dryui_extract_arguments(styleArgs)); \
+    typedef void (^metamacro_concat(styleName, BlockThatYouWrite)) (className *_ _Nonnull, _dryui_extract_arguments(styleArgs)); \
     static metamacro_concat(styleName, BlockThatYouWrite) metamacro_concat(_dryui_blockYouWrite_, styleName); \
     _dryui_block_type(styleName) styleName = ^(_dryui_extract_arguments(styleArgs)) { \
-        return ^(className *_) { \
+        return ^(className *_ _Nonnull) { \
             metamacro_concat(_dryui_blockYouWrite_, styleName)(_, _dryui_extract_variable_names(styleArgs)); \
         }; \
     }; \
-    static metamacro_concat(styleName, BlockThatYouWrite) metamacro_concat(_dryui_blockYouWrite_, styleName) = ^(className *_, _dryui_extract_arguments(styleArgs))
+    static metamacro_concat(styleName, BlockThatYouWrite) metamacro_concat(_dryui_blockYouWrite_, styleName) = ^(className *_ _Nonnull, _dryui_extract_arguments(styleArgs))
 
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
