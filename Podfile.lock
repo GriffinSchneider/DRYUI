@@ -11,7 +11,7 @@ PODS:
     - DRYUI/base
     - SnapKit (~> 3.0)
   - Masonry (1.0.2)
-  - SnapKit (3.0.1)
+  - SnapKit (3.0.2)
 
 DEPENDENCIES:
   - DRYUI (from `./`)
@@ -23,7 +23,7 @@ EXTERNAL SOURCES:
 SPEC CHECKSUMS:
   DRYUI: 94e775ec452108d8869dba641c4bd9affad15efe
   Masonry: 7c429b56da9d4ee0bbb3ed77a5ea710d6a5df39e
-  SnapKit: f818b8326d45b4e1c777d0ab27b5c0a3624bfdeb
+  SnapKit: 2e456761aa92d4d4067a7a5594c18769d451a8ad
 
 PODFILE CHECKSUM: 11be99775085884afae95273bd502457f103a628
 
