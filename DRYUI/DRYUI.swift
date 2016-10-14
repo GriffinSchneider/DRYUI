@@ -66,3 +66,47 @@ extension View: DRYUIAble {
         return subview
     }
 }
+
+
+// MARK: Build a view with inferred type from blocks
+public func buildView<SubviewType:View>(_ subviewBlocks: (SubviewType) -> Void ...) -> SubviewType {
+    let subview = SubviewType()
+    subviewBlocks.forEach{ $0(subview) }
+    return subview
+}
+
+public func buildView<SubviewType:View>(_ subviewBlocks: (SubviewType) -> Void ..., _ lastBlock: (SubviewType, ConstraintMaker) -> Void) -> SubviewType {
+    let subview = SubviewType()
+    subviewBlocks.forEach{ $0(subview) }
+    subview.snp.makeConstraints { lastBlock(subview, $0) }
+    return subview
+}
+
+
+// MARK: Build a view with type passed explicitly
+public func buildView<SubviewType:View>(_ subviewType: SubviewType.Type, _ subviewBlocks: (SubviewType) -> Void ...) -> SubviewType {
+    let subview = SubviewType()
+    subviewBlocks.forEach{ $0(subview) }
+    return subview
+}
+
+public func buildView<SubviewType:View>(_ subviewType: SubviewType.Type, _ subviewBlocks: (SubviewType) -> Void ..., _ lastBlock: (SubviewType, ConstraintMaker) -> Void) -> SubviewType {
+    let subview = SubviewType()
+    subviewBlocks.forEach{ $0(subview) }
+    subview.snp.makeConstraints { lastBlock(subview, $0) }
+    return subview
+}
+
+
+// MARK: Build a view with the view instance passed explicitly
+public func buildView<SubviewType:View>(_ subview: SubviewType, _ subviewBlocks: (SubviewType) -> Void ...) -> SubviewType {
+    subviewBlocks.forEach{ $0(subview) }
+    return subview
+}
+
+public func buildView<SubviewType:View>(_ subview: SubviewType, _ subviewBlocks: (SubviewType) -> Void ..., _ lastBlock: (SubviewType, ConstraintMaker) -> Void) -> SubviewType {
+    subviewBlocks.forEach{ $0(subview) }
+    subview.snp.makeConstraints { lastBlock(subview, $0) }
+    return subview
+}
+
