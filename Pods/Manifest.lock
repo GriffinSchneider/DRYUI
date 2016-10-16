@@ -1,13 +1,13 @@
 PODS:
-  - DRYUI (1.1.3):
-    - DRYUI/base (= 1.1.3)
-    - DRYUI/objc (= 1.1.3)
-    - DRYUI/swift (= 1.1.3)
-  - DRYUI/base (1.1.3):
+  - DRYUI (1.1.4):
+    - DRYUI/base (= 1.1.4)
+    - DRYUI/objc (= 1.1.4)
+    - DRYUI/swift (= 1.1.4)
+  - DRYUI/base (1.1.4):
     - Masonry
-  - DRYUI/objc (1.1.3):
+  - DRYUI/objc (1.1.4):
     - DRYUI/base
-  - DRYUI/swift (1.1.3):
+  - DRYUI/swift (1.1.4):
     - DRYUI/base
     - SnapKit (~> 3.0)
   - Masonry (1.0.2)
@@ -21,7 +21,7 @@ EXTERNAL SOURCES:
     :path: ./
 
 SPEC CHECKSUMS:
-  DRYUI: 95080df4e265363d29fb752bbd637b9a0c898421
+  DRYUI: 54ad8da7ddc66afbdb8e5648737ef2e451511d8d
   Masonry: 7c429b56da9d4ee0bbb3ed77a5ea710d6a5df39e
   SnapKit: 2e456761aa92d4d4067a7a5594c18769d451a8ad
 
