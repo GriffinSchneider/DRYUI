@@ -32,9 +32,9 @@ dryui_style(Orange, UIButton) {
 
 - (void)loadView {
     [super loadView];
-    
+
     UIEdgeInsets insets = UIEdgeInsetsMake(30, 30, 30, 30);
-    
+
     build_subviews(self.view, Green) {
         UIView* add_subview(view1, Red) {
             make.edges.equalTo(_.superview).with.insets(insets);
