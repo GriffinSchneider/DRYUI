@@ -9,7 +9,7 @@
 import Foundation
 
 @objc class CommonStyles: NSObject {
-    static var Red: (UIView) -> Void {
+    @objc static var Red: (UIView) -> Void {
         return { (v: UIView) in
             v.backgroundColor = UIColor.red
         }
