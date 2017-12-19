@@ -10,7 +10,7 @@
 #import <DRYUI/DRYUI.h>
 #import <Masonry/Masonry.h>
 #import "FAHAppDelegate.h"
-#import "DRYUI_Example-swift.h"
+#import "DRYUI_Example-Swift.h"
 
 dryui_style(Green, UIView) {
     _.backgroundColor = [UIColor greenColor];
