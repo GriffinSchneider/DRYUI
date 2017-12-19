@@ -32,7 +32,7 @@ Pod::Spec.new do |s|
     swift.source_files ='DRYUI/' + '*.{swift}'
     swift.ios.deployment_target = '8.0'
     swift.osx.deployment_target = '10.11'
-    swift.dependency 'SnapKit', '~> 3.0'
+    swift.dependency 'SnapKit', '~> 4.0'
     swift.dependency 'DRYUI/base'
   end
   
