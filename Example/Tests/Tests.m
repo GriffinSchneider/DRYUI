@@ -10,7 +10,7 @@
 #import <XCTest/XCTest.h>
 #import <DRYUI/DRYUI.h>
 #import <Masonry/Masonry.h>
-#import "Tests-swift.h"
+#import "Tests-Swift.h"
 
 #define BIG_STYLE_LIST \
 [CommonStyles Red], Style1, Style2, Style3, Style3, \

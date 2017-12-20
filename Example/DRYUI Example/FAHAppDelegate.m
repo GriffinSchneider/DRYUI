@@ -8,7 +8,7 @@
 
 #import "FAHAppDelegate.h"
 #import "FAHViewController.h"
-#import "DRYUI_Example-swift.h"
+#import "DRYUI_Example-Swift.h"
 
 dryui_style(Red, UIView) {
     _.backgroundColor = [UIColor redColor];
