@@ -3,3 +3,4 @@ osx_image: xcode10
 xcode_workspace: DRYUI.xcworkspace
 xcode_scheme: DRYUI-Example
 xcode_sdk: iphonesimulator12.0
+install: pod install --repo-update
